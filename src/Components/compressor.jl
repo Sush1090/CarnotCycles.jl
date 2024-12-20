@@ -1,20 +1,5 @@
 
 """
-`Isentropic_η(;η = 0.9,πc = 5)`
-A struct that passes to `Compressor` and `Expander`
-"""
-struct Isentropic_η
-    η
-    πc
-    function Isentropic_η(;η = 0.9,πc = 5)
-        @assert η <=1
-        @assert πc >= 1
-        new(η,πc)
-    end
-end
-export Isentropic_η
-
-"""
 `Compressor(type::Isentropic_η=Isentropic_η();name,fluid = set_fluid)`
 
 *    Arguments: 
@@ -37,11 +22,23 @@ export Isentropic_η
     1. `inport`  : `p` and `h`
     2. `outport` : `p` and `h`
 """
-function Compressor(type::Isentropic_η=Isentropic_η();name,fluid = set_fluid) 
+@component function IsentropicCompressor(;name,fluid=set_fluid)
+    if fluid isa AbstractString
+        return IsentropicCompressorCoolProp(name=name,fluid=fluid)
+    end
+    if fluid isa EoSModel
+        return IsentropicCompressorClapyeron(name=name,fluid=fluid)
+    end
     if isnothing(fluid)
         throw(error("Fluid not selected"))
     end
-    # @unpack η,πc = type
+end
+
+
+@component function IsentropicCompressorCoolProp(;name,fluid = set_fluid) 
+    if isnothing(fluid)
+        throw(error("Fluid not selected"))
+    end
     @named inport = CoolantPort()
     @named outport = CoolantPort()
     para = @parameters begin
@@ -80,16 +77,64 @@ function Compressor(type::Isentropic_η=Isentropic_η();name,fluid = set_fluid)
    compose(ODESystem(eqs, t, vars, para;name), inport, outport)
 end
 
-
-
-struct Isothermal_comp
-    πc
-    function Isothermal_comp(;πc = 5)
-        @assert πc >=1
-        new(πc)
+@component function IsentropicCompressorClapyeron(;name,fluid = set_fluid) 
+    @named inport = CoolantPort()
+    @named outport = CoolantPort()
+    para = @parameters begin
+        η=0.8, [description = "Isentropic Effeciency",bounds = (0.0,1.0)]
+        πc, [description = "Pressure ratio"]
     end
+    vars = @variables begin
+        P(t)
+        s_in(t)
+        p_in(t)
+        T_in(t)
+        h_in(t)
+        ρ_in(t)
+        z_in(t)
+        mdot_in(t)
+        x_in(t)
+
+        s_out(t)
+        p_out(t)
+        T_out(t)
+        h_out(t)
+        ρ_out(t)
+        z_out(t)
+        mdot_out(t)
+        x_out(t)
+     end
+   eqs = [  
+            mdot_in ~ inport.mdot
+            x_in ~ inport.x
+            z_in ~ mass_to_moles(fluid,[x_in,1-x_in],mdot_in)
+            p_in ~ inport.p
+            h_in ~ inport.h
+            s_in ~ ph_entropy(fluid,p_in,h_in,z_in)
+            T_in ~ ph_temperature(fluid,p_in,h_in,z_in)
+            ρ_in ~ ph_mass_density(fluid,p_in,h_in,z_in)
+
+            h_out ~ IsentropicCompressionClapeyron(πc,h_in,p_in,z_in,fluid,η)
+            p_out ~ πc*p_in
+            s_out ~ ph_entropy(fluid,p_out,h_out,z_out)
+            z_out ~ z_in
+            T_out ~ ph_temperature(fluid,p_out,h_out,z_out)
+            ρ_out ~ ph_mass_density(fluid,p_out,h_out,z_out)
+            mdot_out ~ mdot_in
+            x_out ~ x_in   
+
+            P ~ h_out - h_in
+
+            outport.p ~ p_out
+            outport.h ~ h_out
+            outport.x ~ x_out
+            outport.mdot ~ mdot_out
+   ]
+   compose(ODESystem(eqs, t, vars, para;name), inport, outport)
 end
-export Isothermal_comp
+
+export IsentropicCompressor
+
 
 """
 `Compressor(type::Isothermal_comp;name,fluid = set_fluid)`
@@ -114,7 +159,7 @@ export Isothermal_comp
     1. `inport`  : `p` and `h`
     2. `outport` : `p` and `h`
 """
-function Compressor(type::Isothermal_comp;name,fluid = set_fluid) 
+function IsothermalCompressorCoolProp(;name,fluid = set_fluid) 
     if isnothing(fluid)
         throw(error("Fluid not selected"))
     end
@@ -122,7 +167,7 @@ function Compressor(type::Isothermal_comp;name,fluid = set_fluid)
     @named inport = CoolantPort()
     @named outport = CoolantPort()
     para = @parameters begin
-        η, [description = "Isentropic Effeciency"]
+        πc, [description = "Pressure Ratio"]
     end
     vars = @variables begin
         P(t)
@@ -155,6 +200,65 @@ function Compressor(type::Isothermal_comp;name,fluid = set_fluid)
    ]
    compose(ODESystem(eqs, t, vars, para;name), inport, outport)
 end
+
+function IsothermalCompressorClapeyron(;name,fluid = set_fluid) 
+    @named inport = CoolantPort()
+    @named outport = CoolantPort()
+    para = @parameters begin
+        πc, [description = "Pressure Ratio"]
+    end
+    vars = @variables begin
+        P(t)
+        s_in(t)
+        p_in(t)
+        T_in(t)
+        h_in(t)
+        ρ_in(t)
+        z_in(t)[1:Nc]
+
+        s_out(t)
+        p_out(t)
+        T_out(t)
+        h_out(t)
+        ρ_out(t)
+        z_out(t)[1:Nc]
+     end
+   eqs = [  z_in ~ inport.z
+            p_in ~ inport.p
+            h_in ~ inport.h
+            s_in ~ ph_entropy(fluid,p_in,h_in,z_in)
+            ρ_in ~ ph_mass_density(fluid,p_in,h_in,z_in)
+            T_in ~ ph_temperature(fluid,p_in,h_in,z_in)
+
+            h_out ~ IsothermalCompressionClapeyron(πc,h_in,p_in,z_in,fluid)
+            p_out ~ p_in*πc
+            s_out ~ ph_entropy(fluid,p_out,h_out,z_out)
+            T_out ~ ph_temperature(fluid,p_out,h_out,z_out)
+            ρ_out ~ ph_mass_density(fluid,p_out,h_out,z_out)
+            z_out ~ z_in
+            
+            P ~ h_out - h_in
+
+            outport.p ~ p_out
+            outport.h ~ h_out
+            outport.z ~ z_out
+   ]
+   compose(ODESystem(eqs, t, vars, para;name), inport, outport)
+end
+
+
+@component function IsothermalCompressor(;name,fluid = set_fluid)
+    if fluid isa AbstractString
+        return IsothermalCompressorCoolProp(name=name,fluid=fluid)
+    end
+    if fluid isa EoSModel
+        return IsothermalCompressorClapeyron(name=name,fluid=fluid)
+    end
+    if isnothing(fluid)
+        throw(error("Fluid not selected")) 
+    end
+end
+export IsothermalCompressor
 
 
 struct Isochoric_comp

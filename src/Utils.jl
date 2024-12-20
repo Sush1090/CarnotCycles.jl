@@ -68,10 +68,19 @@ end
     vars = @variables begin 
         p(t),  [description = "Pressure (Pa)",input = true]
         h(t), [description = "Enthalpy (J/kg)",input = true]
-        z(t)[1:Nc], [description = "Molar Flow Rate (mole/s)",input = true] 
+        mdot(t), [description = "Mass Flow Rate (g/s)",input = true] 
+        x(t), [description = "mass % of 1st component", input = true]
     end
     return ODESystem(Equation[], t, vars, [];name=name)
 end
+
+function mass_to_moles(model::EoSModel,compositions::AbstractVector,mass)
+    @assert isapprox(sum(compositions),1.0,atol = 1e-8)
+    mws = Clapeyron.mw(model);
+    M = mass*compositions;
+    return M./mws
+end
+@register_symbolic mass_to_moles(model::EoSModel,compositions::AbstractVector,mass)
 
 @connector  function RefPortCoolProp(;name) 
     vars = @variables begin 
@@ -86,7 +95,8 @@ end
     vars = @variables begin 
         p(t),  [description = "Pressure (Pa)",input = true]
         T(t), [description = "Temperature",input = true]
-        z(t), [description = "mole Flow Rate (mole/s)",input = true]
+        mdot(t), [description = "Mass Flow Rate (g/s)",input = true] 
+        x(t), [description = "mass % of 1st component", input = true]
     end
     ODESystem(Equation[], t, vars, [];name=name)
 end
@@ -175,10 +185,13 @@ end
     para = @parameters begin
         source_pressure(t) = 101305.0, [description = "Pressure at source (Pa)"]
         source_enthalpy(t) = 100, [description = "Enthalpy at source (J)"]
-        source_z(t)[1:Nc]  = ones(Nc) , [description = "Moles at source (-)"]
+        source_mdot(t)  = 1000 , [description = "Moles at source (-)"]
+        source_x(t) = 1, [description = "mass % of 1st component", bounds = (0,1)]
     end
     vars = @variables begin
-        z(t)[1:Nc] , [description = "Moles (-)"]
+        mdot(t), [description = "Mass flow rate (g/s)"]
+        x(t), [description = "mass % of 1st component"]
+        z(t) , [description = "Moles (-)"]
         s(t), [description = "Entropy (J/mol.K)"]
         p(t), [description = "Pressure (Pa)"]
         T(t), [description = "Temperature (K)"]
@@ -187,17 +200,20 @@ end
      end
 
     eqs = [
-        scalarize(port.z .~ source_z) # Outflow is negative
+        port.mdot ~ source_mdot
         port.p ~ source_pressure
         port.h ~ source_enthalpy
-        scalarize(z .~ port.z)
+        port.x ~ source_x
+        mdot ~ source_mdot
+        x ~ source_x
+        z ~ mass_to_moles(fluid,[x,1-x],mdot)
         s ~ ph_entropy(fluid,p,h,z)
         p ~ port.p
         T ~ ph_temperature(fluid,p,h,z)
         h ~ port.h
         ρ ~ ph_mass_density(fluid,p,h,z)
     ]
-    compose(ODESystem(eqs, t, collect(Iterators.flatten(vars)), para;name),port)
+    compose(ODESystem(eqs, t, vars, para;name),port)
 end
 
 
@@ -248,15 +264,14 @@ function MassSinkCoolProp(;name,fluid = set_fluid)
 end
 
 @component function MassSinkClapeyron(;name,fluid = set_fluid)
-        if isnothing(fluid)
-            throw(error("Fluid not selected"))
-        end
         @named    port = CoolantPort()
         para = @parameters begin
             
         end
         vars = @variables begin
-            z(t)[1:Nc]
+            mdot(t)
+            x(t)
+            z(t)
             s(t)
             p(t)
             T(t)
@@ -267,14 +282,16 @@ end
        eqs = [
         port.p ~ p
         port.h ~ h
-        scalarize(z .~ port.z)
+        x ~ port.x
+        mdot ~ port.mdot
+        z ~ mass_to_moles(fluid,[x,1-x],mdot)
         s ~ ph_entropy(fluid,p,h,z)
         p ~ port.p
         T ~ ph_temperature(fluid,p,h,z)
         h ~ port.h
         ρ ~ ph_mass_density(fluid,p,h,z)
        ]
-       compose(ODESystem(eqs, t, collect(Iterators.flatten(vars)), para;name),port)
+       compose(ODESystem(eqs, t, vars, para;name),port)
 end
 
 
@@ -322,3 +339,12 @@ end
 
 export PowerPort, AmbientNode, HeatPort
 
+
+
+function ClapeyronPhaseCheck()
+    
+end
+
+function ClapeyronLiquidPhase()
+    
+end

@@ -13,10 +13,9 @@ using Test
     @test CarnotCycles.Nc == size(model.components,1)
 end
 
-@testset "Isentropic Process" begin
+@testset "Isentropic Process - CoolProp" begin
     fluid = "R134A"
-    @load_fluid "R134A"
-    _system = Isentropic_η(η = 1,πc = 5)
+    load_fluid(fluid)
     @independent_variables t
     start_T = 300;
     start_p = PropsSI("P","Q",0,"T",start_T,fluid) + 1e3
