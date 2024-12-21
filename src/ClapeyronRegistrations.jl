@@ -66,21 +66,52 @@ end
 @register_symbolic CriticalPressure(model::EoSModel,z)
 
 
-function LiquidPhaseChecker(model::EoSModel,p,T,z)
+function LiquidPhaseChecker(model::EoSModel,p,h,z)
     # phase = ClapyeronPhase_PT(model,p,T,z)
-    phase = identify_phase(model,p,T,z)
+    phase = PhaseIdentification(model,p,h,z)
     @assert phase == :liquid "Phase not Liquid - should be liquid here"
     return 1
 end
-@register_symbolic LiquidPhaseChecker(model::EoSModel,p,T,z)
+@register_symbolic LiquidPhaseChecker(model::EoSModel,p,h,z)
 
 
-function GasPhaseChecker(model::EoSModel,p,T,z)
+function GasPhaseChecker(model::EoSModel,p,h,z)
     # phase = ClapyeronPhase_PT(model,p,T,z)
-    phase = identify_phase(model,p,T,z)
+    phase = PhaseIdentification(model,p,h,z)
     @assert phase == :vapour "Phase not gas - should be gas here"
     return 1
 end
-@register_symbolic GasPhaseChecker(model::EoSModel,p,T,z)
+@register_symbolic GasPhaseChecker(model::EoSModel,p,h,z)
 
+function TwoPhaseChecker(model::EoSModel,p,h,z)
+    # phase = ClapyeronPhase_PT(model,p,T,z)
+    phase = PhaseIdentification(model,p,h,z)
+    @assert phase == :TwoPhase "Phase not Twophase - should be Twophase here"
+    return 1
+end
+@register_symbolic TwoPhaseChecker(model::EoSModel,p,h,z)
+
+
+function PhaseIdentification(model::EoSModel,p,h,z)
+    Tcrit = CriticalTemperature(model,z)
+    T = ph_temperature(model,p,h,z)
+    
+    if (T>=Tcrit)
+        return :vapour
+    end
+    if (T< Tcrit)
+        bt = Bubble_temperature(model,p,z)
+        dt = Dew_temperature(model,p,z)
+        if bt<= T <= dt
+            return :TwoPhase
+        end
+        if dt< T
+            return :vapour
+        end
+        if bt> T
+            return :liquid
+        end
+    end
+end
+@register_symbolic PhaseIdentification(model::EoSModel,p,h,z)
 end
