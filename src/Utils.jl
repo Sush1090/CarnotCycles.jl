@@ -28,6 +28,7 @@ end
 function load_fluid(x::Clapeyron.EoSModel)
     CarnotCycles.set_fluid = x
     CarnotCycles.Nc = size(x.components,1)
+    @assert size(x.components,1) <=2 "For now we support only two component mixtures"
     return CarnotCycles.set_fluid
 end
 
@@ -76,9 +77,15 @@ end
 
 function mass_to_moles(model::EoSModel,compositions::AbstractVector,mass)
     @assert isapprox(sum(compositions),1.0,atol = 1e-8)
+    if size(model.components,1) == 1
+        compositions = [1]
+    end
+
     mws = Clapeyron.mw(model);
     M = mass*compositions;
-    return M./mws
+
+    moles =  M./mws
+    return moles
 end
 @register_symbolic mass_to_moles(model::EoSModel,compositions::AbstractVector,mass)
 

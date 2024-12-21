@@ -45,7 +45,7 @@ Dew_pressure(model::EoSModel,T,z) = Clapeyron.dew_pressure(model,T,z,FugDewPress
 
 
 
-function CritcalTemperature(model::EoSModel,z)
+function CriticalTemperature(model::EoSModel,z)
     if size(z,1) == 1
         return Clapeyron.crit_pure(model)[1]
     end
@@ -53,7 +53,7 @@ function CritcalTemperature(model::EoSModel,z)
         return Clapeyron.crit_mix(model,z)[1]
     end
 end
-@register_symbolic CritcalTemperature(model::EoSModel,z)
+@register_symbolic CriticalTemperature(model::EoSModel,z)
 
 function CriticalPressure(model::EoSModel,z)
     if size(z,1) == 1
@@ -64,5 +64,23 @@ function CriticalPressure(model::EoSModel,z)
     end
 end
 @register_symbolic CriticalPressure(model::EoSModel,z)
+
+
+function LiquidPhaseChecker(model::EoSModel,p,T,z)
+    # phase = ClapyeronPhase_PT(model,p,T,z)
+    phase = identify_phase(model,p,T,z)
+    @assert phase == :liquid "Phase not Liquid - should be liquid here"
+    return 1
+end
+@register_symbolic LiquidPhaseChecker(model::EoSModel,p,T,z)
+
+
+function GasPhaseChecker(model::EoSModel,p,T,z)
+    # phase = ClapyeronPhase_PT(model,p,T,z)
+    phase = identify_phase(model,p,T,z)
+    @assert phase == :vapour "Phase not gas - should be gas here"
+    return 1
+end
+@register_symbolic GasPhaseChecker(model::EoSModel,p,T,z)
 
 end
