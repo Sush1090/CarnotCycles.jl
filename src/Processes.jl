@@ -92,8 +92,8 @@ function IsochoricCompressionClapeyron(πc, h_in, p_in,z::Array,fluid::EoSModel)
     sol = Roots.solve(prob)
     return sol
 end
-@register_symbolic IsochoricExpansionClapeyron(πc, h_in, p_in,z::Array,fluid::EoSModel)
-export IsentropicExpansionClapeyron
+@register_symbolic IsochoricCompressionClapeyron(πc, h_in, p_in,z::Array,fluid::EoSModel)
+export IsochoricCompressionClapeyron
 
 """
 `IsochoricExpansion(πc, h_in, p_in,fluid)`
@@ -113,7 +113,16 @@ function IsochoricExpansion(πc, h_in, p_in,fluid)
 end
 @register_symbolic IsochoricExpansion(πc, h_in, p_in,fluid::AbstractString)
 export IsochoricExpansion
-
+function IsochoricExpansionClapeyron(πc, h_in, p_in,z::Array,fluid::EoSModel)
+    v_in =  ph_volume(fluid,p_in,h_in,z)
+    p_out = p_in/πc
+    f(h) = ph_volume(fluid,p_out,h,z) - v_in
+    prob = Roots.ZeroProblem(f,h_in)
+    sol = Roots.solve(prob)
+    return sol
+end
+@register_symbolic IsochoricExpansionClapeyron(πc, h_in, p_in,z::Array,fluid::EoSModel)
+export IsochoricExpansionClapeyron
 
 """
 `IsothermalCompression(πc, h_in, p_in,fluid)`
