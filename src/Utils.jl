@@ -32,11 +32,19 @@ function load_fluid(x::Clapeyron.EoSModel)
     return CarnotCycles.set_fluid
 end
 
+function load_fluid(x)
+    throw(error("The type of fluid provided is not supported yet. It has to be `Clapeyron.EoSModel` or `AbstractString`"))
+end
+
 export load_fluid
 
 
 function Show_fluid_details(fluid=set_fluid)
-    if set_fluid isa AbstractString
+    if fluid isa AbstractString
+
+    end
+
+    if fluid isa EoSModel
 
     end
 end
@@ -348,10 +356,16 @@ export PowerPort, AmbientNode, HeatPort
 
 
 
-function ClapeyronPhaseCheck()
-    
+function CoolPropLiquidPhaseCheck(fluid::AbstractString,h,p)
+    phase = PhaseSI("H",h,"P",p,fluid)
+    @assert phase == "liquid" || phase == "supercritical_liquid"
+    return 1;
 end
+@register_symbolic CoolPropLiquidPhaseCheck(fluid::AbstractString,h,p)
 
-function ClapeyronLiquidPhase()
-    
+function CoolPropGasPhaseCheck(fluid::AbstractString,h,p)
+    phase = PhaseSI("H",h,"P",p,fluid)
+    @assert phase == "gas" || phase == "supercritical"
+    return 1;
 end
+@register_symbolic CoolPropGasPhaseCheck(fluid::AbstractString,h,p)
