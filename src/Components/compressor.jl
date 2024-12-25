@@ -214,16 +214,22 @@ function IsothermalCompressorClapeyron(;name,fluid = set_fluid)
         T_in(t)
         h_in(t)
         ρ_in(t)
-        z_in(t)[1:Nc]
+        z_in(t)
+        x_in(t)
+        mdot_in(t)
 
+        mdot_out(t)
+        x_out(t)
         s_out(t)
         p_out(t)
         T_out(t)
         h_out(t)
         ρ_out(t)
-        z_out(t)[1:Nc]
+        z_out(t)
      end
-   eqs = [  z_in ~ inport.z
+   eqs = [  mdot_in ~ inport.mdot
+            x_in ~ inport.x
+            z_in ~ mass_to_moles(fluid,[x_in,1-x_in],mdot_in)
             p_in ~ inport.p
             h_in ~ inport.h
             s_in ~ ph_entropy(fluid,p_in,h_in,z_in)
@@ -236,12 +242,15 @@ function IsothermalCompressorClapeyron(;name,fluid = set_fluid)
             T_out ~ ph_temperature(fluid,p_out,h_out,z_out)
             ρ_out ~ ph_mass_density(fluid,p_out,h_out,z_out)
             z_out ~ z_in
-            
+            x_out ~ x_in
+            mdot_out ~ mdot_in
+
             P ~ h_out - h_in
 
             outport.p ~ p_out
             outport.h ~ h_out
-            outport.z ~ z_out
+            outport.x ~ x_out
+            outport.mdot ~ mdot_out
    ]
    compose(ODESystem(eqs, t, vars, para;name), inport, outport)
 end
@@ -261,14 +270,7 @@ end
 export IsothermalCompressor
 
 
-struct Isochoric_comp
-πc
-    function Isochoric_comp(;πc=5)
-        @assert πc >=1
-        new(πc)
-    end
-end
-export Isochoric_comp
+
 """
 `Compressor(type::Isochoric_comp;name,fluid = set_fluid)`
 
@@ -292,11 +294,7 @@ export Isochoric_comp
     1. `inport`  : `p` and `h`
     2. `outport` : `p` and `h`
 """
-function Compressor(type::Isochoric_comp;name,fluid = set_fluid) 
-    if isnothing(fluid)
-        throw(error("Fluid not selected"))
-    end
-    # @unpack πc = type
+function IsochoricCompressorCoolProp(;name,fluid = set_fluid) 
     @named inport = CoolantPort()
     @named outport = CoolantPort()
     para = @parameters begin
