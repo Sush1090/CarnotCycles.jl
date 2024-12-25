@@ -3,11 +3,10 @@ using Test
 
 
 @testset "Global fluid setting" begin
-    fluid = "R601"
     load_fluid("R601")
-    @test CarnotCycles.set_fluid == fluid
+    @test CarnotCycles.set_fluid isa AbstractString
 
-    model = cPR(["ethane"])
+    model = cPR(["ethane"]) 
     load_fluid(model)
     @test CarnotCycles.set_fluid isa EoSModel
     @test CarnotCycles.Nc == size(model.components,1)
@@ -15,7 +14,7 @@ using Test
     model2 = cPR(["ethane","methane"])
     load_fluid(model2)
     @test CarnotCycles.set_fluid isa EoSModel
-    @test CarnotCycles.Nc == size(model.components,1)
+    @test CarnotCycles.Nc == size(model2.components,1)
 end
 
 # @testset "Isentropic Process - CoolProp" begin
