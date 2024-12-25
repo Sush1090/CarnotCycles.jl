@@ -1,5 +1,4 @@
 
-begin 
 pt_entropy(model::EoSModel,p,T,z) = Clapeyron.entropy(model::EoSModel,p,T,z,phase = "unknown")
 @register_symbolic pt_entropy(model::EoSModel,p,T,z)
 
@@ -114,4 +113,43 @@ function PhaseIdentification(model::EoSModel,p,h,z)
     end
 end
 @register_symbolic PhaseIdentification(model::EoSModel,p,h,z)
+
+
+
+
+function qp_enthalpy(model::EoSModel,q,p,z)
+    @assert 0<=q "Vapour fraction less than 0. Should be between [0,1]"
+    @assert q<=1 "Vapour fraction greater than 1. Should be between [0,1]"
+    res = Clapeyron.qp_flash(model,q,p,z)
+    h = Clapeyron.enthalpy(model,res)
+    return h
 end
+@register_symbolic qp_enthalpy(model::EoSModel,q,p,z)
+
+function qp_entropy(model::EoSModel,q,p,z)
+    @assert 0<=q "Vapour fraction less than 0. Should be between [0,1]"
+    @assert q<=1 "Vapour fraction greater than 1. Should be between [0,1]"
+    res = Clapeyron.qp_flash(model,q,p,z)
+    s = Clapeyron.entropy(model,res)
+    return s
+end
+@register_symbolic qp_entropy(model::EoSModel,q,p,z)
+
+
+function qp_temperature(model::EoSModel,q,p,z)
+    @assert 0<=q "Vapour fraction less than 0. Should be between [0,1]"
+    @assert q<=1 "Vapour fraction greater than 1. Should be between [0,1]"
+    res = Clapeyron.qp_flash(model,q,p,z)
+    T = Clapeyron.temperature(model,res)
+    return T
+end
+@register_symbolic qp_temperature(model::EoSModel,q,p,z)
+
+function qp_mass_density(model::EoSModel,q,p,z)
+    @assert 0<=q "Vapour fraction less than 0. Should be between [0,1]"
+    @assert q<=1 "Vapour fraction greater than 1. Should be between [0,1]"
+    res = Clapeyron.qp_flash(model,q,p,z)
+    ρ = Clapeyron.mass_density(model,res)
+    return ρ
+end
+@register_symbolic qp_mass_density(model::EoSModel,q,p,z)
