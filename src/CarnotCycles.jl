@@ -16,9 +16,11 @@ include("ThemodynamicClaculations.jl")
 
 include("Components/compressor.jl")
 include("Components/expander.jl")
-include("Components/HeatExchangers.jl")
+include("Components/HeatSources.jl")
 include("Components/valve.jl")
 include("Components/recuperator.jl")
+
+include("Components/ThermalStorages/packedbed.jl")
 
 include("Plotting/PhasePlot.jl")
 end
