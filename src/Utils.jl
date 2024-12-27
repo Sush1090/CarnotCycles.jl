@@ -11,6 +11,8 @@ PropsSI(out::AbstractString, name1::AbstractString, value1::Real, name2::Abstrac
 PhaseSI(name1::AbstractString, value1::Real, name2::AbstractString, value2::Real, fluid::AbstractString) = CoolProp.PhaseSI(name1, value1, name2, value2, fluid)
 @register_symbolic PhaseSI(name1::AbstractString, value1::Real, name2::AbstractString, value2::Real, fluid::AbstractString)
 
+CritPropSI(property::AbstractString,fluid::AbstractString) = CoolProp.PropsSI(property,fluid)
+@register_symbolic CritPropSI(property::AbstractString,fluid::AbstractString)
 
 global set_fluid = nothing
 global Nc = nothing
@@ -139,6 +141,8 @@ end
 @connector function HeatPort(;name)
     vars = @variables begin 
         Q(t),  [description = "Heat rate (W)",input = true]
+        T_in(t), [description = "Inlet Temperature of working fluid",input = true]
+        T_out(t), [description = "Outlet Temperature of working fluid",input = true]
     end
     ODESystem(Equation[], t, vars, [];name=name)
 end
