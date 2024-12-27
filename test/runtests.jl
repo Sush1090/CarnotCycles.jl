@@ -17,6 +17,49 @@ using Test
     @test CarnotCycles.Nc == size(model2.components,1)
 end
 
+@testset "Processes - CoolProp" begin
+    fluid = "R134A"
+    T1 = 300; p1 = 101325; 
+    s1 =  CoolProp.PropsSI("S","T",T1,"P",p1,fluid)
+    h1 =  CoolProp.PropsSI("H","T",T1,"P",p1,fluid)
+    πc = 2; 
+    h2 = IsentropicCompression(πc,h1,p1,fluid,1.0)
+    s2 = CoolProp.PropsSI("S","H",h2,"P",p1*πc,fluid)
+    @test isapprox(s1,s2,atol = 1e-5)
+    h3 = IsentropicExpansion(πc,h2,p1*πc,fluid,1.0)
+    s3 = CoolProp.PropsSI("S","H",h3,"P",p1,fluid)
+    @test isapprox(s1,s3,atol = 1e-5)
+    h_isothermal = IsothermalCompression(πc,h1,p1,fluid)
+    T_isothermal = CoolProp.PropsSI("T","H",h_isothermal,"P",p1*πc,fluid)
+    @test isapprox(T_isothermal,T1,atol = 1e-5)
+
+end
+
+
+@testset "Processes - Clapeyron - Single Component" begin
+    fluid = cPR(["ethane"],idealmodel = ReidIdeal)
+    z1 = [5.0]
+    T1 = 300; p1 = 101325; h1 = enthalpy(fluid,p1,T1,z1);
+    πc = 2; s1 = entropy(fluid,p1,T1,z1)
+    h2= IsentropicCompressionClapeyron(πc,h1,p1,z1,fluid,1.0)
+    s2 = CarnotCycles.ph_entropy(fluid,p1*πc,h2,z1)
+    @test isapprox(s1,s2,atol=1e-5)
+end
+
+
+@testset "Processes - Clapeyron - Dual Component" begin
+    fluid = cPR(["ethane","methane"],idealmodel = ReidIdeal)
+    z1 = [5.0,5.0]
+    T1 = 300; p1 = 101325; h1 = enthalpy(fluid,p1,T1,z1);
+    πc = 2; s1 = entropy(fluid,p1,T1,z1)
+    h2= IsentropicCompressionClapeyron(πc,h1,p1,z1,fluid,1.0)
+    s2 = CarnotCycles.ph_entropy(fluid,p1*πc,h2,z1)
+    @test isapprox(s1,s2,atol=1e-5)
+
+    h_isothermal = IsothermalCompressionClapeyron(πc,h1,p1,z1,fluid)
+    T_isothermal = CarnotCycles.ph_temperature(fluid,p1*πc,h_isothermal,z1)
+    @test isapprox(T1,T_isothermal,atol = 1e-5)
+end
 # @testset "Isentropic Process - CoolProp" begin
 #     fluid = "R134A"
 #     load_fluid(fluid)
