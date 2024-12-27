@@ -2,7 +2,7 @@
 """
 `Valve(;name,fluid): Isenthalpic valve`
 """
-function Valve(;name,πc,fluid = set_fluid) 
+function Valve(;name,fluid = set_fluid) 
     if isnothing(fluid)
         throw(error("Fluid not selected"))
     end
