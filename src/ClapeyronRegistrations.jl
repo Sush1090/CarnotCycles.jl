@@ -26,8 +26,8 @@ ps_enthalpy(model::EoSModel,p,s,z) = PS.enthalpy(model::EoSModel,p,s,z,phase = "
 Tproperty_S(model::EoSModel,p,s,z) = Clapeyron.Tproperty(model::EoSModel,p,s,z,entropy,phase = "unkown")
 @register_symbolic Tproperty_S(model::EoSModel,p,s,z)
 
-Tproperty_H(model::EoSModel,p,s,z) = Clapeyron.Tproperty(model::EoSModel,p,s,z,enthalpy,phase = "unkown",verbose = false)
-@register_symbolic Tproperty_S(model::EoSModel,p,s,z)
+Tproperty_H(model::EoSModel,p,h,z) = Clapeyron.Tproperty(model::EoSModel,p,h,z,enthalpy,phase = "unkown",verbose = false)
+@register_symbolic Tproperty_H(model::EoSModel,p,h,z)
 
 Bubble_temperature(model::EoSModel,p,z) = Clapeyron.bubble_temperature(model,p,z,FugBubbleTemperature())[1]
 @register_symbolic Bubble_temperature(model::EoSModel,p,z)
