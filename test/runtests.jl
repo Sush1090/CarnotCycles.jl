@@ -44,6 +44,9 @@ end
     h2= IsentropicCompressionClapeyron(πc,h1,p1,z1,fluid,1.0)
     s2 = CarnotCycles.ph_entropy(fluid,p1*πc,h2,z1)
     @test isapprox(s1,s2,atol=1e-5)
+    h_isothermal = IsothermalCompressionClapeyron(πc,h1,p1,z1,fluid)
+    T_isothermal = CarnotCycles.ph_temperature(fluid,p1*πc,h_isothermal,z1)
+    @test isapprox(T1,T_isothermal,atol = 1e-5)
 end
 
 
