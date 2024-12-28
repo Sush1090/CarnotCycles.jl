@@ -104,6 +104,12 @@ end
             s_out ~ ph_entropy(fluid,p_out,h_out,z_out)
             T_out ~ ph_temperature(fluid,p_out,h_out,z_out)
             ρ_out ~ ph_mass_density(fluid,p_out,h_out,z_out)
+            mdot_out ~ mdot_in
+
+            outport.mdot ~ mdot_out
+            outport.x ~ x_out
+            outport.p ~ p_out
+            outport.h ~ h_out
     ]
     compose(ODESystem(eqs, t, vars, para;name), inport, outport)
 end

@@ -32,7 +32,6 @@ end
     h_isothermal = IsothermalCompression(πc,h1,p1,fluid)
     T_isothermal = CoolProp.PropsSI("T","H",h_isothermal,"P",p1*πc,fluid)
     @test isapprox(T_isothermal,T1,atol = 1e-5)
-
 end
 
 
