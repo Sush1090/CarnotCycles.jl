@@ -341,7 +341,6 @@ export MassSource
 @connector function StoragePort(;name)
 vars = @variables begin
     T(t), [input = true,description ="Temperature of Storage HTF"]
-    p(t), [input = true,description ="Pressure of Storage HTF"]
     mdot(t), [input = true,description ="Mass Flow Rate of Storage HTF"]
 end
 ODESystem(Equation[],t,vars,[],name=name)
@@ -373,3 +372,27 @@ function CoolPropGasPhaseCheck(fluid::AbstractString,h,p)
     return 1;
 end
 @register_symbolic CoolPropGasPhaseCheck(fluid::AbstractString,h,p)
+
+
+
+@component function Heat2Storage(;name)
+    @named heatport = HeatPort()
+    @named storeport_in = StoragePort()
+    @named storeport_out = StoragePort()
+    para = @parameters begin
+       ρ(t) = 998, [description = "Density of HTF (kg/m³)"] 
+       Cp(t) = 4200, [description = "Specific heat of HTF (J/Kg/K)"]
+    end
+    vars = @variables begin
+       T_in(t)
+       T_out(t)
+       mdot(t) 
+    end
+    eqs = [
+        storeport_out.mdot ~ storeport_in.mdot
+        mdot ~ heatport.Q/(Cp*(T_out - T_in))
+        storeport_in.T ~ T_in
+        storeport_out ~ T_out
+    ]
+    return ODESystem(eqs, t, vars, [];name=name)
+end

@@ -29,7 +29,6 @@
     eqs = [
         Vdot ~ inlet.mdot*ρg
         outlet.mdot ~ inlet.mdot
-         outlet.p ~ inlet.p
         Δx ~ y/N
         [x[i] ~ i*Δx for i = 1:N+1]
 
