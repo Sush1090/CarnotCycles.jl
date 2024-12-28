@@ -21,6 +21,7 @@ include("Components/valve.jl")
 include("Components/recuperator.jl")
 include("Components/Evaporator.jl")
 include("Components/Condensor.jl")
+include("Components/pump.jl")
 
 include("Components/ThermalStorages/packedbed.jl")
 
