@@ -1,11 +1,11 @@
 
 
-@component function SimpleEvaporator(;name,fluid=set_fluid)
+@component function SimpleCondensor(;name,fluid=set_fluid)
     if fluid isa AbstractString
-        return SimpleEvaporatorCoolProp(name=name,fluid=fluid)
+        return SimpleCondensorCoolProp(name=name,fluid=fluid)
     end
     if fluid isa EoSModel
-        return SimpleEvaporatorClapeyron(name=name,fluid=fluid)
+        return SimpleCondensorClapeyron(name=name,fluid=fluid)
     end
     if isnothing(fluid)
         throw(error("Fluid not selected"))
@@ -13,7 +13,7 @@
 end
 
 
-function SimpleEvaporatorCoolProp(;name,fluid)
+function SimpleCondensorCoolProp(;name,fluid)
     @named heatport = HeatPort()
     @named inport = CoolantPort()
     @named outport = CoolantPort()
@@ -40,7 +40,7 @@ function SimpleEvaporatorCoolProp(;name,fluid)
         Qdot(t)
     end
     para = @parameters begin
-        ΔT_sh(t), [description = "Superheat temperature (K)",bounds = (1e-3,Inf)]
+        ΔT_sc(t), [description = "Subcool temperature (K)",bounds = (1e-3,Inf)]
     end
     eqs = [
         h_in ~ inport.h
@@ -53,7 +53,7 @@ function SimpleEvaporatorCoolProp(;name,fluid)
         p_crit ~ CritPropSI("PCRIT",fluid)
         T_sat ~ Base.ifelse(inport.p>=p_crit,CritPropSI("TCRIT",fluid),PropsSI("T","Q",1,"P",inport.p,fluid))
 
-        T_out ~ ΔT_sh+T_sat
+        T_out ~ T_sat-ΔT_sc
         p_out ~ p_in
         h_out ~ PropsSI("H","T",T_out,"P",p_out,fluid)
         s_out ~ PropsSI("S","H",h_out,"P",p_out,fluid)
@@ -74,7 +74,7 @@ function SimpleEvaporatorCoolProp(;name,fluid)
 end
 
 
-function SimpleEvaporatorClapeyron(;name,fluid)
+function SimpleCondensorClapeyron(;name,fluid)
     @named heatport = HeatPort()
     @named inport = CoolantPort()
     @named outport = CoolantPort()
@@ -108,7 +108,7 @@ function SimpleEvaporatorClapeyron(;name,fluid)
         Qdot(t)
     end
     para = @parameters begin
-        ΔT_sh(t), [description = "Superheat temperature (K)",bounds = (1e-3,Inf)]
+        ΔT_sc(t), [description = "Subcool temperature (K)",bounds = (1e-3,Inf)]
     end
     eqs = [
         h_in ~ inport.h
@@ -124,9 +124,9 @@ function SimpleEvaporatorClapeyron(;name,fluid)
         T_crit ~ CriticalTemperature(fluid,z_in)
         T_bubble ~ Bubble_temperature(fluid,p_in,z_in)
         T_dew ~ Dew_temperature(fluid,p_in,z_in)
-        T_sat ~ Base.ifelse(inport.p>=p_crit,T_crit,T_bubble)
+        T_sat ~ Base.ifelse(inport.p>=p_crit,T_crit,T_dew)
 
-        T_out ~ ΔT_sh+T_sat
+        T_out ~ T_sat - ΔT_sc
         p_out ~ p_in
         z_out ~ z_in
         x_out ~ x_in
@@ -148,5 +148,4 @@ function SimpleEvaporatorClapeyron(;name,fluid)
     
 end
 
-
-export SimpleEvaporator
+export SimpleCondensor

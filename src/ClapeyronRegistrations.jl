@@ -5,6 +5,9 @@ pt_entropy(model::EoSModel,p,T,z) = Clapeyron.entropy(model::EoSModel,p,T,z,phas
 pt_enthalpy(model::EoSModel,p,T,z) = Clapeyron.enthalpy(model::EoSModel,p,T,z,phase = "unknown")
 @register_symbolic pt_enthalpy(model::EoSModel,p,T,z)
 
+pt_mass_density(model::EoSModel,p,T,z) = Clapeyron.mass_density(model::EoSModel,p,T,z,phase = "unknown")
+@register_symbolic pt_mass_density(model::EoSModel,p,T,z)
+
 ph_temperature(model::EoSModel,p,h,z) = PH.temperature(model::EoSModel,p,h,z,phase = "unknown")
 @register_symbolic ph_temperature(model::EoSModel,p,h,z)
 
