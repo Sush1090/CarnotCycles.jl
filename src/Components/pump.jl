@@ -107,3 +107,5 @@ end
     ]
     compose(ODESystem(eqs, t, vars, para;name), inport, outport)
 end
+
+export Pump
