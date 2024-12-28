@@ -138,6 +138,7 @@ function SimpleCondensorClapeyron(;name,fluid)
         outport.h ~ h_out
         outport.p ~ p_out
         outport.mdot ~ mdot_out
+        outport.x ~ x_out
 
         Qdot ~ h_out - h_in
         heatport.T_in ~ T_in
