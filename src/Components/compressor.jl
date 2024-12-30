@@ -27,7 +27,7 @@
         return IsentropicCompressorCoolProp(name=name,fluid=fluid)
     end
     if fluid isa EoSModel
-        return IsentropicCompressorClapyeron(name=name,fluid=fluid)
+        return IsentropicCompressorClapeyron(name=name,fluid=fluid)
     end
     if isnothing(fluid)
         throw(error("Fluid not selected"))
@@ -79,7 +79,7 @@ function IsentropicCompressorCoolProp(;name,fluid = set_fluid)
    compose(ODESystem(eqs, t, vars, para;name), inport, outport,power)
 end
 
-function IsentropicCompressorClapyeron(;name,fluid = set_fluid) 
+function IsentropicCompressorClapeyron(;name,fluid = set_fluid) 
     @named inport = CoolantPort()
     @named outport = CoolantPort()
     @named power =  PowerPort()
