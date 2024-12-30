@@ -62,46 +62,129 @@ end
     T_isothermal = CarnotCycles.ph_temperature(fluid,p1*πc,h_isothermal,z1)
     @test isapprox(T1,T_isothermal,atol = 1e-5)
 end
+
+
+@testset "Joining Components - CoolProp" begin
+    load_fluid("R134A")
+    fluid  =  "R134A"
+    @independent_variables t
+    start_T = 300;
+    start_p = PropsSI("P","Q",0,"T",start_T,fluid) + 1e3
+    ΔT_subcool = PropsSI("T","P",start_p,"Q",0,fluid) - start_T;
+    @assert ΔT_subcool > 1e-3
+    start_h = PropsSI("H","T",start_T,"P",start_p,fluid); start_mdot = 0.2 #kg/s
+
+
+    @named source = MassSource()
+    @named compressor = IsentropicCompressor()
+    @named expander = CarnotCycles.IsentropicExpander()
+    @named sink = MassSink()
+
+    eqs = [
+        connect(source.port,compressor.inport)
+        connect(compressor.outport,expander.inport)
+        connect(expander.outport,sink.port)
+    ]
+    systems = [source,compressor,expander,sink]
+    @named test_isentropic = ODESystem(eqs, t, systems=systems)
+    u0 = []
+    para = [source.source_pressure=>start_p, source.source_enthalpy => start_h,source.source_mdot => start_mdot,compressor.πc => 5.0,compressor.η => 1.0,
+            expander.η => 1.0, expander.πc => compressor.πc]
+    sys = structural_simplify(test_isentropic)
+    prob = SteadyStateProblem(sys,u0,para)
+    sol = solve(prob)
+    bool1 = isapprox(sol[compressor.s_in],sol[compressor.s_out])
+    bool2 = isapprox(sol[expander.s_in],sol[expander.s_out])
+    @test bool1 == true
+    @test bool2 == true
+    @test isapprox(sol[source.p],sol[sink.p])
+    @test isapprox(sol[source.h],sol[sink.h])
+
+        @test isapprox(sol[compressor.s_in],sol[compressor.s_out])
+        @test isapprox(sol[expander.s_in],sol[expander.s_out])
+
+end
+
+
+@testset "Joining Components - Clapyeron - single fluid component- compressor-expander" begin
+    model = cPR(["ethane"],idealmodel = ReidIdeal)
+    load_fluid(model)
+    @independent_variables t
+    start_T = 300;
+    start_p = 101325
+    start_mdot = 20 #g/s
+    z_ = CarnotCycles.mass_to_moles(model,[1],start_mdot)
+    start_h = enthalpy(model,start_p,start_T,z_)
+
+
+    @named source = MassSource()
+    @named compressor = IsentropicCompressor()
+    @named expander = CarnotCycles.IsentropicExpander()
+    @named sink = MassSink()
+
+    eqs = [
+        connect(source.port,compressor.inport)
+        connect(compressor.outport,expander.inport)
+        connect(expander.outport,sink.port)
+    ]
+    systems = [source,compressor,expander,sink]
+    @named test_isentropic = ODESystem(eqs, t, systems=systems)
+    u0 = []
+    para = [source.source_pressure=>start_p, source.source_enthalpy => start_h,source.source_mdot => start_mdot,compressor.πc => 5.0,compressor.η => 1.0,
+            expander.η => 1.0, expander.πc => compressor.πc]
+    sys = structural_simplify(test_isentropic)
+    prob = SteadyStateProblem(sys,u0,para)
+    sol = solve(prob)
+    bool1 = isapprox(sol[compressor.s_in],sol[compressor.s_out])
+    bool2 = isapprox(sol[expander.s_in],sol[expander.s_out])
+    @test bool1 == true
+    @test bool2 == true
+    @test isapprox(sol[source.p],sol[sink.p])
+    @test isapprox(sol[source.h],sol[sink.h])
+end
+
+
+@testset "Joining Components - Clapyeron - two fluid component -comp-exapander" begin
+    model = cPR(["ethane","methane"],idealmodel = ReidIdeal)
+load_fluid(model)
+@independent_variables t
+start_T = 300;
+start_p = 101325
+start_mdot = 20 #g/s
+z_ = CarnotCycles.mass_to_moles(model,[0.6,0.4],start_mdot)
+start_h = enthalpy(model,start_p,start_T,z_)
+
+
+@named source = MassSource()
+@named compressor = IsentropicCompressor()
+@named expander = CarnotCycles.IsentropicExpander()
+@named sink = MassSink()
+
+eqs = [
+    connect(source.port,compressor.inport)
+    connect(compressor.outport,expander.inport)
+    connect(expander.outport,sink.port)
+]
+systems = [source,compressor,expander,sink]
+@named test_isentropic = ODESystem(eqs, t, systems=systems)
+u0 = []
+para = [source.source_pressure=>start_p, source.source_enthalpy => start_h,source.source_mdot => start_mdot,compressor.πc => 5.0,
+        compressor.η => 1.0,source.source_x => 0.6,
+        expander.η => 1.0, expander.πc => compressor.πc]
+sys = structural_simplify(test_isentropic)
+prob = SteadyStateProblem(sys,u0,para)
+sol = solve(prob)
+bool1 = isapprox(sol[compressor.s_in],sol[compressor.s_out])
+bool2 = isapprox(sol[expander.s_in],sol[expander.s_out])
+@test bool1 == true
+@test bool2 == true
+@test isapprox(sol[source.p],sol[sink.p])
+@test isapprox(sol[source.h],sol[sink.h])
+end
 # @testset "Isentropic Process - CoolProp" begin
 #     fluid = "R134A"
 #     load_fluid(fluid)
-#     @independent_variables t
-#     start_T = 300;
-#     start_p = PropsSI("P","Q",0,"T",start_T,fluid) + 1e3
-#     ΔT_subcool = PropsSI("T","P",start_p,"Q",0,fluid) - start_T;
-#     @assert ΔT_subcool > 1e-3
-#     start_h = PropsSI("H","T",start_T,"P",start_p,fluid); start_mdot = 0.2 #kg/s
 
-
-#     @named source = MassSource()
-#     @named comp = IsentropicCompressor()
-#     @named sink = MassSink()
-
-#     eqs = [
-#         connect(source.port,comp.inport)
-#         connect(comp.outport,exp.inport)
-#         connect(exp.outport,sink.port)
-#     ]
-#     systems = [source,comp,exp,sink]
-#     @named test_isentropic = ODESystem(eqs, t, systems=systems)
-#     u0 = []
-#     para = [source.source_press=>start_p, source.source_enthalpy = start_h,source.source_mdot => start_mdot,comp.]
-#     tspan = (0.0, 1.0)
-#     sys = structural_simplify(test_isentropic)
-#     prob = ODEProblem(sys,u0,tspan)
-#     sol = solve(prob)
-#     bool1 = isapprox(sol[comp.s_in][1],sol[comp.s_out][1])
-#     bool2 = isapprox(sol[exp.s_in][1],sol[exp.s_out][1])
-#     @test bool1 == true
-#     @test bool2 == true
-#     @test isapprox(sol[source.p][1],sol[sink.p][1])
-#     @test isapprox(sol[source.h][1],sol[sink.h][1])
-#     if _system.η == 1
-#         @test isapprox(sol[comp.s_in][1],sol[comp.s_out][1])
-#         @test isapprox(sol[exp.s_in][1],sol[exp.s_out][1])
-#     end
-#     @test isapprox(sol[comp.p_out][1]/sol[comp.p_in][1],_system.πc)
-#     @test isapprox(sol[exp.p_in][1]/sol[exp.p_out][1],_system.πc)
 # end
 
 
