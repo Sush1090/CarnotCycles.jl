@@ -389,7 +389,8 @@ end
        mdot(t) 
     end
     eqs = [
-        storeport_out.mdot ~ storeport_in.mdot
+        storeport_out.mdot ~ mdot
+        storeport_in.mdot ~ mdot
         mdot ~ heatport.Q/(Cp*(T_out - T_in))
         storeport_in.T ~ T_in
         storeport_out ~ T_out
