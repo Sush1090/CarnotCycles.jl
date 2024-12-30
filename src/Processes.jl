@@ -54,14 +54,14 @@ end
 @register_symbolic IsentropicExpansion(πc, h_in, p_in,fluid::AbstractString,η)
 export IsentropicExpansion
 
-function IsentropicExpansionClapeyron(πc, h_in, p_in,z::Array,fluid::EoSModel,η)
+function IsentropicExpansionClapeyron(πc, h_in, p_in,z,fluid::EoSModel,η)
     @assert η <= 1 "Efficiency more than 1"
     s_in =  ph_entropy(fluid,p_in,h_in,z)
     h_is =  ps_enthalpy(fluid,p_in/πc,s_in,z)
     h_out = h_in  - η*(h_in - h_is)
     return h_out
 end
-@register_symbolic IsentropicExpansionClapeyron(πc, h_in, p_in,z::Array,fluid::EoSModel,η)
+@register_symbolic IsentropicExpansionClapeyron(πc, h_in, p_in,z,fluid::EoSModel,η)
 export IsentropicExpansionClapeyron
 
 
