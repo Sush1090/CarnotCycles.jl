@@ -339,11 +339,11 @@ export MassSource
  Storage port that connect the storage HTF to the thermal storage
 """
 @connector function StoragePort(;name)
-vars = @variables begin
-    T(t), [input = true,description ="Temperature of Storage HTF"]
-    mdot(t), [input = true,description ="Mass Flow Rate of Storage HTF"]
-end
-ODESystem(Equation[],t,vars,[],name=name)
+    vars = @variables begin
+        T(t), [input = true,description ="Temperature of Storage HTF"]
+        mdot(t), [input = true,description ="Mass Flow Rate of Storage HTF"]
+    end
+    ODESystem(Equation[],t,vars,[],name=name)
 end
 
 export StoragePort
@@ -382,18 +382,18 @@ end
     para = @parameters begin
        ρ(t) = 998, [description = "Density of HTF (kg/m³)"] 
        Cp(t) = 4200, [description = "Specific heat of HTF (J/Kg/K)"]
+       T_in(t), [description  = "Inlet Temperature of HTF (K)"]
+       T_out(t), [description  = "Outlet Temperature of HTF (K)"]
     end
     vars = @variables begin
-       T_in(t)
-       T_out(t)
-       mdot(t) 
+       mdot(t), [description = "masss flow Rate of HTF (kg/s)"]
     end
     eqs = [
         storeport_out.mdot ~ mdot
         storeport_in.mdot ~ mdot
-        mdot ~ heatport.Q/(Cp*(T_out - T_in))
+        mdot ~ -heatport.Q/(Cp*(T_out - T_in))
         storeport_in.T ~ T_in
         storeport_out ~ T_out
     ]
-    return ODESystem(eqs, t, vars, [];name=name)
+    return compose(ODESystem(eqs, t, vars, para;name=name),heatport,storeport_in,storeport_out)
 end
