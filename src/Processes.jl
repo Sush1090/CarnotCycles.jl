@@ -64,6 +64,20 @@ end
 @register_symbolic IsentropicExpansionClapeyron(πc, h_in, p_in,z,fluid::EoSModel,η)
 export IsentropicExpansionClapeyron
 
+function PT_IsentropicExpansionClapeyron(model::EoSModel,T_in,p_in,z,πc,η)
+    @assert πc >=1
+    @assert η <= 1
+    @assert η >0 
+    s_in = pt_entropy(model,p_in,T_in,z)
+    h_in = pt_enthalpy(model,p_in,T_in,z)
+
+    T_out_isen = Tproperty_S(model,p_in/πc,s_in,z) 
+    h_out_isen = pt_enthalpy(model,p_in/πc,T_out_isen,z)
+    h_out_actual = h_in - (-h_out_isen + h_in)*η
+    T_out_actual = Tproperty_H(model,p_in/πc,h_out_actual,z)
+    return T_out_actual
+end
+@register_symbolic PT_IsentropicExpansionClapeyron(model::EoSModel,T_in,p_in,z,πc,η)
 
 """
 `IsochoricCompression(πc, h_in, p_in,fluid)`
