@@ -1,5 +1,5 @@
 using CarnotCycles, CoolProp, ModelingToolkit, DifferentialEquations, Clapeyron
-model = cPR(["Pentane","hexane"],idealmodel = ReidIdeal)
+model = cPR(["Pentane","toluene"],idealmodel = ReidIdeal)
 load_fluid(model)
 @independent_variables t
 start_T = 300;
@@ -26,7 +26,7 @@ systems = [source,compressor,evap,expander,sink]
 @named test_isentropic = ODESystem(eqs, t, systems=systems)
 u0 = []
 para = [source.source_pressure=>start_p, source.source_enthalpy => start_h,source.source_mdot => start_mdot,compressor.πc => 5.0,compressor.η => 0.7,source.source_x => 0.6,
-        expander.η => 0.9, expander.πc => compressor.πc, evap.ΔT_sh => 2, source.source_x => 0.9]
+        expander.η => 0.9, expander.πc => compressor.πc, evap.ΔT_sh => 3.5, source.source_x => 0.9]
 sys = structural_simplify(test_isentropic)
 prob = SteadyStateProblem(sys,u0,para)
 sol = solve(prob)
