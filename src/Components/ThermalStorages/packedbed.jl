@@ -15,19 +15,18 @@
     para = @parameters begin
         ϵ = 0.42, [description = "Void Fraction (-)"]
         ρs = 2801, [description = "Density of solid (kg/m³)"]
-        ρg = 869, [description = "Density of gas (kg/m³)"]
+        ρg = 869, [description = "Density of fluid (kg/m³)"]
         T_amb=298, [description = "Ambient Temperature (K)"]
         Cg = 1800, [description = "Specific Capacity of Fluid (J/kg/K)"]
         Cs = 745, [description = "Specific Capacity of Solid (J/kg/K)"]
         A = 0.067, [description = "Cross Section Area of storage (m²)"]
         UA = 5, [description = "Heat loss coeffecient (W/K)"]
-        # V =0.02, [description = "Volume of Tank (m³)"]
         y = 5, [description = "Height of the store (m)"]
         h = 1000, [description = "volumetric heat transfer coefﬁcient (W/m³/K)"]
     end
 
     eqs = [
-        Vdot ~ inlet.mdot*ρg
+        Vdot ~ inlet.mdot/ρg
         outlet.mdot ~ inlet.mdot
         Δx ~ y/N
         [x[i] ~ i*Δx for i = 1:N+1]
