@@ -58,6 +58,7 @@ function IsentropicExpanderClapeyron(;name,fluid = set_fluid)
     para = @parameters begin
         η=0.8, [description = "Isentropic Effeciency",bounds = (0.0,1.0)]
         πc, [description = "Pressure ratio"]
+        pressure_corrector = 1 , [description = "Small pressure added for numerical stability"]
     end
     vars = @variables begin
         P(t)
@@ -89,11 +90,11 @@ function IsentropicExpanderClapeyron(;name,fluid = set_fluid)
             T_in ~ ph_temperature(fluid,p_in,h_in,z_in)
             ρ_in ~ ph_mass_density(fluid,p_in,h_in,z_in)
 
-            h_out ~ IsentropicExpansionClapeyron(πc,h_in,p_in,z_in,fluid,η)
+            h_out ~ pt_enthalpy(fluid,p_out,T_out,z_out)
             p_out ~ p_in/πc
             s_out ~ ph_entropy(fluid,p_out,h_out,z_out)
             z_out ~ z_in
-            T_out ~ ph_temperature(fluid,p_out,h_out,z_out)
+            T_out ~ PT_IsentropicExpansionClapeyron(fluid,T_in,p_in+pressure_corrector,z_in,πc,η)
             ρ_out ~ ph_mass_density(fluid,p_out,h_out,z_out)
             mdot_out ~ mdot_in
             x_out ~ x_in   
