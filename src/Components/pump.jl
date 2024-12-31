@@ -110,6 +110,8 @@ end
             outport.x ~ x_out
             outport.p ~ p_out
             outport.h ~ h_out
+
+            P ~ h_out - h_in
     ]
     compose(ODESystem(eqs, t, vars, para;name), inport, outport)
 end
