@@ -2,7 +2,7 @@ using CarnotCycles, CoolProp, ModelingToolkit, DifferentialEquations, Plots
 
 load_fluid("R134A")
 @independent_variables t
-T_ = 290; p_ = 101325; N = 20
+T_ = 290; p_ = 101325; N = 30
 h_ = PropsSI("H","T",T_,"P",p_,"R134A")
 @named source = MassSource()
 @named compressor = CarnotCycles.IsentropicCompressor()
@@ -45,3 +45,6 @@ sol = solve(prob, Rodas4(autodiff=false))
 
 plot(sol[store.x][end],sol[store.Ts][end],label = "solid at charge end",xlabel = "Axis of the storage (m)" , ylabel = "Temperature (K)")
 plot!(sol[store.x][end],sol[store.Tg][end],label = "gas at charge end")
+
+COP = sol[condensor.heatport.Q][1]/sol[compressor.P][1]
+print("COP = $COP")
