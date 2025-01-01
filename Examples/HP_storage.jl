@@ -35,7 +35,7 @@ para = [
     h2s.Cp => 4200, h2s.T_in => condensor.T_out - 2, h2s.T_out => condensor.T_in - 2,
     store.Cg => h2s.Cp, store.ρg => 1000
 ]
-Tg_ = ones(N+1).*300; Ts_ = ones(N+1).* 300
+Tg_ = ones(N+1).*285; Ts_ = ones(N+1).* 285
 u0 = [
     store.Tg => Tg_ , store.Ts => Ts_
 ]
@@ -43,5 +43,5 @@ tspan = (0,5000)
 prob = ODEProblem(sys,u0,tspan,para,symbolic_u0 = true)
 sol = solve(prob, Rodas4(autodiff=false))
 
-plot(sol[store.x][end],sol[store.Ts][end],label = "solid at charge end")
+plot(sol[store.x][end],sol[store.Ts][end],label = "solid at charge end",xlabel = "Axis of the storage (m)" , ylabel = "Temperature (K)")
 plot!(sol[store.x][end],sol[store.Tg][end],label = "gas at charge end")
