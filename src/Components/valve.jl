@@ -41,14 +41,14 @@ function ValveCoolProp(;name,fluid=set_fluid)
         outport.h ~ h_out
         P ~ abs(inport.mdot)*(outport.h - inport.h)
 
-        s_in ~ PropsSI("S","H",inport.h,"P",inport.p,fluid)
+        s_in ~ PropsSI("S","H",h_in,"P",p_in,fluid)
         p_in ~ inport.p
-        T_in ~ PropsSI("T","H",inport.h,"P",inport.p,fluid)
+        T_in ~ PropsSI("T","H",h_in,"P",p_in,fluid)
         h_in ~ inport.h
-        ρ_in ~ PropsSI("D","H",inport.h,"P",inport.p,fluid)
+        ρ_in ~ PropsSI("D","H",h_in,"P",p_in,fluid)
 
         s_out ~ PropsSI("S","H",outport.h,"P",outport.p,fluid)
-        p_out ~ outport.p
+        p_out ~ p_in/πc
         T_out ~ PropsSI("T","H",outport.h,"P",outport.p,fluid)
         h_out ~ h_in
         ρ_out ~ PropsSI("D","H",outport.h,"P",outport.p,fluid)

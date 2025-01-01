@@ -2,7 +2,7 @@ using CarnotCycles, CoolProp, ModelingToolkit, DifferentialEquations, Plots
 
 load_fluid("R134A")
 @independent_variables t
-T_ = 290; p_ = 101325; N = 100
+T_ = 290; p_ = 101325; N = 20
 h_ = PropsSI("H","T",T_,"P",p_,"R134A")
 @named source = MassSource()
 @named compressor = CarnotCycles.IsentropicCompressor()
