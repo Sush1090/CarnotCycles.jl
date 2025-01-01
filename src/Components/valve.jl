@@ -37,18 +37,20 @@ function ValveCoolProp(;name,fluid=set_fluid)
     end
     eqs = [
         outport.mdot ~ abs(inport.mdot) 
-        πc ~  inport.p/outport.p
-        outport.h ~ inport.h
+        outport.p ~ p_out
+        outport.h ~ h_out
         P ~ abs(inport.mdot)*(outport.h - inport.h)
+
         s_in ~ PropsSI("S","H",inport.h,"P",inport.p,fluid)
         p_in ~ inport.p
         T_in ~ PropsSI("T","H",inport.h,"P",inport.p,fluid)
         h_in ~ inport.h
         ρ_in ~ PropsSI("D","H",inport.h,"P",inport.p,fluid)
+
         s_out ~ PropsSI("S","H",outport.h,"P",outport.p,fluid)
         p_out ~ outport.p
         T_out ~ PropsSI("T","H",outport.h,"P",outport.p,fluid)
-        h_out ~ outport.h
+        h_out ~ h_in
         ρ_out ~ PropsSI("D","H",outport.h,"P",outport.p,fluid)
     ]
     compose(ODESystem(eqs, t, vars, para;name), inport, outport)

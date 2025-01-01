@@ -377,11 +377,9 @@ end
 
 @component function Heat2Storage(;name)
     @named heatport = HeatPort()
-    @named storeport_in = StoragePort()
-    @named storeport_out = StoragePort()
+    @named storeport = StoragePort()
     para = @parameters begin
-       ρ(t) = 998, [description = "Density of HTF (kg/m³)"] 
-       Cp(t) = 4200, [description = "Specific heat of HTF (J/Kg/K)"]
+       Cp(t) , [description = "Specific heat of HTF (J/Kg/K)"]
        T_in(t), [description  = "Inlet Temperature of HTF (K)"]
        T_out(t), [description  = "Outlet Temperature of HTF (K)"]
     end
@@ -389,11 +387,11 @@ end
        mdot(t), [description = "masss flow Rate of HTF (kg/s)"]
     end
     eqs = [
-        storeport_out.mdot ~ mdot
-        storeport_in.mdot ~ mdot
+        storeport.mdot ~ mdot
         mdot ~ -heatport.Q/(Cp*(T_out - T_in))
-        storeport_in.T ~ T_in
-        storeport_out ~ T_out
+        storeport.T ~ T_out
     ]
-    return compose(ODESystem(eqs, t, vars, para;name=name),heatport,storeport_in,storeport_out)
+    return compose(ODESystem(eqs, t, vars, para;name=name),heatport,storeport)
 end
+
+export Heat2Storage

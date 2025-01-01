@@ -12,7 +12,7 @@
 end
 export IsentropicExpander
 
-@component function IsentropicExpanderCoolProp(;name,fluid=set_fluid)
+function IsentropicExpanderCoolProp(;name,fluid=set_fluid)
     @named inport = CoolantPort()
     @named outport = CoolantPort()
     para = @parameters begin
