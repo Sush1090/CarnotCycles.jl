@@ -10,6 +10,7 @@ import ModelingToolkit:scalarize
 
 include("ClapeyronRegistrations.jl")
 
+include("connectors.jl")
 include("Utils.jl")
 include("Processes.jl")
 include("ThemodynamicClaculations.jl")
