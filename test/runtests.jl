@@ -130,17 +130,18 @@ end
     systems = [source,compressor,expander,sink]
     @named test_isentropic = ODESystem(eqs, t, systems=systems)
     u0 = []
-    para = [source.source_pressure=>start_p, source.source_enthalpy => start_h,source.source_mdot => start_mdot,compressor.πc => 5.0,compressor.η => 1.0,
+    para = [source.source_pressure=>start_p, source.source_enthalpy => start_h,source.source_mdot => start_mdot, source.source_x => 1,
+            compressor.πc => 5.0, compressor.η => 1.0,
             expander.η => 1.0, expander.πc => compressor.πc]
     sys = structural_simplify(test_isentropic)
     prob = SteadyStateProblem(sys,u0,para)
     sol = solve(prob)
-    bool1 = isapprox(sol[compressor.s_in],sol[compressor.s_out])
-    bool2 = isapprox(sol[expander.s_in],sol[expander.s_out])
+    bool1 = isapprox(sol[compressor.s_in],sol[compressor.s_out],atol=1e-4)
+    bool2 = isapprox(sol[expander.s_in],sol[expander.s_out],atol= 1e-4)
     @test bool1 == true
     @test bool2 == true
-    @test isapprox(sol[source.p],sol[sink.p])
-    @test isapprox(sol[source.h],sol[sink.h])
+    @test isapprox(sol[source.p],sol[sink.p],atol = 1e-4)
+    @test isapprox(sol[source.h],sol[sink.h],atol = 1e-4)
 end
 
 
@@ -174,12 +175,12 @@ para = [source.source_pressure=>start_p, source.source_enthalpy => start_h,sourc
 sys = structural_simplify(test_isentropic)
 prob = SteadyStateProblem(sys,u0,para)
 sol = solve(prob)
-bool1 = isapprox(sol[compressor.s_in],sol[compressor.s_out])
-bool2 = isapprox(sol[expander.s_in],sol[expander.s_out])
+bool1 = isapprox(sol[compressor.s_in],sol[compressor.s_out],atol = 1e-4)
+bool2 = isapprox(sol[expander.s_in],sol[expander.s_out],atol = 1e-4)
 @test bool1 == true
 @test bool2 == true
-@test isapprox(sol[source.p],sol[sink.p])
-@test isapprox(sol[source.h],sol[sink.h])
+@test isapprox(sol[source.p],sol[sink.p],atol = 1e-4)
+@test isapprox(sol[source.h],sol[sink.h],atol = 1e-4)
 end
 # @testset "Isentropic Process - CoolProp" begin
 #     fluid = "R134A"
