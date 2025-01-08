@@ -1,12 +1,13 @@
 using CarnotCycles, CoolProp, ModelingToolkit, DifferentialEquations, Clapeyron
+@independent_variables t
 model = cPR(["Pentane","toluene"],idealmodel = ReidIdeal)
 load_fluid(model)
-@independent_variables t
+
 start_T = 300;
 start_p = 101325
 start_mdot = 40 #g/s
 x_ = 0.9
-z_ = CarnotCycles.mass_to_moles(model,[0.9,0.1],start_mdot)
+z_ = CarnotCycles.mass_to_moles(model,[x_,1-x_],start_mdot)
 start_h = enthalpy(model,start_p,start_T,z_)
 
 
@@ -23,11 +24,14 @@ eqs = [
     connect(expander.outport,sink.port)
 ]
 systems = [source,compressor,evap,expander,sink]
-@named test_isentropic = ODESystem(eqs, t, systems=systems)
+@named orc = ODESystem(eqs, t, systems=systems)
 u0 = []
-para = [source.source_pressure=>start_p, source.source_enthalpy => start_h,source.source_mdot => start_mdot,compressor.πc => 27.0,compressor.η => 0.7,source.source_x => 0.6,
-        expander.η => 0.9, expander.πc => compressor.πc, evap.ΔT_sh => 6, source.source_x => 0.9]
-sys = structural_simplify(test_isentropic)
+para = [source.source_pressure=>start_p, source.source_enthalpy => start_h,source.source_mdot => start_mdot, 
+        source.source_x => x_,
+        compressor.πc => 37.0,compressor.η => 0.7,
+        expander.η => 0.9, expander.πc => compressor.πc, 
+        evap.ΔT_sh => 6]
+sys = structural_simplify(orc)
 prob = SteadyStateProblem(sys,u0,para)
 sol = solve(prob)
 
