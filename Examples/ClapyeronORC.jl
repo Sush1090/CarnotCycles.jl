@@ -7,7 +7,7 @@ start_T = 300;
 start_p = 101325
 start_mdot = 40 #g/s
 x_ = 0.9
-z_ = CarnotCycles.mass_to_moles(model,[x_,1-x_],start_mdot)
+z_ = CarnotCycles.mass_to_moles(model,x_,start_mdot)
 start_h = enthalpy(model,start_p,start_T,z_)
 
 

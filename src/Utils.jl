@@ -52,19 +52,19 @@ function Show_fluid_details(fluid=set_fluid)
 end
 export Show_fluid_details
 
-function mass_to_moles(model::EoSModel,compositions::AbstractVector,mass)
-    @assert isapprox(sum(compositions),1.0,atol = 1e-8)
+function mass_to_moles(model::EoSModel,compositions,mass)
+    @assert 0<compositions<=1
     if size(model.components,1) == 1
-        compositions = [1]
+        compositions = 1
     end
-
+    x_ = [compositions,1-compositions]
     mws = Clapeyron.mw(model);
-    M = mass*compositions;
+    M = mass*x_;
 
     moles =  M./mws
     return moles
 end
-@register_symbolic mass_to_moles(model::EoSModel,compositions::AbstractVector,mass)
+@register_symbolic mass_to_moles(model::EoSModel,compositions,mass)
 
 
 
@@ -145,7 +145,7 @@ end
         port.x ~ source_x
         mdot ~ source_mdot
         x ~ source_x
-        z ~ mass_to_moles(fluid,[x,1-x],mdot)
+        z ~ mass_to_moles(fluid,x,mdot)
         s ~ ph_entropy(fluid,p,h,z)
         p ~ port.p
         T ~ ph_temperature(fluid,p,h,z)
@@ -223,7 +223,7 @@ end
         port.h ~ h
         x ~ port.x
         mdot ~ port.mdot
-        z ~ mass_to_moles(fluid,[x,1-x],mdot)
+        z ~ mass_to_moles(fluid,x,mdot)
         s ~ ph_entropy(fluid,p,h,z)
         p ~ port.p
         T ~ ph_temperature(fluid,p,h,z)

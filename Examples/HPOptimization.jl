@@ -1,47 +1,45 @@
 using CarnotCycles, ModelingToolkit, DifferentialEquations, CoolProp
 
+@independent_variables t
+fluid = "R1233zdE"
+load_fluid(fluid) 
+start_T = 273.15+20; # Temperature at source 
+start_p = PropsSI("P","Q",1,"T",start_T-10,fluid) - 1e2 #2*101325 #PropsSI("P","Q",1,"T",start_T-10,fluid) - 1e2 # pressure at source. For HP we need gas at source
+p_crit = PropsSI("PCRIT",fluid)
+# if (πc*start_p >= p_crit)
+#     throw(error("Pressure is in super-critical zone. Put parameters for sub-critical cycle"))
+# end
+@assert PhaseSI("T",start_T,"P",start_p,fluid) == "gas"
+ΔT_superheat = start_T - PropsSI("T","P",start_p,"Q",0,fluid) ; # ensure the superheat temperature to reach bck to starting state.
+start_mdot = 0.034 #kg/s
 
+state_src = initialize_state(T_start = start_T,p_start=start_p,mdot = start_mdot)
 
+@named source = MassSource(state_src)
+@named comp = Compressor(_system)
+@named cond = SimpleCondensor(ΔT_sc = x[2],Δp = [0,0,0])
+@named valve = Valve()
+@named evap = SimpleEvaporator(ΔT_sh = ΔT_superheat,Δp = [0,0,0])
+@named sink = MassSink()
+eqs = [
+    connect(source.port,comp.inport)
+    connect(comp.outport,cond.inport)
+    connect(cond.outport,valve.inport)
+    connect(valve.outport,evap.inport)
+    connect(evap.outport,sink.port)
+]
+systems=[source,comp,cond,valve,evap,sink] # Define system
+
+@named hp = ODESystem(eqs, t, systems=systems)
+sys = structural_simplify(hp)
 function HP(x,p)
-    @independent_variables t
-    fluid = "R1233zdE"
-    @load_fluid "R1233zdE"
-    _system = Isentropic_η(η = 0.55,πc = x[1]) # fix the isentropic Efficiency of compressor and pressre ratio
-    valve_system  = IsenthalpicExpansionValve(x[1])    
-    start_T = 273.15+20; # Temperature at source 
-    start_p = PropsSI("P","Q",1,"T",start_T-10,fluid) - 1e2 #2*101325 #PropsSI("P","Q",1,"T",start_T-10,fluid) - 1e2 # pressure at source. For HP we need gas at source
-    p_crit = PropsSI("PCRIT",fluid)
-    # if (πc*start_p >= p_crit)
-    #     throw(error("Pressure is in super-critical zone. Put parameters for sub-critical cycle"))
-    # end
-    @assert PhaseSI("T",start_T,"P",start_p,fluid) == "gas"
-    ΔT_superheat = start_T - PropsSI("T","P",start_p,"Q",0,fluid) ; # ensure the superheat temperature to reach bck to starting state.
-    start_mdot = 0.034 #kg/s
-
-    state_src = initialize_state(T_start = start_T,p_start=start_p,mdot = start_mdot)
-
-    @named source = MassSource(state_src)
-    @named comp = Compressor(_system)
-    @named cond = SimpleCondensor(ΔT_sc = x[2],Δp = [0,0,0])
-    @named expander = Valve(valve_system)
-    @named evap = SimpleEvaporator(ΔT_sh = ΔT_superheat,Δp = [0,0,0])
-    @named sink = MassSink()
-
-    eqs = [
-        connect(source.port,comp.inport)
-        connect(comp.outport,cond.inport)
-        connect(cond.outport,expander.inport)
-        connect(expander.outport,evap.inport)
-        connect(evap.outport,sink.port)
-    ]
-    systems=[source,comp,cond,expander,evap,sink] # Define system
-
-    @named hp = ODESystem(eqs, t, systems=systems)
-
     u0 = []
-    tspan = (0.0, 10.0)
-    sys = structural_simplify(hp)
-    prob = ODEProblem(sys,u0,tspan)
+    para = [
+        sys.source.mdot => start_mdot, 
+        sys.comp.πc => x[1], sys.comp.η => 0.55,
+        sys.valve.πc => sys.comp.πc,
+    ]
+    prob = SteadyStateProblem(sys,u0,para)
     sol = solve(prob)
 
    @show COP = sol[cond.P][1]/sol[comp.P][1]

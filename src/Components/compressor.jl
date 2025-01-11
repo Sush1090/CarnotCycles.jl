@@ -110,7 +110,7 @@ function IsentropicCompressorClapeyron(;name,fluid = set_fluid)
    eqs = [  
             mdot_in ~ inport.mdot
             x_in ~ inport.x
-            z_in ~ mass_to_moles(fluid,[x_in,1-x_in],mdot_in)
+            z_in ~ mass_to_moles(fluid,x_in,mdot_in)
             p_in ~ inport.p
             h_in ~ inport.h
             s_in ~ ph_entropy(fluid,p_in,h_in,z_in)
@@ -215,7 +215,7 @@ function IsothermalCompressorClapeyron(;name,fluid = set_fluid)
      end
    eqs = [  mdot_in ~ inport.mdot
             x_in ~ inport.x
-            z_in ~ mass_to_moles(fluid,[x_in,1-x_in],mdot_in)
+            z_in ~ mass_to_moles(fluid,x_in,mdot_in)
             p_in ~ inport.p
             h_in ~ inport.h
             s_in ~ ph_entropy(fluid,p_in,h_in,z_in)
@@ -329,7 +329,7 @@ function IsochoricCompressorClapeyron(;name,fluid = set_fluid)
      end
    eqs = [  mdot_in ~ inport.mdot
             x_in ~ inport.x
-            z_in ~ mass_to_moles(fluid,[x_in,1-x_in],mdot_in)
+            z_in ~ mass_to_moles(fluid,x_in,mdot_in)
             p_in ~ inport.p
             h_in ~ inport.h
             s_in ~ ph_entropy(fluid,p_in,h_in,z_in)

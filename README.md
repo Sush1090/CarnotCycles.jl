@@ -3,13 +3,13 @@
 [![Build Status](https://github.com/Sush1090/CoolPropCycles.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/Sush1090/CoolPropCycles.jl/actions/workflows/CI.yml?query=branch%3Amain)
 
 
-This package combines [ModelingToolkit.jl](https://github.com/SciML/ModelingToolkit.jl) "Acausal Modeling" with [CoolProp.jl](https://github.com/CoolProp/CoolProp.jl) to model thermodynamic cycles:
+This package combines [ModelingToolkit.jl](https://github.com/SciML/ModelingToolkit.jl) "Acausal Modeling" with [CoolProp.jl](https://github.com/CoolProp/CoolProp.jl) and [Clapyeron.jl](https://github.com/ClapeyronThermo/Clapeyron.jl) to model thermodynamic cycles:
 
 1. Organic Rakine Cycle
 2. Vapour Compression Cycle
 3. Brayton Cycle
 
-It is for steady state calculations, hence the evaporators and compressors are modeled using energy conservation. The principle is state-point manipulations.  The system works better for **subcritical cycle** parameters. One can also make custom cycles based on different processes.
+It is for steady state calculations, hence the evaporators and compressors are modeled using energy conservation. The principle is state-point manipulations.  One can also make custom cycles based on different processes.
 
 It is extendible as users can add their own component in the following manner 
 
@@ -39,12 +39,12 @@ It provides the following components:
 
 1. Compressor using Isentropic, Isothermal and Isochoric processes
 2. Expander using Isentropic, Isothermal and Isochoric processes
-3. Isenthalpic Expander 
+3. Isenthalpic Valve 
 4. Evaporator
 5. Condensor
 6. Heat Source - Temperature independent
-7. Recuperator for the ORC
-8. Three-faced valve based on mass flow rate spliting
+<!-- 7. Recuperator for the ORC
+8. Three-faced valve based on mass flow rate spliting -->
 
  <!-- It also provides basic functions that find the pressure to match the pitch points.  -->
 ## Installation
@@ -68,55 +68,43 @@ Note: sign convention: Power supplied to the system is +ve while power generated
 
 ## Examples 
 ### Organic Rankine Cycle
-Example of Organic Rankine Cycle using R134A
+Example of Organic Rankine Cycle using Clapeyron.jl two-component fluid. 
 
 ```julia
 using CarnotCycles, ModelingToolkit, DifferentialEquations, CoolProp
-
-
+model = cPR(["Pentane","toluene"],idealmodel = ReidIdeal)
+load_fluid(model)
 @independent_variables t
-fluid = "R134A"
-@load_fluid "R134A"
-_system = Isentropic_η(η =0.5,πc =2.8) # fix the isentropic Efficiency of compressor and pressre ratio
-
-start_T =     290; # Temperature at source 
-start_p = PropsSI("P","Q",0,"T",start_T,fluid) + 1e5 # pressure at source.
-# As it is ORC the inlet state is liquid and bit away from saturation curv. Hence 1e3Pa of pressure is added
-ΔT_subcool = PropsSI("T","P",start_p,"Q",0,fluid) - start_T; # ensure the subcoolin temperature to reach bck to starting state.
-@assert ΔT_subcool > 1e-3 # stay away from saturaton curve to aviod coolprop assertion
-start_h = PropsSI("H","T",start_T,"P",start_p,fluid); start_mdot = 0.2 #kg/s
+start_T = 300;
+start_p = 101325
+start_mdot = 40 #g/s
+x_ = 0.9
+z_ = CarnotCycles.mass_to_moles(model,[x_,1 - x_],start_mdot)
+start_h = enthalpy(model,start_p,start_T,z_)
 
 
-@named source = MassSource(source_enthalpy = start_h,source_pressure = start_p,source_mdot = start_mdot,)
-@named comp = Compressor(_system, fluid =fluid)
-@named evap = SimpleEvaporator(Δp = [0,0,0],ΔT_sh = 2,)
-@named exp = Expander(_system,)
-@named cond = SimpleCondensor(ΔT_sc = ΔT_subcool,Δp = [0,0,0])
+@named source = MassSource()
+@named compressor = Pump()
+@named evap = CarnotCycles.SimpleEvaporator()
+@named expander = CarnotCycles.IsentropicExpander()
 @named sink = MassSink()
 
-# Define equations
 eqs = [
-    connect(source.port,comp.inport)
-    connect(comp.outport,evap.inport)
-    connect(evap.outport,exp.inport)
-    connect(exp.outport,cond.inport)
-    connect(cond.outport,sink.port)
+    connect(source.port,compressor.inport)
+    connect(compressor.outport,evap.inport)
+    connect(evap.outport,expander.inport)
+    connect(expander.outport,sink.port)
 ]
-systems=[source,comp,evap,exp,cond,sink] # Define system
-
-@named ORC = ODESystem(eqs, t, systems=systems)
-
+systems = [source,compressor,evap,expander,sink]
+@named test_isentropic = ODESystem(eqs, t, systems=systems)
 u0 = []
-tspan = (0.0, 100.0)
-sys = structural_simplify(ORC)
-prob = ODEProblem(sys,u0,tspan)
+para = [source.source_pressure=>start_p, source.source_enthalpy => start_h,source.source_mdot => start_mdot,compressor.πc => 7.0,compressor.η => 0.7,source.source_x => x_,
+        expander.η => 0.9, expander.πc => compressor.πc, evap.ΔT_sh => 6]
+sys = structural_simplify(test_isentropic)
+prob = SteadyStateProblem(sys,u0,para)
 sol = solve(prob)
 
-
-
-#compute Efficiency of the cycle.
-#Note: sign convetion: Power supplied to the system is +ve while from thee system is -ve
-@show η = (sol[exp.P] .+ sol[comp.P])./sol[evap.P]
+η_cycle = (sol[expander.P] - sol[compressor.P])/sol[evap.Qdot]
 ```
 
 
