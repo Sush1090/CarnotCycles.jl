@@ -17,9 +17,7 @@ CritPropSI(property::AbstractString,fluid::AbstractString) = CoolProp.PropsSI(pr
 global set_fluid = nothing
 global Nc = nothing
 """
-`load_fluid(x::AbstractString)` - fixes fluid for simulation through components
-
-`load_fluid(x::Clapeyron.EoSModel)` - fixes fluid for simulation through components
+`load_fluid(x::AbstractString)` - fixes fluid for simulation through components using CoolProp as backend.
 """
 function load_fluid(x::AbstractString)
     CarnotCycles.set_fluid = x
@@ -27,6 +25,7 @@ function load_fluid(x::AbstractString)
     return CarnotCycles.set_fluid
 end
 
+"""`load_fluid(x::Clapeyron.EoSModel)` - fixes fluid for simulation through components using Clapeyron as backend"""
 function load_fluid(x::Clapeyron.EoSModel)
     CarnotCycles.set_fluid = x
     CarnotCycles.Nc = size(x.components,1)
@@ -52,19 +51,22 @@ function Show_fluid_details(fluid=set_fluid)
 end
 export Show_fluid_details
 
-function mass_to_moles(model::EoSModel,compositions,mass)
-    @assert 0<compositions<=1
+"""
+`mass_to_moles(model::EoSModel,x,mass)` : convert mass of fluid to number of moles based on the composition of 1st fluid by mass `x`
+"""
+function mass_to_moles(model::EoSModel,x,mass)
+    @assert 0<x<=1
     if size(model.components,1) == 1
-        compositions = 1
+        x = 1
     end
-    x_ = [compositions,1-compositions]
+    x_ = [x,1-x]
     mws = Clapeyron.mw(model);
     M = mass*x_;
 
     moles =  M./mws
     return moles
 end
-@register_symbolic mass_to_moles(model::EoSModel,compositions,mass)
+@register_symbolic mass_to_moles(model::EoSModel,x,mass)
 
 
 

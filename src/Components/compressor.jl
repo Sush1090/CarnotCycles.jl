@@ -79,6 +79,7 @@ function IsentropicCompressorCoolProp(;name,fluid = set_fluid)
    compose(ODESystem(eqs, t, vars, para;name), inport, outport,power)
 end
 
+
 function IsentropicCompressorClapeyron(;name,fluid = set_fluid) 
     @named inport = CoolantPort()
     @named outport = CoolantPort()
