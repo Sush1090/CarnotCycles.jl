@@ -115,7 +115,7 @@ function SimpleCondensorClapeyron(;name,fluid)
         p_in ~ inport.p
         mdot_in ~ inport.mdot
         x_in ~ inport.x
-        z_in ~ mass_to_moles(fluid,[x_in,1-x_in],mdot_in)
+        z_in ~ mass_to_moles(fluid,x_in,mdot_in)
         s_in ~ ph_entropy(fluid,p_in,h_in,z_in)
         T_in ~ ph_temperature(fluid,p_in,h_in,z_in)
         ρ_in ~ ph_mass_density(fluid,p_in,h_in,z_in)

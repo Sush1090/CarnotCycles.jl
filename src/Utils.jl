@@ -57,7 +57,12 @@ export Show_fluid_details
 function mass_to_moles(model::EoSModel,x,mass)
     @assert 0<x<=1
     if size(model.components,1) == 1
+        mws = Clapeyron.mw(model);
         x = 1
+
+        M = mass*x;
+        moles =  M./mws
+        return [moles[1]]
     end
     x_ = [x,1-x]
     mws = Clapeyron.mw(model);
