@@ -1,4 +1,6 @@
-
+"""
+`IsentropicExpander(;name,fluid=set_fluid)` 
+"""
 @component function IsentropicExpander(;name,fluid=set_fluid)
     if fluid isa AbstractString
         return IsentropicExpanderCoolProp(name=name,fluid=fluid)

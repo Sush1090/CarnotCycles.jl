@@ -59,6 +59,7 @@ function IsentropicCompressorCoolProp(;name,fluid = set_fluid)
         T_out(t)
         h_out(t)
         ρ_out(t)
+        
      end
    eqs = [  outport.mdot ~ abs(inport.mdot) 
             outport.p ~ πc * inport.p
