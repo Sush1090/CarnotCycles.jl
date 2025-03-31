@@ -157,3 +157,21 @@ function qp_mass_density(model::EoSModel,q,p,z)
 end
 @register_symbolic qp_mass_density(model::EoSModel,q,p,z)
 
+function ph_temperature_qp(model::EoSModel,p,h,z)
+    f0 = qp_flash(model,0,p,z)
+    f1 = qp_flash(model,1,p,z)
+    hb = enthalpy(model,f0)
+    hd = enthalpy(model,f1)
+    if hb < h <hd
+        flash(q) =qp_flash(model,q,p,z)
+        qp_enthalpy(q) = Clapeyron.enthalpy(model,flash(q)) - h
+        q_ = find_zero(qp_enthalpy,(0,1))
+        T = qp_temperature(model,q_,p,z)
+        if isnan(T)
+            T = PH.temperature(model,p,h,z)
+        end
+        return T
+    end
+    return PH.temperature(model,p,h,z)
+end
+@register_symbolic ph_temperature_qp(model::EoSModel,p,h,z)
