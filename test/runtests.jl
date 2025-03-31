@@ -100,8 +100,8 @@ end
     @test isapprox(sol[source.p],sol[sink.p])
     @test isapprox(sol[source.h],sol[sink.h])
 
-        @test isapprox(sol[compressor.s_in],sol[compressor.s_out])
-        @test isapprox(sol[expander.s_in],sol[expander.s_out])
+    @test isapprox(sol[compressor.s_in],sol[compressor.s_out])
+     @test isapprox(sol[expander.s_in],sol[expander.s_out])
 
 end
 
@@ -147,301 +147,215 @@ end
 
 @testset "Joining Components - Clapyeron - two fluid component -comp-exapander" begin
     model = cPR(["ethane","methane"],idealmodel = ReidIdeal)
-load_fluid(model)
-@independent_variables t
-start_T = 300;
-start_p = 101325
-start_mdot = 20 #g/s
-z_ = CarnotCycles.mass_to_moles(model,0.6,start_mdot)
-start_h = enthalpy(model,start_p,start_T,z_)
+    load_fluid(model)
+    @independent_variables t
+    start_T = 300;
+    start_p = 101325
+    start_mdot = 20 #g/s
+    z_ = CarnotCycles.mass_to_moles(model,0.6,start_mdot)
+    start_h = enthalpy(model,start_p,start_T,z_)
 
 
-@named source = MassSource()
-@named compressor = IsentropicCompressor()
-@named expander = CarnotCycles.IsentropicExpander()
-@named sink = MassSink()
+    @named source = MassSource()
+    @named compressor = IsentropicCompressor()
+    @named expander = CarnotCycles.IsentropicExpander()
+    @named sink = MassSink()
 
-eqs = [
-    connect(source.port,compressor.inport)
-    connect(compressor.outport,expander.inport)
-    connect(expander.outport,sink.port)
-]
-systems = [source,compressor,expander,sink]
-@named test_isentropic = ODESystem(eqs, t, systems=systems)
-u0 = []
-para = [source.source_pressure=>start_p, source.source_enthalpy => start_h,source.source_mdot => start_mdot,compressor.πc => 5.0,
+    eqs = [
+        connect(source.port,compressor.inport)
+        connect(compressor.outport,expander.inport)
+        connect(expander.outport,sink.port)
+    ]
+    systems = [source,compressor,expander,sink]
+    @named test_isentropic = ODESystem(eqs, t, systems=systems)
+    u0 = []
+    para = [source.source_pressure=>start_p, source.source_enthalpy => start_h,source.source_mdot => start_mdot,compressor.πc => 5.0,
         compressor.η => 1.0,source.source_x => 0.6,
         expander.η => 1.0, expander.πc => compressor.πc]
-sys = structural_simplify(test_isentropic)
-prob = SteadyStateProblem(sys,u0,para)
-sol = solve(prob)
-bool1 = isapprox(sol[compressor.s_in],sol[compressor.s_out],atol = 1e-4)
-bool2 = isapprox(sol[expander.s_in],sol[expander.s_out],atol = 1e-4)
-@test bool1 == true
-@test bool2 == true
-@test isapprox(sol[source.p],sol[sink.p],atol = 1e-4)
-@test isapprox(sol[source.h],sol[sink.h],atol = 1e-4)
+    sys = structural_simplify(test_isentropic)
+    prob = SteadyStateProblem(sys,u0,para)
+    sol = solve(prob)
+    bool1 = isapprox(sol[compressor.s_in],sol[compressor.s_out],atol = 1e-4)
+    bool2 = isapprox(sol[expander.s_in],sol[expander.s_out],atol = 1e-4)
+    @test bool1 == true
+    @test bool2 == true
+    @test isapprox(sol[source.p],sol[sink.p],atol = 1e-4)
+    @test isapprox(sol[source.h],sol[sink.h],atol = 1e-4)
 end
-# @testset "Isentropic Process - CoolProp" begin
-#     fluid = "R134A"
-#     load_fluid(fluid)
-
-# end
 
 
-# @testset "Evaporator" begin
-#     out_phase = "gas"
-#     in_phase_liquid = "liquid"
-#     ΔT_sh = 5
-#     fluid = "R134A"
-#     @independent_variables t
-#     start_T = 300;
-#     start_p = PropsSI("P","Q",0,"T",start_T,fluid) + 1e3
-#     start_h = PropsSI("H","T",start_T,"P",start_p,fluid); start_mdot = 0.2 #kg/s
 
-#     @named source = MassSource(source_enthalpy = start_h,source_pressure = start_p,source_mdot = start_mdot,fluid = fluid)
-#     @named evporator = SimpleEvaporator(ΔT_sh = ΔT_sh,fluid = fluid)
-#     @named sink = MassSink(fluid = fluid)
-
-#     eqs = [
-#         connect(source.port,evporator.inport)
-#         connect(evporator.outport,sink.port)
-#     ]
-#     systems = [source,evporator,sink]
-#     @named test_evap = ODESystem(eqs, t, systems=systems)
-#     u0 = []
-#     tspan = (0.0, 1.0)
-#     sys = structural_simplify(test_evap)
-#     prob = ODEProblem(sys,u0,tspan)
-#     sol = solve(prob)
-
-#     out_phase_test = PhaseSI("T",sol[evporator.T_out][1],"P",sol[evporator.p_out][1],fluid)
-#     in_phase_test = PhaseSI("T",sol[evporator.T_in][1],"P",sol[evporator.p_in][1],fluid)
-
-#     @test out_phase_test == out_phase
-#     @test isapprox(sol[evporator.T_out][1]-ΔT_sh,sol[evporator.T_sat][1])
-#     @test in_phase_test == in_phase_liquid
-#     @test sol[evporator.h_out][1] >= sol[evporator.h_in][1]
-# end
-
-
-# @testset "Condensor" begin
-#     out_phase = "liquid"
-#     in_phase = "gas"
-#     ΔT_sc = 3
-#     fluid = "R134A"
-#     @independent_variables t
-#     start_T = 300;
-#     start_p = PropsSI("P","Q",0,"T",start_T,fluid) - 101325
-#     start_h = PropsSI("H","T",start_T,"P",start_p,fluid); start_mdot = 0.2 #kg/s
-
-#     @named source = MassSource(source_enthalpy = start_h,source_pressure = start_p,source_mdot = start_mdot,fluid = fluid)
-#     @named condensor = SimpleCondensor(ΔT_sc = ΔT_sc,fluid = fluid)
-#     @named sink = MassSink(fluid = fluid)
-
-#     eqs = [
-#         connect(source.port,condensor.inport)
-#         connect(condensor.outport,sink.port)
-#     ]
-#     systems = [source,condensor,sink]
-#     @named test_condensor = ODESystem(eqs, t, systems=systems)
-#     u0 = []
-#     tspan = (0.0, 1.0)
-#     sys = structural_simplify(test_condensor)
-#     prob = ODEProblem(sys,u0,tspan)
-#     sol = solve(prob)
-
-#     out_phase_test = PhaseSI("T",sol[condensor.T_out][1],"P",sol[condensor.p_out][1],fluid)
-#     in_phase_test = PhaseSI("T",sol[condensor.T_in][1],"P",sol[condensor.p_in][1],fluid)
-
-#     @test out_phase_test == out_phase
-#     @test isapprox(sol[condensor.T_out][1]+ΔT_sc,sol[condensor.T_sat][1])
-#     @test in_phase_test == in_phase
-#     @test sol[condensor.h_out][1] <= sol[condensor.h_in][1]
-# end
-
-
-# @testset "Valve - Isenthalpic" begin
-#     fluid = "R134A"
-#     @independent_variables t
-#     start_T = 300;
-#     start_p = PropsSI("P","Q",0,"T",start_T,fluid) 
-#     start_h = PropsSI("H","Q",0,"P",start_p,fluid); start_mdot = 0.2 #kg/s
-
-#     valve_system  = IsenthalpicExpansionValve(4.5)
-
-#     @named source = MassSource(source_enthalpy = start_h,source_pressure = start_p,source_mdot = start_mdot,fluid = fluid)
-#     @named exp = Valve(valve_system,fluid= fluid)
-#     @named sink = MassSink(fluid = fluid)
-
-#     eqs = [
-#         connect(source.port,exp.inport)
-#         connect(exp.outport,sink.port)
-#     ]
-#     systems = [source,exp,sink]
-#     @named test_condensor = ODESystem(eqs, t, systems=systems)
-#     u0 = []
-#     tspan = (0.0, 1.0)
-#     sys = structural_simplify(test_condensor)
-#     prob = ODEProblem(sys,u0,tspan)
-#     sol = solve(prob)
-#     @test isapprox(sol[source.h][1],sol[sink.h][1]) 
-# end
-
-# @testset "Processes-expansion" begin
-#     fluid = "R134A"
-#     πc = 4
-#     p_in = 101325*πc; T_in = 450;
-#     h_in = PropsSI("H","T",T_in,"P",p_in,fluid)
-#     s_in =  PropsSI("S","T",T_in,"P",p_in,fluid)
-#     v_in = 1/PropsSI("D","T",T_in,"P",p_in,fluid)
-
-#     h_out_isen = IsentropicExpansion(πc,h_in,p_in,fluid,1.0)
-#     s_out_isen = PropsSI("S","H",h_out_isen,"P",p_in/πc,fluid)
-#     @test isapprox(s_out_isen,s_in)
-#     h_out_isothermal = IsothermalExpansion(πc,h_in,p_in,fluid)
-#     T_out_isothermal = PropsSI("T","H",h_out_isothermal,"P",p_in/πc,fluid)
-#     @test isapprox(T_out_isothermal,T_in)
-#     h_out_isochoric = IsochoricExpansion(πc,h_in,p_in,fluid)
-#     v_out_isothermal = 1/PropsSI("D","H",h_out_isochoric,"P",p_in/πc,fluid)
-#     @test isapprox(v_out_isothermal,v_in)
-
-#     fluid = "Argon"
-#     πc = 4
-#     p_in = 101325*πc; T_in = 450;
-#     h_in = PropsSI("H","T",T_in,"P",p_in,fluid)
-#     s_in =  PropsSI("S","T",T_in,"P",p_in,fluid)
-#     v_in = 1/PropsSI("D","T",T_in,"P",p_in,fluid)
-
-#     h_out_isen = IsentropicExpansion(πc,h_in,p_in,fluid,1.0)
-#     s_out_isen = PropsSI("S","H",h_out_isen,"P",p_in/πc,fluid)
-#     @test isapprox(s_out_isen,s_in)
-#     h_out_isothermal = IsothermalExpansion(πc,h_in,p_in,fluid)
-#     T_out_isothermal = PropsSI("T","H",h_out_isothermal,"P",p_in/πc,fluid)
-#     @test isapprox(T_out_isothermal,T_in)
-#     h_out_isochoric = IsochoricExpansion(πc,h_in,p_in,fluid)
-#     v_out_isothermal = 1/PropsSI("D","H",h_out_isochoric,"P",p_in/πc,fluid)
-#     @test isapprox(v_out_isothermal,v_in)
-# end
-
-# @testset "Processes-compression" begin
-#     fluid = "Argon"
-#     πc = 4
-#     p_in = 101325; T_in = 450;
-#     h_in = PropsSI("H","T",T_in,"P",p_in,fluid)
-#     s_in =  PropsSI("S","T",T_in,"P",p_in,fluid)
-#     v_in = 1/PropsSI("D","T",T_in,"P",p_in,fluid)
-
-#     h_out_isen = IsentropicCompression(πc,h_in,p_in,fluid,1.0)
-#     s_out_isen = PropsSI("S","H",h_out_isen,"P",p_in*πc,fluid)
-#     @test isapprox(s_out_isen,s_in)
-#     h_out_isothermal = IsothermalCompression(πc,h_in,p_in,fluid)
-#     T_out_isothermal = PropsSI("T","H",h_out_isothermal,"P",p_in*πc,fluid)
-#     @test isapprox(T_out_isothermal,T_in)
-#     h_out_isochoric = IsochoricCompression(πc,h_in,p_in,fluid)
-#     v_out_isothermal = 1/PropsSI("D","H",h_out_isochoric,"P",p_in*πc,fluid)
-#     @test isapprox(v_out_isothermal,v_in)
-
-
-#     fluid = "R134A"
-#     πc = 2
-#     p_in = 101325; T_in = 250;
-#     h_in = PropsSI("H","T",T_in,"P",p_in,fluid)
-#     s_in =  PropsSI("S","T",T_in,"P",p_in,fluid)
-#     v_in = 1/PropsSI("D","T",T_in,"P",p_in,fluid)
-
-#     h_out_isen = IsentropicCompression(πc,h_in,p_in,fluid,1.0)
-#     s_out_isen = PropsSI("S","H",h_out_isen,"P",p_in*πc,fluid)
-#     @test isapprox(s_out_isen,s_in)
-#     h_out_isothermal = IsothermalCompression(πc,h_in,p_in,fluid)
-#     T_out_isothermal = PropsSI("T","H",h_out_isothermal,"P",p_in*πc,fluid)
-#     @test isapprox(T_out_isothermal,T_in)
-#     h_out_isochoric = IsochoricCompression(πc,h_in,p_in,fluid)
-#     v_out_isothermal = 1/PropsSI("D","H",h_out_isochoric,"P",p_in*πc,fluid)
-#     @test isapprox(v_out_isothermal,v_in)
-# end
-
-# @testset "Three-faced valve" begin
-#     fluid = "R134A"
-#     @load_fluid "R134A"
-#     @independent_variables t
-#     start_T = 300;
-#     start_p = PropsSI("P","Q",0,"T",start_T,fluid) 
-#     start_h = PropsSI("H","Q",0,"P",start_p,fluid); start_mdot = 0.2 #kg/s
-
-#     @named source = MassSource(source_enthalpy = start_h,source_pressure = start_p,source_mdot = start_mdot)
-#     @named three_split = Valve(ThreeFacedValveSplit(ratio = [0.3,0.7]))
-#     @named three_combine = Valve(ThreeFacedValveCombine())
-#     @named sink = MassSink()
-
-#     eqs = [
-#         connect(source.port,three_split.inport)
-#         connect(three_split.outport1,three_combine.inport1)
-#         connect(three_split.outport2,three_combine.inport2)
-#         connect(three_combine.outport,sink.port)
-#     ]
-#     systems = [source,three_split,three_combine,sink]
-
-#     @named three = ODESystem(eqs, t, systems=systems)
-#     u0 = []
-#     tspan = (0.0, 1.0)
-#     sys = structural_simplify(three)
-#     prob = ODEProblem(sys,u0,tspan)
-#     sol = solve(prob)
-
-#     @test isapprox(sol[source.p][1],sol[sink.p][1])
-#     @test isapprox(sol[source.h][1],sol[sink.h][1])
-#     @test isapprox(sol[source.mdot][1],sol[sink.mdot][1])
-# end
-
-
-# @testset "Process component" begin
-#     fluid = "Argon"
-#     @load_fluid "Argon"
-#     _system = Isentropic_η(η = 1,πc = 5)
-#     _isochoric = Isochoric_comp(πc = 5)
-#     _isothermal = Isothermal_comp(πc =5)
-#     @independent_variables t
-#     start_T = 300;
-#     start_p = 101325
-#     start_h = PropsSI("H","T",start_T,"P",start_p,fluid);start_mdot = 0.2
-
-#     @named source = MassSource(source_enthalpy = start_h,source_pressure = start_p,source_mdot = start_mdot)
-#     @named comp_isen = Compressor(_system)
-#     @named exp_isen = Expander(_system)
-#     @named comp_ther = Compressor(_isothermal)
-#     @named exp_ther = Expander(_isothermal)
-#     @named comp_chor = Compressor(_isochoric)
-#     @named exp_chor = Expander(_isochoric)
-#     @named sink = MassSink()
-
-#     eqs = [
-#         connect(source.port,comp_isen.inport)
-#         connect(comp_isen.outport,exp_isen.inport)
-#         connect(exp_isen.outport,comp_ther.inport)
-#         connect(comp_ther.outport,exp_ther.inport)
-#         connect(exp_ther.outport,comp_chor.inport)
-#         connect(comp_chor.outport,exp_chor.inport)
-#         connect(exp_chor.outport,sink.port)
-#     ]
-#     systems = [source,comp_isen,exp_isen,comp_ther,exp_ther,comp_chor,exp_chor,sink]
-#     @named test_processes = ODESystem(eqs, t, systems=systems)
-#     u0 = []
-#     tspan = (0.0, 1.0)
-#     sys = structural_simplify(test_processes)
-#     prob = ODEProblem(sys,u0,tspan)
-#     sol = solve(prob)
-#     @test isapprox(sol[comp_isen.s_in][1],sol[comp_isen.s_out][1])
-#     @test isapprox(sol[exp_isen.s_in][1],sol[exp_isen.s_out][1])
-#     @test isapprox(sol[comp_ther.T_in][1],sol[comp_ther.T_out][1])
-#     @test isapprox(sol[exp_ther.T_in][1],sol[exp_ther.T_out][1])
-#     @test isapprox(sol[comp_chor.ρ_in][1],sol[comp_chor.ρ_out][1])
-#     @test isapprox(sol[exp_chor.ρ_in][1],sol[exp_chor.ρ_out][1])
-#     @test isapprox(sol[source.h][1],sol[sink.h][1])
-#     @test isapprox(sol[source.p][1],sol[sink.p][1])
-
-# end
-
-@testset "MassSource initilizations" begin
+@testset "Glide Evaporator CoolProp" begin
+    @independent_variables t
+    load_fluid("Water")
+    T_start = 370; p = 101325;
+    h_start = PropsSI("H","T",T_start,"P",p,"Water")
+    start_mdot = 1e-2 #kg/s;
     
+    @named source = MassSource()
+    @named evap = SimpleEvaporatorGlide()
+    @named sink = MassSink()
+
+    eqs = [
+        connect(source.port,evap.inport)
+        connect(evap.outport,sink.port)
+    ]
+    systems = [source,evap,sink]
+    para = [source.source_pressure => p, source.source_enthalpy => h_start,source.source_mdot => start_mdot,
+    evap.ΔT_sh => 2, evap.T_htf_in => 400, evap.T_htf_out => 380]
+    u0 = []
+    @named model = ODESystem(eqs, t, systems=systems)
+    sys = structural_simplify(model)
+    prob = SteadyStateProblem(sys,u0,para)
+    sol = solve(prob)
+
+    @test sol[evap.is_feas] == true
+end
+
+
+@testset "Glide Evaporator Clapyeron" begin
+    @independent_variables t
+    fluid = cPR(["Water"],idealmodel = ReidIdeal)
+    load_fluid(fluid)
+    T = 370; p = 101325;
+    start_mdot = 20 #g/s
+    z_ = CarnotCycles.mass_to_moles(fluid,1,start_mdot)
+    start_h = enthalpy(fluid,p,T,z_)
+    
+    @named source = MassSource()
+    @named evap = SimpleEvaporatorGlide()
+    @named sink = MassSink()
+
+    eqs = [
+        connect(source.port,evap.inport)
+        connect(evap.outport,sink.port)
+    ]
+    systems = [source,evap,sink]
+    para = [source.source_pressure => p, source.source_enthalpy => start_h,source.source_mdot => start_mdot, source.source_x => 1,
+    evap.ΔT_sh => 2, evap.T_htf_in => 400, evap.T_htf_out => 380]
+    u0 = []
+    @named model = ODESystem(eqs, t, systems=systems)
+    sys = structural_simplify(model)
+    prob = SteadyStateProblem(sys,u0,para)
+    sol = solve(prob)
+
+    @test sol[evap.is_feas] == true
+end
+
+@testset "Glide Evaporator Clapeyron two components" begin
+    @independent_variables t
+    fluid = cPR(["isobutane","isopentane"],idealmodel=ReidIdeal)
+    load_fluid(fluid)
+    T = 320; p = 101325*5.5 ;
+    start_mdot = 20 #g/s
+    x_ = 0.7
+    z_ = CarnotCycles.mass_to_moles(fluid,x_,start_mdot)
+    start_h = enthalpy(fluid,p,T,z_)
+    
+    @named source = MassSource()
+    @named evap = SimpleEvaporatorGlide()
+    @named sink = MassSink()
+
+    eqs = [
+        connect(source.port,evap.inport)
+        connect(evap.outport,sink.port)
+    ]
+    systems = [source,evap,sink]
+    para = [source.source_pressure => p, source.source_enthalpy => start_h,source.source_mdot => start_mdot, source.source_x => x_,
+    evap.ΔT_sh => 2, evap.T_htf_in => 340, evap.T_htf_out => 330]
+    u0 = []
+    @named model = ODESystem(eqs, t, systems=systems)
+    sys = structural_simplify(model)
+    prob = SteadyStateProblem(sys,u0,para)
+    sol = solve(prob)
+
+    @test sol[evap.is_feas] == true
+end
+
+
+@testset "Glide Condensor CoolProp" begin
+    @independent_variables t
+    load_fluid("Water")
+    T_start = 375; p = 101325;
+    h_start = PropsSI("H","T",T_start,"P",p,"Water")
+    start_mdot = 1e-2 #kg/s;
+    
+    @named source = MassSource()
+    @named cond = SimpleCondensorGlide()
+    @named sink = MassSink()
+
+    eqs = [
+        connect(source.port,cond.inport)
+        connect(cond.outport,sink.port)
+    ]
+    systems = [source,cond,sink]
+    para = [source.source_pressure => p, source.source_enthalpy => h_start,source.source_mdot => start_mdot,
+    cond.ΔT_sc => 2, cond.T_htf_in => 370, cond.T_htf_out => 372]
+    u0 = []
+    @named model = ODESystem(eqs, t, systems=systems)
+    sys = structural_simplify(model)
+    prob = SteadyStateProblem(sys,u0,para)
+    sol = solve(prob)
+
+    @test sol[cond.is_feas] == true
+end
+
+
+@testset "Glide Condensor Clapyeron" begin
+    @independent_variables t
+    fluid = cPR(["Water"],idealmodel = ReidIdeal)
+    load_fluid(fluid)
+    T = 375; p = 101325;
+    start_mdot = 20 #g/s
+    z_ = CarnotCycles.mass_to_moles(fluid,1,start_mdot)
+    start_h = enthalpy(fluid,p,T,z_)
+    
+    @named source = MassSource()
+    @named cond = SimpleCondensorGlide()
+    @named sink = MassSink()
+
+    eqs = [
+        connect(source.port,cond.inport)
+        connect(cond.outport,sink.port)
+    ]
+    systems = [source,cond,sink]
+    para = [source.source_pressure => p, source.source_enthalpy => start_h,source.source_mdot => start_mdot, source.source_x => 1,
+    cond.ΔT_sc => 2, cond.T_htf_in => 370, cond.T_htf_out => 372]
+    u0 = []
+    @named model = ODESystem(eqs, t, systems=systems)
+    sys = structural_simplify(model)
+    prob = SteadyStateProblem(sys,u0,para)
+    sol = solve(prob)
+
+    @test sol[cond.is_feas] == true
+end
+
+@testset "Glide Condensor Clapeyron two components" begin
+    @independent_variables t
+    fluid = cPR(["isobutane","isopentane"],idealmodel=ReidIdeal)
+    load_fluid(fluid)
+    T = 335; p = 101325*5.5 ;
+    start_mdot = 20 #g/s
+    x_ = 0.7
+    z_ = CarnotCycles.mass_to_moles(fluid,x_,start_mdot)
+    start_h = enthalpy(fluid,p,T,z_)
+    
+    @named source = MassSource()
+    @named cond = CarnotCycles.SimpleCondensorGlide()
+    @named sink = MassSink()
+
+    eqs = [
+        connect(source.port,cond.inport)
+        connect(cond.outport,sink.port)
+    ]
+    systems = [source,cond,sink]
+    para = [source.source_pressure => p, source.source_enthalpy => start_h,source.source_mdot => start_mdot, source.source_x => x_,
+    cond.ΔT_sc => 2, cond.T_htf_in => 315, cond.T_htf_out => 330]
+    u0 = []
+    @named model = ODESystem(eqs, t, systems=systems)
+    sys = structural_simplify(model)
+    prob = SteadyStateProblem(sys,u0,para)
+    sol = solve(prob)
+
+    @test sol[cond.is_feas] == true
 end
