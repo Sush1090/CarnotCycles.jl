@@ -1,6 +1,6 @@
 
 """
-
+A simple Schuman Packed Bed model. 
 """
 @component function PackedBed(;name,N)
     @named storeport = StoragePort()
