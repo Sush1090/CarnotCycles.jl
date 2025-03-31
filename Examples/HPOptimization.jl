@@ -13,22 +13,19 @@ p_crit = PropsSI("PCRIT",fluid)
 ΔT_superheat = start_T - PropsSI("T","P",start_p,"Q",0,fluid) ; # ensure the superheat temperature to reach bck to starting state.
 start_mdot = 0.034 #kg/s
 
-state_src = initialize_state(T_start = start_T,p_start=start_p,mdot = start_mdot)
 
-@named source = MassSource(state_src)
-@named comp = Compressor(_system)
-@named cond = SimpleCondensor(ΔT_sc = x[2],Δp = [0,0,0])
+@named source = MassSource()
+@named comp = IsentropicCompressor()
+@named cond = SimpleCondensor()
 @named valve = Valve()
-@named evap = SimpleEvaporator(ΔT_sh = ΔT_superheat,Δp = [0,0,0])
 @named sink = MassSink()
 eqs = [
     connect(source.port,comp.inport)
     connect(comp.outport,cond.inport)
     connect(cond.outport,valve.inport)
-    connect(valve.outport,evap.inport)
-    connect(evap.outport,sink.port)
+    connect(valve.outport,sink.port)
 ]
-systems=[source,comp,cond,valve,evap,sink] # Define system
+systems=[source,comp,cond,valve,sink] # Define system
 
 @named hp = ODESystem(eqs, t, systems=systems)
 sys = structural_simplify(hp)
@@ -38,13 +35,14 @@ function HP(x,p)
         sys.source.mdot => start_mdot, 
         sys.comp.πc => x[1], sys.comp.η => 0.55,
         sys.valve.πc => sys.comp.πc,
+        sys.cond.ΔT_sc => 2,
     ]
     prob = SteadyStateProblem(sys,u0,para)
     sol = solve(prob)
 
-   @show COP = sol[cond.P][1]/sol[comp.P][1]
+   @show COP = sol[cond.Qdot][1]/sol[comp.P][1]
     
-    Q = abs(sol[cond.P][1])
+    Q = abs(sol[cond.Qdot][1])
     @show Q
     @show sol[comp.P][1]
     #Tsat = sol[cond.T_sat][1]
@@ -56,9 +54,7 @@ function HP(x,p)
     if T_out < p[2]
         pen2 = abs(COP)
     end
-    @show cost = COP + pen1 + pen2
-#Check if the final state is close to the inital state. 
-    Compute_cycle_error(sol,systems)       
+    @show cost = COP + pen1 + pen2s   
     return cost 
 end
 
