@@ -8,6 +8,6 @@ makedocs(sitename = "CarnotCycles.jl",
 
 
 deploydocs(;
-               repo="github.com/Sush1090/CarnotCycles.jl",
+               repo="github.com/Sush1090/CarnotCycles.jl.git",
            )
            
