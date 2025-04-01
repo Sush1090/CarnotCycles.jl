@@ -1,9 +1,9 @@
-"""
-This checks if the temperature profile inside the evaporator violates physics or not.
+# """
+# This checks if the temperature profile inside the evaporator violates physics or not.
 
-    i.e. It will see for a evaporator that if the temperature of the working fluid was always less than the temperature of the heat transfer fluid.
-    if it is feasible then it will return `true` else `false`
-"""
+#     i.e. It will see for a evaporator that if the temperature of the working fluid was always less than the temperature of the heat transfer fluid.
+#     if it is feasible then it will return `true` else `false`
+# """
 function is_feasible_evaporator(T_wf::AbstractVector{T},T_htf::AbstractVector{T}) where T
     n = length(T_wf)
     @assert length(T_htf) == n
@@ -12,12 +12,12 @@ function is_feasible_evaporator(T_wf::AbstractVector{T},T_htf::AbstractVector{T}
 end
 @register_symbolic is_feasible_evaporator(T_wf::AbstractVector,T_htf::AbstractVector)
 
-"""
-This checks if the temperature profile inside the condensor violates physics or not.
+# """
+# This checks if the temperature profile inside the condensor violates physics or not.
 
-    i.e. It will see for a condensor that if the temperature of the working fluid was always more than the temperature of the heat transfer fluid.
-    if it is feasible then it will return `true` else `false`
-"""
+#     i.e. It will see for a condensor that if the temperature of the working fluid was always more than the temperature of the heat transfer fluid.
+#     if it is feasible then it will return `true` else `false`
+# """
 function is_feasible_condensor(T_wf::AbstractVector,T_htf::AbstractVector)
     n = length(T_wf)
     @assert length(T_htf) == n
@@ -27,10 +27,10 @@ end
 @register_symbolic is_feasible_condensor(T_wf::AbstractVector,T_htf::AbstractVector)
 
 
-"""
-A simple evaporator where the HTF inlet and outlet temperature is passed as a parameter.
-Has a variable `is_feas` which checks if the fluid passed through violates temperature profile condition or not.
-"""
+# """
+# A simple evaporator where the HTF inlet and outlet temperature is passed as a parameter.
+# Has a variable `is_feas` which checks if the fluid passed through violates temperature profile condition or not.
+# """
 @component function SimpleEvaporatorGlide(;name,fluid=set_fluid,N = 10)
     if fluid isa AbstractString
         return SimpleEvaporatorGlideCoolProp(name=name,fluid=fluid,N = N)

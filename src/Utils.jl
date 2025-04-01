@@ -16,16 +16,19 @@ CritPropSI(property::AbstractString,fluid::AbstractString) = CoolProp.PropsSI(pr
 
 global set_fluid = nothing
 global Nc = nothing
-"""
-`load_fluid(x::AbstractString)` - fixes fluid for simulation through components using CoolProp as backend.
-"""
+
+# """
+# `load_fluid(x::AbstractString)` - fixes fluid for simulation through components using CoolProp as backend.
+# """
 function load_fluid(x::AbstractString)
     CarnotCycles.set_fluid = x
     CarnotCycles.Nc = 1
     return CarnotCycles.set_fluid
 end
 
-"""`load_fluid(x::Clapeyron.EoSModel)` - fixes fluid for simulation through components using Clapeyron as backend"""
+# """
+# `load_fluid(x::Clapeyron.EoSModel)` - fixes fluid for simulation through components using Clapeyron as backend
+# """
 function load_fluid(x::Clapeyron.EoSModel)
     CarnotCycles.set_fluid = x
     CarnotCycles.Nc = size(x.components,1)
@@ -51,9 +54,9 @@ function Show_fluid_details(fluid=set_fluid)
 end
 export Show_fluid_details
 
-"""
-`mass_to_moles(model::EoSModel,x,mass)` : convert mass of fluid to number of moles based on the composition of 1st fluid by mass `x`
-"""
+# """
+# `mass_to_moles(model::EoSModel,x,mass)` : convert mass of fluid to number of moles based on the composition of 1st fluid by mass `x`
+# """
 function mass_to_moles(model::EoSModel,x,mass)
     @assert 0<x<=1
     if size(model.components,1) == 1
@@ -75,9 +78,9 @@ end
 
 
 
-"""
-Mass source -  Use when the cycle needs a start point. Requires initial enthalpy,pressure and Massflowrate
-"""
+# """
+# Mass source -  Use when the cycle needs a start point. Requires initial enthalpy,pressure and Massflowrate
+# """
 @component function MassSource(;name,fluid = set_fluid) 
     if isnothing(fluid)
         throw(error("Fluid not selected"))
@@ -91,11 +94,11 @@ Mass source -  Use when the cycle needs a start point. Requires initial enthalpy
     end
 end
 
-"""
-`function MassSourceCoolProp(;name, fluid = set_fluid)`
+# """
+# `function MassSourceCoolProp(;name, fluid = set_fluid)`
 
-    Mass source for `CoolProp` base code.
-"""
+#     Mass source for `CoolProp` base code.
+# """
 @component function MassSourceCoolProp(;name, fluid = set_fluid)
     @named port = CoolantPort()
     para = @parameters begin
@@ -163,9 +166,9 @@ end
 end
 
 
-"""
-Mass sink -  Use when the cycle needs a end point. Sets the final port input values to the variables
-"""
+# """
+# Mass sink -  Use when the cycle needs a end point. Sets the final port input values to the variables
+# """
 @component function MassSink(;name,fluid = set_fluid) 
     if isnothing(fluid)
         throw(error("Fluid not selected"))
@@ -241,13 +244,13 @@ end
 end
 
 
-"""
-ComputeSpecificLatentHeat: Computes the specific latent heat of the give fluid at a particular varliable value. var1 should not be enthalpy or vapour quality
-*Arguments:
--'var1'     : Variable String. Uses CoolProp variable strings
--'value1'   : Value of the variale chosen
--'fluid'    : Fluid name string
-"""
+# """
+# ComputeSpecificLatentHeat: Computes the specific latent heat of the give fluid at a particular varliable value. var1 should not be enthalpy or vapour quality
+# *Arguments:
+# -'var1'     : Variable String. Uses CoolProp variable strings
+# -'value1'   : Value of the variale chosen
+# -'fluid'    : Fluid name string
+# """
 function ComputeSpecificLatentHeat(var1::AbstractString,value1,fluid::AbstractString)
     @assert var1 != "Q"
     H_L = PropsSI("H",var1,value1,"Q",0,fluid)

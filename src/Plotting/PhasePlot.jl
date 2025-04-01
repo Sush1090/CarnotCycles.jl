@@ -46,6 +46,7 @@ function CollectPhaseData(sol::ODESolution,system::Vector{ODESystem},fluid::Abst
     return p_range,h_range,T_sat,s_sat_liquid,s_sat_gas,h_sat_liquid,h_sat_gas,p_sat_curve
 end
 
+
 function PhasePlot(type::PhasePlotType_TS,sol::ODESolution,system::Vector{ODESystem},fluid::AbstractString=set_fluid)
     if isnothing(fluid)
         throw(error("Fluid not selected"))
@@ -78,15 +79,16 @@ function PhasePlot(type::PhasePlotType_TS,sol::ODESolution,system::Vector{ODESys
     return fig1
 end
 
-"""
-`PhasePlot(type::PhasePlotType_PH,sol::ODESolution,system::Vector{ODESystem},fluid::AbstractString=set_fluid)`
 
-Plots the saturation curve of the fluid along with the cycle state-points. 
- * Arguments:
-    1. `type`   : Chose between `PhasePlotType_PH` or `PhasePlotType_TS`
-    2. `sol`    : The solution from the ODE system. 
-    3. `system` : The vector of components chosen. The first should be `MassSource` and the last has to be `MassSink`.
-"""
+# """
+# `PhasePlot(type::PhasePlotType_PH,sol::ODESolution,system::Vector{ODESystem},fluid::AbstractString=set_fluid)`
+
+# Plots the saturation curve of the fluid along with the cycle state-points. 
+#  * Arguments:
+#     1. `type`   : Chose between `PhasePlotType_PH` or `PhasePlotType_TS`
+#     2. `sol`    : The solution from the ODE system. 
+#     3. `system` : The vector of components chosen. The first should be `MassSource` and the last has to be `MassSink`.
+# """
 function PhasePlot(type::PhasePlotType_PH,sol::ODESolution,system::Vector{ODESystem},fluid::AbstractString=set_fluid)
     if isnothing(fluid)
         throw(error("Fluid not selected"))
@@ -116,17 +118,17 @@ end
 
 export PhasePlot
 
-"""
-`CyclePlot(type::PhasePlotType_PH,sol::ODESolution,system::Vector{ODESystem},fluid::AbstractString=set_fluid)`
+# """
+# `CyclePlot(type::PhasePlotType_PH,sol::ODESolution,system::Vector{ODESystem},fluid::AbstractString=set_fluid)`
 
-Added Cycle ploting without saturation curve. Only plots the  cycle state points and their path on P-H plane. 
+# Added Cycle ploting without saturation curve. Only plots the  cycle state points and their path on P-H plane. 
 
- * Arguments:
-    1. `type`   : Chose between `PhasePlotType_PH` or `PhasePlotType_TS`
-    2. `sol`    : The solution from the ODE system. 
-    3. `system` : The vector of components chosen. The first should be `MassSource` and the last has to be `MassSink`.
-    4. `fluid`  : The fluid of chosen. Defaults to `set_fluid`
-"""
+#  * Arguments:
+#     1. `type`   : Chose between `PhasePlotType_PH` or `PhasePlotType_TS`
+#     2. `sol`    : The solution from the ODE system. 
+#     3. `system` : The vector of components chosen. The first should be `MassSource` and the last has to be `MassSink`.
+#     4. `fluid`  : The fluid of chosen. Defaults to `set_fluid`
+# """
 function CyclePlot(type::PhasePlotType_PH,sol::ODESolution,system::Vector{ODESystem},fluid::AbstractString=set_fluid)
     if isnothing(fluid)
         throw(error("Fluid not selected"))
@@ -151,17 +153,17 @@ function CyclePlot(type::PhasePlotType_PH,sol::ODESolution,system::Vector{ODESys
     return fig1
 end
 
-"""
-`CyclePlot(type::PhasePlotType_TS,sol::ODESolution,system::Vector{ODESystem},fluid::AbstractString=set_fluid)`
+# """
+# `CyclePlot(type::PhasePlotType_TS,sol::ODESolution,system::Vector{ODESystem},fluid::AbstractString=set_fluid)`
 
-Added Cycle ploting without saturation curve. Only plots the  cycle state points and their path on T-S plane. 
+# Added Cycle ploting without saturation curve. Only plots the  cycle state points and their path on T-S plane. 
 
- * Arguments:
-    1. `type`   : Chose between `PhasePlotType_PH` or `PhasePlotType_TS`
-    2. `sol`    : The solution from the ODE system. 
-    3. `system` : The vector of components chosen. The first should be `MassSource` and the last has to be `MassSink`.
-    4. `fluid`  : The fluid of chosen. Defaults to `set_fluid`
-"""
+#  * Arguments:
+#     1. `type`   : Chose between `PhasePlotType_PH` or `PhasePlotType_TS`
+#     2. `sol`    : The solution from the ODE system. 
+#     3. `system` : The vector of components chosen. The first should be `MassSource` and the last has to be `MassSink`.
+#     4. `fluid`  : The fluid of chosen. Defaults to `set_fluid`
+# """
 function CyclePlot(type::PhasePlotType_TS,sol::ODESolution,system::Vector{ODESystem},fluid::AbstractString=set_fluid)
     if isnothing(fluid)
         throw(error("Fluid not selected"))

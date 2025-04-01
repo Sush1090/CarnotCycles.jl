@@ -1,6 +1,6 @@
-"""
-Makes single node at ports. This node is Pressure,Enthalpy and Massflowrate
-"""
+# """
+# Makes single node at ports. This node is Pressure,Enthalpy and Massflowrate
+# """
 @connector  function CoolantPort(;name,fluid = set_fluid) 
     if fluid isa EoSModel
         return CoolantPortClapeyron(;name = name)
@@ -80,9 +80,9 @@ end
     ODESystem(Equation[], t, vars, [];name=name)
 end
 
-"""
- Storage port that connect the storage HTF to the thermal storage
-"""
+# """
+#  Storage port that connect the storage HTF to the thermal storage
+# """
 @connector function StoragePort(;name)
     vars = @variables begin
         T(t), [input = true,description ="Temperature of Storage HTF"]

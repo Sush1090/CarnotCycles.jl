@@ -1,7 +1,7 @@
 
-"""
-`Valve(;name,fluid): Isenthalpic valve`
-"""
+# """
+# `Valve(;name,fluid): Isenthalpic valve`
+# """
 function Valve(;name,fluid = set_fluid) 
     if isnothing(fluid)
         throw(error("Fluid not selected"))
@@ -15,7 +15,7 @@ function Valve(;name,fluid = set_fluid)
 end
 
 
-function ValveCoolProp(;name,fluid=set_fluid)
+@component function ValveCoolProp(;name,fluid=set_fluid)
     @named inport = CoolantPort()
     @named outport = CoolantPort()
     vars = @variables begin
