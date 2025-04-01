@@ -13,4 +13,4 @@ pages = [
 ]
 )
 
-deploydocs(repo = "https://github.com/Sush1090/CarnotCycles.jl",push_preview = true)
+deploydocs(repo = "github.com/Sush1090/CarnotCycles.jl",push_preview = true)
