@@ -35,7 +35,7 @@
 end
 
 
-function IsentropicCompressorCoolProp(;name,fluid = set_fluid) 
+@component function IsentropicCompressorCoolProp(;name,fluid = set_fluid) 
     if isnothing(fluid)
         throw(error("Fluid not selected"))
     end
