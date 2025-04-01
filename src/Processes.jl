@@ -1,18 +1,18 @@
 
 using CoolProp, ModelingToolkit
 
-# """
-# `IsentropicCompression(πc, h_in, p_in,fluid,η)`
+"""
+`IsentropicCompression(πc, h_in, p_in,fluid,η)`
 
-# * Arguments:
-#     1. `πc`   : Pressure Ratio
-#     2. `h_in` : Inlet Enthalpy
-#     3. `p_in` : Inlet Pressure
-#     4. `fluid`: Fluid
-#     5. `η`    : Isentropic Efficiency
+* Arguments:
+    1. `πc`   : Pressure Ratio
+    2. `h_in` : Inlet Enthalpy
+    3. `p_in` : Inlet Pressure
+    4. `fluid`: Fluid
+    5. `η`    : Isentropic Efficiency
 
-# * Output -> Outlet enthalpy after isentropic compression
-# """
+* returns : Outlet enthalpy after isentropic compression
+"""
 function IsentropicCompression(πc, h_in, p_in,fluid,η)
     @assert η <= 1 "Efficiency more than 1"
     s_in = PropsSI("S", "H", h_in, "P", p_in, fluid)
@@ -23,6 +23,20 @@ end
 @register_symbolic IsentropicCompression(πc, h_in, p_in,fluid::String,η)
 export IsentropicCompression
 
+
+"""
+`IsentropicCompressionClapeyron(πc, h_in, p_in,z,fluid,η)`
+
+* Arguments:
+    1. `πc`   : Pressure Ratio
+    2. `h_in` : Inlet Enthalpy
+    3. `p_in` : Inlet Pressure
+    4. `fluid`: Fluid
+    5. `z`    : Moles
+    6. `η`    : Isentropic Efficiency
+
+* returns : Outlet enthalpy after isentropic compression
+"""
 function IsentropicCompressionClapeyron(πc, h_in, p_in,z,fluid::EoSModel,η)
     @assert η <= 1 "Efficiency more than 1"
     s_in =  ph_entropy(fluid,p_in,h_in,z)
@@ -33,18 +47,18 @@ end
 @register_symbolic IsentropicCompressionClapeyron(πc, h_in, p_in,z,fluid::EoSModel,η)
 export IsentropicCompressionClapeyron
 
-# """
-# `IsentropicExpansion(πc, h_in, p_in,fluid,η)`
+"""
+`IsentropicExpansion(πc, h_in, p_in,fluid,η)`
 
-# * Arguments:
-#     1. `πc`   : Pressure Ratio
-#     2. `h_in` : Inlet Enthalpy
-#     3. `p_in` : Inlet Pressure
-#     4. `fluid`: Fluid
-#     5. `η`    : Isentropic Efficiency
+* Arguments:
+    1. `πc`   : Pressure Ratio
+    2. `h_in` : Inlet Enthalpy
+    3. `p_in` : Inlet Pressure
+    4. `fluid`: Fluid
+    5. `η`    : Isentropic Efficiency
 
-# * Output -> Outlet enthalpy after isentropic expansion
-# """
+* returns : Outlet enthalpy after isentropic expansion
+"""
 function IsentropicExpansion(πc, h_in, p_in,fluid,η)
     @assert η <= 1 "Efficiency more than 1"
     s_in = PropsSI("S", "H", h_in, "P", p_in, fluid)
@@ -55,6 +69,19 @@ end
 @register_symbolic IsentropicExpansion(πc, h_in, p_in,fluid::AbstractString,η)
 export IsentropicExpansion
 
+"""
+`IsentropicExpansionClapeyron(πc, h_in, p_in,z,fluid,η)`
+
+* Arguments:
+    1. `πc`   : Pressure Ratio
+    2. `h_in` : Inlet Enthalpy
+    3. `p_in` : Inlet Pressure
+    4. `fluid`: Fluid
+    5. `z`    : Moles
+    6. `η`    : Isentropic Efficiency
+
+* returns : Outlet enthalpy after isentropic expansion
+"""
 function IsentropicExpansionClapeyron(πc, h_in, p_in,z,fluid::EoSModel,η)
     @assert η <= 1 "Efficiency more than 1"
     s_in =  ph_entropy(fluid,p_in,h_in,z)
@@ -65,6 +92,19 @@ end
 @register_symbolic IsentropicExpansionClapeyron(πc, h_in, p_in,z,fluid::EoSModel,η)
 export IsentropicExpansionClapeyron
 
+"""
+`PT_IsentropicExpansionClapeyron(model::EoSModel,T_in,p_in,z,πc,η)`
+
+* Arguments:
+    1. `πc`   : Pressure Ratio
+    2. `T_in` : Inlet Temperature
+    3. `p_in` : Inlet Pressure
+    4. `fluid`: Fluid
+    5. `z`    : Moles
+    6. `η`    : Isentropic Efficiency
+
+* returns : Outlet Temperature after isentropic expansion
+"""
 function PT_IsentropicExpansionClapeyron(model::EoSModel,T_in,p_in,z,πc,η)
     @assert πc >=1
     @assert η <= 1
@@ -80,17 +120,17 @@ function PT_IsentropicExpansionClapeyron(model::EoSModel,T_in,p_in,z,πc,η)
 end
 @register_symbolic PT_IsentropicExpansionClapeyron(model::EoSModel,T_in,p_in,z,πc,η)
 
-# """
-# `IsochoricCompression(πc, h_in, p_in,fluid)`
+"""
+`IsochoricCompression(πc, h_in, p_in,fluid)`
 
-# * Arguments:
-#     1. `πc`   : Pressure Ratio
-#     2. `h_in` : Inlet Enthalpy
-#     3. `p_in` : Inlet Pressure
-#     4. `fluid`: Fluid
+* Arguments:
+    1. `πc`   : Pressure Ratio
+    2. `h_in` : Inlet Enthalpy
+    3. `p_in` : Inlet Pressure
+    4. `fluid`: Fluid
 
-# * Output -> Outlet enthalpy after isochoric compression
-# """
+* Output -> Outlet enthalpy after isochoric compression
+"""
 function IsochoricCompression(πc, h_in, p_in,fluid)
     v_in = 1/PropsSI("D", "H", h_in, "P", p_in, fluid)
     h_out =  PropsSI("H", "D", 1/v_in, "P", πc*p_in, fluid)
@@ -99,6 +139,19 @@ end
 @register_symbolic IsochoricCompression(πc, h_in, p_in,fluid::AbstractString)
 export IsochoricCompression
 
+
+"""
+`IsochoricCompressionClapeyron(πc, h_in, p_in,z::Array,fluid::EoSModel)`
+
+* Arguments:
+    1. `πc`   : Pressure Ratio
+    2. `h_in` : Inlet Enthalpy
+    3. `p_in` : Inlet Pressure
+    4. `z`    : Moles
+    5. `fluid`: Fluid
+
+* Output -> Outlet enthalpy after isochoric compression
+"""
 function IsochoricCompressionClapeyron(πc, h_in, p_in,z::Array,fluid::EoSModel)
     v_in =  ph_volume(fluid,p_in,h_in,z)
     p_out = p_in*πc
@@ -110,17 +163,17 @@ end
 @register_symbolic IsochoricCompressionClapeyron(πc, h_in, p_in,z::Array,fluid::EoSModel)
 export IsochoricCompressionClapeyron
 
-# """
-# `IsochoricExpansion(πc, h_in, p_in,fluid)`
+"""
+`IsochoricExpansion(πc, h_in, p_in,fluid)`
 
-# * Arguments:
-#     1. `πc`   : Pressure Ratio
-#     2. `h_in` : Inlet Enthalpy
-#     3. `p_in` : Inlet Pressure
-#     4. `fluid`: Fluid
+* Arguments:
+    1. `πc`   : Pressure Ratio
+    2. `h_in` : Inlet Enthalpy
+    3. `p_in` : Inlet Pressure
+    4. `fluid`: Fluid
 
-# * Output -> Outlet enthalpy after isochoric expansion
-# """
+* Output -> Outlet enthalpy after isochoric expansion
+"""
 function IsochoricExpansion(πc, h_in, p_in,fluid)
     v_in = 1/PropsSI("D", "H", h_in, "P", p_in, fluid)
     h_out =  PropsSI("H", "D", 1/v_in, "P", p_in/πc, fluid)
@@ -128,6 +181,19 @@ function IsochoricExpansion(πc, h_in, p_in,fluid)
 end
 @register_symbolic IsochoricExpansion(πc, h_in, p_in,fluid::AbstractString)
 export IsochoricExpansion
+
+"""
+`IsochoricExpansionClapeyron(πc, h_in, p_in,z::Array,fluid::EoSModel)`
+
+* Arguments:
+    1. `πc`   : Pressure Ratio
+    2. `h_in` : Inlet Enthalpy
+    3. `p_in` : Inlet Pressure
+    4. `z`    : Moles
+    5. `fluid`: Fluid
+
+* Output -> Outlet enthalpy after isochoric expansion
+"""
 function IsochoricExpansionClapeyron(πc, h_in, p_in,z::Array,fluid::EoSModel)
     v_in =  ph_volume(fluid,p_in,h_in,z)
     p_out = p_in/πc
@@ -139,17 +205,17 @@ end
 @register_symbolic IsochoricExpansionClapeyron(πc, h_in, p_in,z::Array,fluid::EoSModel)
 export IsochoricExpansionClapeyron
 
-# """
-# `IsothermalCompression(πc, h_in, p_in,fluid)`
+"""
+`IsothermalCompression(πc, h_in, p_in,fluid)`
 
-# * Arguments:
-#     1. `πc`   : Pressure Ratio
-#     2. `h_in` : Inlet Enthalpy
-#     3. `p_in` : Inlet Pressure
-#     4. `fluid`: Fluid
+* Arguments:
+    1. `πc`   : Pressure Ratio
+    2. `h_in` : Inlet Enthalpy
+    3. `p_in` : Inlet Pressure
+    4. `fluid`: Fluid
 
-# * Output -> Outlet enthalpy after Isothermal Compression
-# """
+* Output -> Outlet enthalpy after Isothermal Compression
+"""
 function IsothermalCompression(πc, h_in, p_in,fluid)
     T_in = PropsSI("T", "H", h_in, "P", p_in, fluid)
     h_out = PropsSI("H", "T", T_in, "P",πc*p_in, fluid)
@@ -158,6 +224,18 @@ end
 @register_symbolic IsothermalCompression(πc, h_in, p_in,fluid::AbstractString)
 export IsothermalCompression
 
+"""
+`IsothermalCompressionClapeyron(πc, h_in, p_in,z,fluid::EoSModel)`
+
+* Arguments:
+    1. `πc`   : Pressure Ratio
+    2. `h_in` : Inlet Enthalpy
+    3. `p_in` : Inlet Pressure
+    4. `z`    : Moles
+    5. `fluid`: Fluid
+
+* Output -> Outlet enthalpy after Isothermal compression
+"""
 function IsothermalCompressionClapeyron(πc, h_in, p_in,z,fluid::EoSModel)
     T_in =  ph_temperature(fluid,p_in,h_in,z)
     h_out = pt_enthalpy(fluid,p_in*πc,T_in,z)
@@ -166,6 +244,19 @@ end
 @register_symbolic IsothermalCompressionClapeyron(πc, h_in, p_in,z,fluid::EoSModel)
 export IsothermalCompressionClapeyron
 
+
+"""
+`IsothermalExpansionClapeyron(πc, h_in, p_in,z,fluid::EoSModel)`
+
+* Arguments:
+    1. `πc`   : Pressure Ratio
+    2. `h_in` : Inlet Enthalpy
+    3. `p_in` : Inlet Pressure
+    4. `z`    : Moles
+    5. `fluid`: Fluid
+
+* Output -> Outlet enthalpy after Isothermal expansion
+"""
 function IsothermalExpansionClapeyron(πc, h_in, p_in,z,fluid::EoSModel)
     T_in =  ph_temperature(fluid,p_in,h_in,z)
     h_out = pt_enthalpy(fluid,p_in/πc,T_in,z)
@@ -175,17 +266,17 @@ end
 export IsothermalExpansionClapeyron
 
 
-# """
-# `IsothermalExpansion(πc, h_in, p_in,fluid)`
+"""
+`IsothermalExpansion(πc, h_in, p_in,fluid)`
 
-# * Arguments:
-#     1. `πc`   : Pressure Ratio
-#     2. `h_in` : Inlet Enthalpy
-#     3. `p_in` : Inlet Pressure
-#     4. `fluid`: Fluid
+* Arguments:
+    1. `πc`   : Pressure Ratio
+    2. `h_in` : Inlet Enthalpy
+    3. `p_in` : Inlet Pressure
+    4. `fluid`: Fluid
 
-# * Output -> Outlet enthalpy after Isothermal Expansion
-# """
+* Output -> Outlet enthalpy after Isothermal Expansion
+"""
 function IsothermalExpansion(πc, h_in, p_in,fluid)
     T_in = PropsSI("T", "H", h_in, "P", p_in, fluid)
     h_out = PropsSI("H", "T", T_in, "P", p_in/πc, fluid)

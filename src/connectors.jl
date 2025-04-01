@@ -1,6 +1,6 @@
-# """
-# Makes single node at ports. This node is Pressure,Enthalpy and Massflowrate
-# """
+"""
+Makes node for port connections. This node is Pressure,Enthalpy, Mass flow rate and mass fraction of first fluid (incase of Clapyeron Mixture).
+"""
 @connector  function CoolantPort(;name,fluid = set_fluid) 
     if fluid isa EoSModel
         return CoolantPortClapeyron(;name = name)
@@ -51,6 +51,9 @@ end
     ODESystem(Equation[], t, vars, [];name=name)
 end
 
+"""
+Makes node for port connections. This node is Pressure,Temperature, Mass flow rate and mass fraction of first fluid (incase of Clapyeron Mixture). Use this when the two-phase details of the fluid are not necessary.
+"""
 @connector function RefPort(;name,fluid = set_fluid)
     if fluid isa EoSModel
         return RefPortClapeyron(;name = name)
@@ -63,6 +66,9 @@ end
     end
 end
 
+"""
+
+"""
 @connector function PowerPort(;name)
     vars = @variables begin 
         P(t),  [description = "Power (W)",input = true]
@@ -70,7 +76,9 @@ end
     ODESystem(Equation[], t, vars, [];name=name)
 end
 
-
+"""
+`HeatPort`: Variables are Q, t_in, T_out
+"""
 @connector function HeatPort(;name)
     vars = @variables begin 
         Q(t),  [description = "Heat rate (W)",input = true]
@@ -80,9 +88,9 @@ end
     ODESystem(Equation[], t, vars, [];name=name)
 end
 
-# """
-#  Storage port that connect the storage HTF to the thermal storage
-# """
+"""
+ Storage port that connect the storage HTF to the thermal storage. Contains Temperature and mass flow rate of the HTF.
+"""
 @connector function StoragePort(;name)
     vars = @variables begin
         T(t), [input = true,description ="Temperature of Storage HTF"]
@@ -93,6 +101,10 @@ end
 
 export StoragePort
 
+
+"""
+Ambient temperature node.
+"""
 @connector function AmbientNode(;node)
     vars = @variables begin
         T(t), [input = true,description ="Ambient Temperature"]
@@ -100,4 +112,4 @@ export StoragePort
     ODESystem(Equation[],t,vars,[],name=name)
 end
 
-export PowerPort, AmbientNode, HeatPort
+export PowerPort, AmbientNode, HeatPort, CoolantPort, RefPort
