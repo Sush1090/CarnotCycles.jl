@@ -1,8 +1,8 @@
 # Cycle Optimization
 
-So we have seen before on how to model basic cycles. But now we would like to know what would be the most optimum parameters to model a cycle.
 
-Here we take the case of an Organic Rankine cycle, we would like to know what are the most optimal parameters to get the most efficient cycle.  
+
+So we have seen before on how to model basic cycles. But now we would like to know what would be the most optimum parameters to model a cycle.
 
 The cycles created can be wrapped with functions and sent to optimization routines. Most of the optimal solutions of purely theromodynamic systems lie at the boundary of constrains or saturation curve. Hence the initial box of constrain chosen has to be robust enough to have decent volume of feasible solutions.
 
@@ -10,12 +10,23 @@ The most trusted algorithms for thermodynamic optimizations are Genetic Algorith
 [Optimization.jl](https://docs.sciml.ai/Optimization/stable/) and [Metaheuristics.jl](https://github.com/jmejia8/Metaheuristics.jl)
 
 
-Example:
+
+## Example
+
+Here we take the case of an Organic Rankine cycle, we would like to know what are the most optimal parameters to get the most efficient cycle. 
+
+![Simple_ORC_with_basic_glide](Images/ORCOptimization/ORC_Simple.png) 
+
+A simple ORC contains a pump, evaporator, expander and condensor.
 
 Here we use the condensor and evaporators such that the inlet and outlet temperature of the heat transfer fluids are known. 
 
-This puts an additional constraint on the heat exchanges, i.e. the temperature profile of the heat transfer fluid and the working fluid should not cross each other. 
+This puts an additional constraint on the heat exchanges, i.e. the temperature profile of the heat transfer fluid and the working fluid should not cross each other. In other words we want to know what would be the most efficient ORC that fits two temperature profile bounds.
 
+![Simple_ORC_optimization](Images/ORCOptimization/ORC_SchematicOptimization.png)
+
+
+So we first describe our cycle:
 ```julia
 using CarnotCycles, ModelingToolkit, Clapeyron, DifferentialEquations
 fluid = cPR(["isopentane","isobutane"],idealmodel = ReidIdeal)
@@ -36,7 +47,7 @@ systems = [source,pump,evaporator,turbine,condensor,sink]
 @time sys = structural_simplify(system)
 ```
 
-Now we have define our system we can make a function to pass to the optimizer.
+Now we have define our cycle we can make a function to pass to the optimizer.
 
 
 
