@@ -1,4 +1,8 @@
+"""
+`IsentropicCompressor(;name,fluid=set_fluid)`
 
+A compressor with isentropic Effeciency and pressure ratio as a parameter is chosen. 
+"""
 @component function IsentropicCompressor(;name,fluid=set_fluid)
     if fluid isa AbstractString
         return IsentropicCompressorCoolProp(name=name,fluid=fluid)
@@ -221,7 +225,11 @@ function IsothermalCompressorClapeyron(;name,fluid = set_fluid)
    compose(ODESystem(eqs, t, vars, para;name), inport, outport,power)
 end
 
+"""
+`IsothermalCompressor(;name,fluid = set_fluid)`
 
+A compressor with pressure ratio as a parameter is chosen. 
+"""
 @component function IsothermalCompressor(;name,fluid = set_fluid)
     if fluid isa AbstractString
         return IsothermalCompressorCoolProp(name=name,fluid=fluid)
@@ -336,6 +344,11 @@ function IsochoricCompressorClapeyron(;name,fluid = set_fluid)
    compose(ODESystem(eqs, t, vars, para;name), inport, outport,power)
 end
 
+"""
+`IsochoricCompressor(;name,fluid = set_fluid)`
+
+A compressor with pressure ratio as a parameter is chosen. 
+"""
 @component function IsochoricCompressor(;name,fluid = set_fluid)
     if fluid isa AbstractString
         return IsochoricCompressorCoolProp(name=name,fluid=fluid)

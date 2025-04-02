@@ -1,4 +1,4 @@
-# Tutorial
+# Guide
 
 ## Loading Fluids
 
@@ -30,7 +30,7 @@ A cycle consists of various components through which the fluid passes. These com
 To load any component follow ModelingToolkit.jl's `@named` framework. For example: 
 
 ```julia
-using ModelingToolkit
+using ModelingToolkit, CoolProp, CarnotCycles
 
 @named evaporator = SimpleEvaporator()
 ```

@@ -1,6 +1,8 @@
-# """
-# `IsentropicExpander(;name,fluid=set_fluid)` 
-# """
+"""
+`IsentropicExpander(;name,fluid=set_fluid)` 
+
+A expander with isentropic Effeciency and pressure ratio as a parameter is chosen.
+"""
 @component function IsentropicExpander(;name,fluid=set_fluid)
     if fluid isa AbstractString
         return IsentropicExpanderCoolProp(name=name,fluid=fluid)

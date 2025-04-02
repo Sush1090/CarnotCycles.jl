@@ -1,5 +1,10 @@
 
+"""
+`SimpleCondensor(;name,fluid=set_fluid)`
 
+Evaporates the fluid to `ΔT_sh` above the saturation point. If the fluid is above the critical point then cools it to `ΔT_sh` above the critical temperature.
+No pressure drop is considered. 
+"""
 @component function SimpleEvaporator(;name,fluid=set_fluid)
     if fluid isa AbstractString
         return SimpleEvaporatorCoolProp(name=name,fluid=fluid)

@@ -1,3 +1,8 @@
+"""
+`Pump(;name,fluid = set_fluid)`
+
+A pump with isentropic Efficiency and pressure ratio as parameter is chosen. Ensure that inlet to the pump is liquid by checking the internal variable `LiquidPhase`.
+"""
 @component function Pump(;name,fluid = set_fluid)
     if fluid isa AbstractString
         return PumpCoolProp(name=name,fluid=fluid)

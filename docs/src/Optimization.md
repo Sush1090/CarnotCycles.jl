@@ -26,7 +26,7 @@ Choose the components
 ```julia
 @named source = MassSource()
 @named pump = Pump()
-@named evaporator = SimpleEvaporatorGlide(N = 10)  # N is the number of interal discrtization points
+@named evaporator = SimpleEvaporatorGlide(N = 10)  # N is the number of interal discretization points
 @named turbine = IsentropicExpander()
 @named condensor = SimpleCondensorGlide(N = 10)
 @named sink = MassSink()

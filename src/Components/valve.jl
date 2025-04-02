@@ -1,7 +1,9 @@
 
-# """
-# `Valve(;name,fluid): Isenthalpic valve`
-# """
+"""
+`Valve(;name,fluid)`
+
+Isenthalpic Valve with pressure ratio as a parameter.
+"""
 function Valve(;name,fluid = set_fluid) 
     if isnothing(fluid)
         throw(error("Fluid not selected"))

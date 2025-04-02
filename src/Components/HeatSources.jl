@@ -1,28 +1,30 @@
 
 
-# """
-# `IsobaricHeatSource(;name,Q_dot,fluid = set_fluid)`
-#    A heat source independent of temperature and no pressure drop
-# *    Arguments: 
-#     1. `Q_dot`     : Total heat supplied
-    
-# *    Local Variables:
-#     1. `P`      : Power  
-#     2. `s_in`   : Inlet Entropy
-#     3. `p_in`   : Inlet Pressure
-#     4. `T_in`   : Inlet Temperature
-#     5. `h_in`   : Inlet Enthalpy
-#     6. `ρ_in`   : Inlet Density
-#     7. `s_out`  : Outlet Entropy
-#     8. `p_out`  : Outlet Pressure
-#     9. `T_out`  : Outlet Temperature
-#     10. `h_out` : Outlet Enthalpy
-#     11. `ρ_out` : Outlet Density
+"""
+`IsobaricHeatSource(;name,Q_dot,fluid = set_fluid)`
 
-# *    Port Variables:
-#     1. `inport`         : `p` and `h`
-#     2. `outport`        : `p` and `h`
-# """
+   A heat source independent of temperature and no pressure drop
+
+*    Arguments: 
+    1. `Q_dot`     : Total heat supplied
+    
+*    Local Variables:
+    1. `P`      : Power  
+    2. `s_in`   : Inlet Entropy
+    3. `p_in`   : Inlet Pressure
+    4. `T_in`   : Inlet Temperature
+    5. `h_in`   : Inlet Enthalpy
+    6. `ρ_in`   : Inlet Density
+    7. `s_out`  : Outlet Entropy
+    8. `p_out`  : Outlet Pressure
+    9. `T_out`  : Outlet Temperature
+    10. `h_out` : Outlet Enthalpy
+    11. `ρ_out` : Outlet Density
+
+*    Port Variables:
+    1. `inport`         : `p` and `h`
+    2. `outport`        : `p` and `h`
+"""
 function IsobaricHeatSource(;name,fluid = set_fluid) 
     if isnothing(fluid)
         throw(error("Fluid not selected"))
@@ -66,29 +68,31 @@ end
 
 export IsobaricHeatSource
 
-# """
-# `IsobaricHeatSink(;name,Q_dot,fluid = set_fluid)`
-#    A heat sink independent of temperature and no pressure drop
-# *    Arguments: 
-#     1. `Q_dot`     : Total heat supplied
-    
-# *    Local Variables:
-#     1. `P`      : Power  
-#     2. `s_in`   : Inlet Entropy
-#     3. `p_in`   : Inlet Pressure
-#     4. `T_in`   : Inlet Temperature
-#     5. `h_in`   : Inlet Enthalpy
-#     6. `ρ_in`   : Inlet Density
-#     7. `s_out`  : Outlet Entropy
-#     8. `p_out`  : Outlet Pressure
-#     9. `T_out`  : Outlet Temperature
-#     10. `h_out` : Outlet Enthalpy
-#     11. `ρ_out` : Outlet Density
+"""
+`IsobaricHeatSink(;name,Q_dot,fluid = set_fluid)`
 
-# *    Port Variables:
-#     1. `inport`         : `p` and `h`
-#     2. `outport`        : `p` and `h`
-# """
+   A heat sink independent of temperature and no pressure drop
+   
+*    Arguments: 
+    1. `Q_dot`     : Total heat supplied
+    
+*    Local Variables:
+    1. `P`      : Power  
+    2. `s_in`   : Inlet Entropy
+    3. `p_in`   : Inlet Pressure
+    4. `T_in`   : Inlet Temperature
+    5. `h_in`   : Inlet Enthalpy
+    6. `ρ_in`   : Inlet Density
+    7. `s_out`  : Outlet Entropy
+    8. `p_out`  : Outlet Pressure
+    9. `T_out`  : Outlet Temperature
+    10. `h_out` : Outlet Enthalpy
+    11. `ρ_out` : Outlet Density
+
+*    Port Variables:
+    1. `inport`         : `p` and `h`
+    2. `outport`        : `p` and `h`
+"""
 function IsobaricHeatSink(;name,fluid = set_fluid) 
     if isnothing(fluid)
         throw(error("Fluid not selected"))

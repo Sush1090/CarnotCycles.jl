@@ -1,5 +1,10 @@
 
+"""
+`SimpleCondensor(;name,fluid=set_fluid)`
 
+Condenses the fluid to `ΔT_sc` below the saturation point. If the fluid is above the critical point then cools it to `ΔT_sc` below the critical temperature.
+No pressure drop is considered. 
+"""
 @component function SimpleCondensor(;name,fluid=set_fluid)
     if fluid isa AbstractString
         return SimpleCondensorCoolProp(name=name,fluid=fluid)
