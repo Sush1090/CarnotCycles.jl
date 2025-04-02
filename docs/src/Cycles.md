@@ -1,12 +1,10 @@
 # Cycle Modeling
 
+## Carnot Cycle
 
 ## Vapour Compression Cycle
 
-### Modeling
 Here is a small example to model a Vapour Compression cycle using CoolProp.jl as backend. 
-
-
 
 We first start by loading the adequate packages and the fluid:
 ```julia
