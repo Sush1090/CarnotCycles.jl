@@ -2,6 +2,7 @@
 
 [![Build Status](https://github.com/Sush1090/CoolPropCycles.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/Sush1090/CoolPropCycles.jl/actions/workflows/CI.yml?query=branch%3Amain)
 
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://sush1090.github.io/CarnotCycles.jl/dev/)
 
 This package combines [ModelingToolkit.jl](https://github.com/SciML/ModelingToolkit.jl) "Acausal Modeling" with [CoolProp.jl](https://github.com/CoolProp/CoolProp.jl) and [Clapyeron.jl](https://github.com/ClapeyronThermo/Clapeyron.jl) to model thermodynamic cycles:
 
