@@ -51,7 +51,7 @@ Now we have define our cycle we can make a function to pass to the optimizer.
 
 
 
-We would like to know the optimum pressure at source, mass fraction, pressure ratio, super heat temperature and sub cool temperature, for given set of parameters.
+We would like to know the optimal pressure at source, mass fraction, pressure ratio, super heat temperature and sub cool temperature, for given set of parameters.
 
 ```julia
 function ORC(x,p)
