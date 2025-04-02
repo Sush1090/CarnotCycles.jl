@@ -4,7 +4,7 @@
 
 ## Vapour Compression Cycle
 
-Here is a small example to model a Vapour Compression cycle using CoolProp.jl as backend. 
+![Simple_VCC](Images/SimpleHP.jpg) 
 
 We first start by loading the adequate packages and the fluid:
 ```julia

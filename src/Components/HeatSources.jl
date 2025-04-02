@@ -1,11 +1,11 @@
 
 
 """
-`IsobaricHeatSource(;name,Q_dot,fluid = set_fluid)`
+`IsobaricHeatSource(;name,fluid = set_fluid)`
 
    A heat source independent of temperature and no pressure drop
 
-*    Arguments: 
+*    Parameters: 
     1. `Q_dot`     : Total heat supplied
     
 *    Local Variables:
@@ -69,11 +69,11 @@ end
 export IsobaricHeatSource
 
 """
-`IsobaricHeatSink(;name,Q_dot,fluid = set_fluid)`
+`IsobaricHeatSink(;name,fluid = set_fluid)`
 
    A heat sink independent of temperature and no pressure drop
-   
-*    Arguments: 
+
+*    Parameters: 
     1. `Q_dot`     : Total heat supplied
     
 *    Local Variables:
