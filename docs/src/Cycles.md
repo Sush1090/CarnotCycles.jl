@@ -1,7 +1,61 @@
 # Cycle Modeling
 
 ## Carnot Cycle
+As the name of the package is CarnotCycles.jl we would like to show the first as the cycle proposed by Carnot called the [Carnot Cycle](https://en.wikipedia.org/wiki/Carnot_cycle). 
 
+His cycle follows a isothermal exapansion of the gas, isentropic expansion, isothermal compression , and finally isentropic compression.
+
+So we will use Clapeyron.jl for our gas model. Here we choose the gas to be Argon.
+
+```julia
+using CarnotCycles, ModelingToolkit, Clapeyron, DifferentialEquations
+
+fluid = cPR(["Argon"],idealmodel = ReidIdeal)
+load_fluid(fluid)
+@independent_variables t
+```
+
+The we choose our processes as components and connect them. A `source` and `sink` is recommended to initiate and close the cycle.
+```julia
+@named source = MassSource()
+@named isothermal_comp =  IsothermalCompressor()
+@named isentropic_comp = IsentropicCompressor()
+@named isothermal_exp = IsothermalExpander()
+@named isentropic_exp = IsentropicExpander()
+@named sink = MassSink()
+
+eqs = [
+    connect(source.port,isothermal_exp.inport)
+    connect(isothermal_exp.outport,isentropic_exp.inport)
+    connect(isentropic_exp.outport,isothermal_comp.inport)
+    connect(isothermal_comp.outport,isentropic_comp.inport)
+    connect(isentropic_comp.outport,sink.port)
+]
+
+systems = [source,isothermal_comp,isothermal_exp,isentropic_comp,isentropic_exp,sink]
+
+@named CarnotCycle = ODESystem(eqs, t, systems=systems)
+@time sys = structural_simplify(CarnotCycle)
+```
+
+Now we state the point at `source`
+```julia
+πc_1 = 5; πc_2 = 6
+source_mdot = 30 #g/s
+z_source = CarnotCycles.mass_to_moles(fluid,1,source_mdot)
+source_temp = 600; source_pressure = 101325*30; source_h = CarnotCycles.pt_enthalpy(fluid,source_pressure,source_temp,z_source)
+
+para = [
+    source.source_enthalpy => source_h, source.source_mdot => source_mdot, source.source_x => 1, source.source_pressure => source_pressure,
+    isothermal_exp.πc => πc_1,
+    isentropic_exp.πc => πc_2, isentropic_exp.η => 1,
+    isothermal_comp.πc => πc_1,
+    isentropic_comp.πc => πc_2, isentropic_comp.η=>1
+]
+u0 = []
+prob = SteadyStateProblem(sys,u0,para)
+sol = solve(prob)
+```
 ## Vapour Compression Cycle
 
 ![Simple_VCC](Images/SimpleHP.jpg) 

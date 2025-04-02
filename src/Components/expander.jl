@@ -224,3 +224,5 @@ function IsothermalExpanderClapeyron(;name,fluid = set_fluid)
    ]
    compose(ODESystem(eqs, t, vars, para;name), inport, outport,power)
 end
+
+export IsothermalExpander
