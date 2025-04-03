@@ -118,6 +118,37 @@ end
 @register_symbolic PhaseIdentification(model::EoSModel,p,h,z)
 
 
+"""
+`PhaseIdentificationNumeric(model::EoSModel,p,h,z)`
+    
+For identification of phase of the fluid when using Clapeyron.
+
+returns 0 for liquid, 1 for vapour, 2 for Two phase
+"""
+function PhaseIdentificationNumeric(model::EoSModel,p,h,z)
+    Tcrit = CriticalTemperature(model,z)
+    Pcrit = CriticalPressure(model,z)
+    T = ph_temperature(model,p,h,z)
+    
+    if (T>=Tcrit && p > Pcrit)
+        return 3 #:SuperCritical
+    end
+
+    if (T< Tcrit)
+        bt = Bubble_temperature(model,p,z)
+        dt = Dew_temperature(model,p,z)
+        if bt<= T <= dt
+            return 2 #:TwoPhase
+        end
+        if dt< T
+            return 1 #:vapour
+        end
+        if bt> T
+            return 0 #:liquid
+        end
+    end
+end
+
 
 
 function qp_enthalpy(model::EoSModel,q,p,z)
@@ -173,5 +204,24 @@ function ph_temperature_qp(model::EoSModel,p,h,z)
         return T
     end
     return PH.temperature(model,p,h,z)
+end
+@register_symbolic ph_temperature_qp(model::EoSModel,p,h,z)
+
+function ph_entropy_qp(model::EoSModel,p,h,z)
+    f0 = qp_flash(model,0,p,z)
+    f1 = qp_flash(model,1,p,z)
+    hb = enthalpy(model,f0)
+    hd = enthalpy(model,f1)
+    if hb < h <hd
+        flash(q) =qp_flash(model,q,p,z)
+        qp_enthalpy(q) = Clapeyron.enthalpy(model,flash(q)) - h
+        q_ = find_zero(qp_enthalpy,(0,1))
+        T = qp_entropy(model,q_,p,z)
+        if isnan(T)
+            T = PH.entropy(model,p,h,z)
+        end
+        return T
+    end
+    return PH.entropy(model,p,h,z)
 end
 @register_symbolic ph_temperature_qp(model::EoSModel,p,h,z)
