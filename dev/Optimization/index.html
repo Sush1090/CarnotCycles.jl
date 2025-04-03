@@ -9,6 +9,7 @@ load_fluid(fluid)</code></pre><p>Choose the components</p><pre><code class="lang
 @named sink = MassSink()
 
 systems = [source,pump,evaporator,turbine,condensor,sink]
+
 eqs = [
     connect(source.port,pump.inport)
     connect(pump.outport,evaporator.inport)
@@ -16,6 +17,7 @@ eqs = [
     connect(turbine.outport,condensor.inport)
     connect(condensor.outport,sink.port)
 ]
+
 @named system = ODESystem(eqs,t,systems = systems)
 @time sys = structural_simplify(system)</code></pre><p>Now we have define our cycle we can make a function to pass to the optimizer.</p><p>We would like to know the optimal pressure at source, mass fraction, pressure ratio, super heat temperature and sub cool temperature, for given set of parameters.</p><pre><code class="language-julia hljs">function ORC(x,p)
 try
@@ -66,4 +68,4 @@ using Optimization, OptimizationMetaheuristics
 
 fopt = OptimizationFunction(ORC)
 prob_opt = OptimizationProblem(fopt,x0,para,lb=lb,ub=ub)
-sol = solve(prob_opt, PSO(N = 100), maxiters = 100000, maxtime = 300.0)</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../Cycles/">« Cycles Modeling</a><a class="docs-footer-nextpage" href="../reference/">References »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.10.1 on <span class="colophon-date" title="Thursday 3 April 2025 15:58">Thursday 3 April 2025</span>. Using Julia version 1.11.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+sol = solve(prob_opt, PSO(N = 100), maxiters = 100000, maxtime = 300.0)</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../Cycles/">« Cycles Modeling</a><a class="docs-footer-nextpage" href="../reference/">References »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.10.1 on <span class="colophon-date" title="Thursday 3 April 2025 16:02">Thursday 3 April 2025</span>. Using Julia version 1.11.4.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
