@@ -43,6 +43,13 @@ Choose the components
 @named sink = MassSink()
 
 systems = [source,pump,evaporator,turbine,condensor,sink]
+eqs = [
+    connect(source.port,pump.inport)
+    connect(pump.outport,evaporator.inport)
+    connect(evaporator.outport,turbine.inport)
+    connect(turbine.outport,condensor.inport)
+    connect(condensor.outport,sink.port)
+]
 @named system = ODESystem(eqs,t,systems = systems)
 @time sys = structural_simplify(system)
 ```
