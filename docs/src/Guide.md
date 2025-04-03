@@ -48,9 +48,9 @@ For a fluid port based over Clapeyron backend we have the ports variables to be 
 ---
 **NOTE**
 
-    1.  The units for Coolprop fluid for mass flow rate is kg/s while for Clapeyron is g/s. 
+The units for Coolprop fluid for mass flow rate is kg/s while for Clapeyron is g/s. 
 
-    2. Clapeyron works with total values i.e. total enthalpy (J), entropy (J/K) etc.. while CoolProp works with specific values i.e. specific enthalpy (J/kg), specific entropy (J/kg/K)
+Clapeyron works with total values i.e. total enthalpy (J), entropy (J/K) etc.. while CoolProp works with specific values i.e. specific enthalpy (J/kg), specific entropy (J/kg/K)
 
 ---
 

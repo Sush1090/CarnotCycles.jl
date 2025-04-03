@@ -100,7 +100,7 @@ end
 ---
 **NOTE**
 
-There needs to be exceptional handeling for optimzation as sometimes the interal function evaluations of Clapeyron.jl or CoolProp.jl can throw errors, the exception handeling allows us to surpass it. For the cases with an exeption we return a penalty value. 
+There needs to be exceptional handling for optimzation as sometimes the internal function evaluations of Clapeyron.jl or CoolProp.jl can throw errors, the exception handeling allows us to surpass it. For the cases with an exception we return a penalty value. 
 
 ---
 
