@@ -11,26 +11,6 @@ This package combines [ModelingToolkit.jl](https://github.com/SciML/ModelingTool
 
 
 
-It is based on acausal framework so users can add their own components for simulation.
-```julia
-function MyComp(type::abc;name,...)
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
-    para = @parameters begin
-        MyParas ...
-    end
-    vars = @variables begin
-        MyVars ...
-     end
-   eqs = [  outport.mdot ~ abs(inport.mdot) 
-            outport.p ~ eq1 ...
-            outport.h ~ eq2 ...
-            ..
-   ]
-   compose(ODESystem(eqs, t, vars, para;name), inport, outport)
-end
-```
-
 ## Installation
 
 In the Julia prompt, first type `]` and then:
