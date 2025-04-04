@@ -31,6 +31,7 @@ So we first describe our cycle:
 using CarnotCycles, ModelingToolkit, Clapeyron, SteadyStateDiffEq
 fluid = cPR(["isopentane","isobutane"],idealmodel = ReidIdeal)
 load_fluid(fluid)
+@independent_variables t
 ```
 
 Choose the components
