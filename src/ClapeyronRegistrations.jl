@@ -216,12 +216,12 @@ function ph_entropy_qp(model::EoSModel,p,h,z)
         flash(q) =qp_flash(model,q,p,z)
         qp_enthalpy(q) = Clapeyron.enthalpy(model,flash(q)) - h
         q_ = find_zero(qp_enthalpy,(0,1))
-        T = qp_entropy(model,q_,p,z)
+        s = qp_entropy(model,q_,p,z)
         if isnan(T)
-            T = PH.entropy(model,p,h,z)
+            s = PH.entropy(model,p,h,z)
         end
-        return T
+        return s
     end
     return PH.entropy(model,p,h,z)
 end
-@register_symbolic ph_temperature_qp(model::EoSModel,p,h,z)
+@register_symbolic ph_entropy_qp(model::EoSModel,p,h,z)
