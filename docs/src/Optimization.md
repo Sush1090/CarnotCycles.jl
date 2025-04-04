@@ -28,7 +28,7 @@ This puts an additional constraint on the heat exchanges, i.e. the temperature p
 
 So we first describe our cycle:
 ```julia
-using CarnotCycles, ModelingToolkit, Clapeyron, DifferentialEquations
+using CarnotCycles, ModelingToolkit, Clapeyron, SteadyStateDiffEq
 fluid = cPR(["isopentane","isobutane"],idealmodel = ReidIdeal)
 load_fluid(fluid)
 ```

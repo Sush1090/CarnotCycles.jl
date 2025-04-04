@@ -8,7 +8,7 @@ His cycle follows a isothermal exapansion of the gas, isentropic expansion, isot
 So we will use Clapeyron.jl for our gas model. Here we choose the gas to be Argon.
 
 ```julia
-using CarnotCycles, ModelingToolkit, Clapeyron, DifferentialEquations
+using CarnotCycles, ModelingToolkit, Clapeyron, SteadyStateDiffEq
 
 fluid = cPR(["Argon"],idealmodel = ReidIdeal)
 load_fluid(fluid)
@@ -62,7 +62,7 @@ sol = solve(prob)
 
 We first start by loading the adequate packages and the fluid:
 ```julia
-using CarnotCycles, CoolProp, ModelingToolkit, DifferentialEquations
+using CarnotCycles, CoolProp, ModelingToolkit, SteadyStateDiffEq
 @independent_variables t
 load_fluid("R134A")
 ```
@@ -141,7 +141,7 @@ Energy given to the fluid is +ve while given by the fluid is -ve. Hence the COP 
 To model a cycle with Claperyon.jl only change the fluid
 Example: 
 ```julia
-using CarnotCycles, ModelingToolkit, DifferentialEquations, Clapeyron
+using CarnotCycles, ModelingToolkit, SteadyStateDiffEq, Clapeyron
 @independent_variables t
 model = cPR(["Pentane","toluene"],idealmodel = ReidIdeal)
 load_fluid(model)
