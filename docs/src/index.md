@@ -6,4 +6,4 @@ The goal of this package is to have a basic acausal framework to model thermodyn
 
 This package combines [ModelingToolkit.jl](https://github.com/SciML/ModelingToolkit.jl) with [CoolProp.jl](https://github.com/CoolProp/CoolProp.jl) and [Clapyeron.jl](https://github.com/ClapeyronThermo/Clapeyron.jl). 
 
-The themodynamic components are modelled as steady state components. All the componenets are based on the laws of thermodynamics.
+The themodynamic components are modelled as steady state components. All the components are based on the laws of thermodynamics.
