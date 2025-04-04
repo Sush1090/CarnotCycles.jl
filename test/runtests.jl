@@ -1,4 +1,4 @@
-using CarnotCycles, ModelingToolkit, DifferentialEquations, CoolProp, Clapeyron
+using CarnotCycles, ModelingToolkit, SteadyStateDiffEq, CoolProp, Clapeyron
 using Test
 
 

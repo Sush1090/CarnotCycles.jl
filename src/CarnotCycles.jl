@@ -2,7 +2,7 @@ module CarnotCycles
 
 # Write your package code here.
 
-using ModelingToolkit, CoolProp, DifferentialEquations, Plots, Roots
+using ModelingToolkit, CoolProp, SteadyStateDiffEq, Plots, Roots
 using Clapeyron
 import Clapeyron.PH
 import Clapeyron.PS
