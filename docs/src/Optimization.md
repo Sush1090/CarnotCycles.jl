@@ -1,5 +1,6 @@
 # Cycle Optimization
 
+So we have seen before on how to model basic cycles. But now we would like to know what would be the most optimum parameters to model a cycle to say maximize the efficiency.
 
 
 So we have seen before on how to model basic cycles. But now we would like to know what would be the most optimum parameters to model a cycle.
@@ -19,7 +20,7 @@ Here we take the case of an Organic Rankine cycle, we would like to know what ar
 
 A simple ORC contains a pump, evaporator, expander and condensor.
 
-Here we use the condensor and evaporators such that the inlet and outlet temperature of the heat transfer fluids are known. 
+Here we use the condensor and evaporators such that the inlet and outlet temperature of the heat transfer fluids are known. In heat exchanger terms we fix the heat transfer fluid glide for the evaporator and the condensor. 
 
 This puts an additional constraint on the heat exchanges, i.e. the temperature profile of the heat transfer fluid and the working fluid should not cross each other. In other words we want to know what would be the most efficient ORC that fits two temperature profile bounds.
 
@@ -34,7 +35,7 @@ load_fluid(fluid)
 @independent_variables t
 ```
 
-Choose the components
+Choose the ORC components
 ```julia
 @named source = MassSource()
 @named pump = Pump()

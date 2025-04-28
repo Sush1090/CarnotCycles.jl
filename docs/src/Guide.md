@@ -25,17 +25,17 @@ Once the fluid model is chosen through the simulation the underlying components 
 
 
 ## Loading Components
-A cycle consists of various components through which the fluid passes. These components are modeled using [ModelingToolkit.jl](https://github.com/SciML/ModelingToolkit.jl) "Acausal Modeling".
+A cycle consists of various components through which the fluid passes. These components are modeled using [ModelingToolkit.jl](https://github.com/SciML/ModelingToolkit.jl).
 
 To load any component follow ModelingToolkit.jl's `@named` framework. For example: 
 
 ```julia
-using ModelingToolkit, CoolProp, CarnotCycles
+using ModelingToolkit, CarnotCycles
 
 @named evaporator = SimpleEvaporator()
 ```
 
-For detailed understanding of the acausal framework following the documentation of [ModelingToolkit.jl](https://github.com/SciML/ModelingToolkit.jl).
+For detailed understanding of the acausal framework follow the documentation of [ModelingToolkit.jl](https://github.com/SciML/ModelingToolkit.jl).
 
 
 ## Port Variables

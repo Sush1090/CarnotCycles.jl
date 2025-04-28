@@ -1,7 +1,9 @@
 # Cycle Modeling
 
 ## Carnot Cycle
-As the name of the package is CarnotCycles.jl we would like to show the first as the cycle proposed by Carnot called the [Carnot Cycle](https://en.wikipedia.org/wiki/Carnot_cycle). 
+As the name of this package is CarnotCycles.jl, we would first like to model a simple Carnot Cycle using CoolProp.jl even though it is not really physically possible to have one. 
+
+
 
 His cycle follows a isothermal exapansion of the gas, isentropic expansion, isothermal compression , and finally isentropic compression.
 
@@ -57,6 +59,7 @@ prob = SteadyStateProblem(sys,u0,para)
 sol = solve(prob)
 ```
 ## Vapour Compression Cycle
+Now we move to modeling a simple Vapour Compression Cycle.  
 
 ![Simple_VCC](Images/SimpleHP.jpg) 
 
@@ -138,6 +141,7 @@ Energy given to the fluid is +ve while given by the fluid is -ve. Hence the COP 
 ### Plotting the Cycle
 
 
+## Clapeyron Fluids
 To model a cycle with Claperyon.jl only change the fluid
 Example: 
 ```julia
