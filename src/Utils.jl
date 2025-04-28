@@ -287,3 +287,49 @@ end
 end
 
 export Heat2Storage
+
+
+"""
+`show_all_states(sol::SteadyStateSolution,system::Vector{ODESystem},names::Vector{String})`
+
+* Arguments:
+    1. `sol`    : The solution from the  SteadtStateSystem. 
+    2. `system` : The vector of components chosen. The first should be `MassSource` and the last has to be `MassSink`.
+    3. `names`  : The names of the components in the system. Pass it as a vector of strings.
+
+* Returns: Prints the state points of the system in a readable format in the terminal.
+"""
+function show_all_states(sol::SteadyStateSolution,system::Vector{ODESystem},names::Vector{String})
+
+    @assert length(system)-2 == length(names) "Length of system and names must be equal, excluding source and sink"
+    system = system[2:end-1] # Exclude source and sink
+    if CarnotCycles.set_fluid isa EoSModel
+        for i in eachindex(names)
+            println("--------------------------------------")
+            println("Component: ", names[i])
+            println("Temperature in : ", sol[system[i].T_in], " K ", " , " , "Temperature out : ", sol[system[i].T_out], " K")
+            println("Pressure in : ", sol[system[i].p_in], " Pa ", " , " , "Pressure out : ", sol[system[i].p_out], " Pa")
+            println("Enthalpy : ", sol[system[i].h_in], " J ", " , " , "Enthalpy out : ", sol[system[i].h_out], " J")
+            println("Entropy : ", sol[system[i].s_in], " J/K ", " , " , "Entropy out : ", sol[system[i].s_out], " J/K")
+            println("Mass Flow Rate : ", sol[system[i].mdot_in], " g/s ", " , " , "Mass Flow Rate out : ", sol[system[i].mdot_out], " g/s")
+          
+            println("Mass fraction : ", sol[system[i].x_in], " , " , "Mass fraction out : ", sol[system[i].x_out])
+           
+            println("--------------------------------------")
+        end
+    end
+
+    if CarnotCycles.set_fluid isa AbstractString
+        for i in eachindex(names)
+            println("--------------------------------------")
+            println("Component: ", names[i])
+            println("Temperature in : ", sol[system[i].T_in], " K ", " , " , "Temperature out : ", sol[system[i].T_out], " K")
+            println("Pressure in : ", sol[system[i].p_in], " Pa ", " , " , "Pressure out : ", sol[system[i].p_out], " Pa")
+            println("Enthalpy : ", sol[system[i].h_in], " J/kg ", " , " , "Enthalpy out : ", sol[system[i].h_out], " J/kg")
+            println("Entropy : ", sol[system[i].s_in], " J/K/kg ", " , " , "Entropy out : ", sol[system[i].s_out], " J/K/kg")
+            println("Mass Flow Rate : ", sol[system[i].mdot_in], " kg/s ", " , " , "Mass Flow Rate out : ", sol[system[i].mdot_out], " kg/s")           
+            println("--------------------------------------")
+        end
+    end
+    
+end
