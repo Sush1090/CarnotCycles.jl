@@ -311,9 +311,9 @@ function show_all_states(sol::SteadyStateSolution,system::Vector{ODESystem},name
             println("Pressure in : ", sol[system[i].p_in], " Pa ", " , " , "Pressure out : ", sol[system[i].p_out], " Pa")
             println("Enthalpy : ", sol[system[i].h_in], " J ", " , " , "Enthalpy out : ", sol[system[i].h_out], " J")
             println("Entropy : ", sol[system[i].s_in], " J/K ", " , " , "Entropy out : ", sol[system[i].s_out], " J/K")
-            println("Mass Flow Rate : ", sol[system[i].mdot_in], " g/s ", " , " , "Mass Flow Rate out : ", sol[system[i].mdot_out], " g/s")
+            println("Mass Flow Rate : ", sol[system[i].inport.mdot], " g/s ", " , " , "Mass Flow Rate out : ", sol[system[i].outport.mdot], " g/s")
           
-            println("Mass fraction : ", sol[system[i].x_in], " , " , "Mass fraction out : ", sol[system[i].x_out])
+            println("Mass fraction : ", sol[system[i].inport.x], " , " , "Mass fraction out : ", sol[system[i].outport.x])
            
             println("--------------------------------------")
         end
@@ -327,7 +327,7 @@ function show_all_states(sol::SteadyStateSolution,system::Vector{ODESystem},name
             println("Pressure in : ", sol[system[i].p_in], " Pa ", " , " , "Pressure out : ", sol[system[i].p_out], " Pa")
             println("Enthalpy : ", sol[system[i].h_in], " J/kg ", " , " , "Enthalpy out : ", sol[system[i].h_out], " J/kg")
             println("Entropy : ", sol[system[i].s_in], " J/K/kg ", " , " , "Entropy out : ", sol[system[i].s_out], " J/K/kg")
-            println("Mass Flow Rate : ", sol[system[i].mdot_in], " kg/s ", " , " , "Mass Flow Rate out : ", sol[system[i].mdot_out], " kg/s")           
+            println("Mass Flow Rate : ", sol[system[i].inport.mdot], " kg/s ", " , " , "Mass Flow Rate out : ", sol[system[i].outport.mdot], " kg/s")           
             println("--------------------------------------")
         end
     end
