@@ -217,7 +217,7 @@ function ph_entropy_qp(model::EoSModel,p,h,z)
         qp_enthalpy(q) = Clapeyron.enthalpy(model,flash(q)) - h
         q_ = find_zero(qp_enthalpy,(0,1))
         s = qp_entropy(model,q_,p,z)
-        if isnan(T)
+        if isnan(s)
             s = PH.entropy(model,p,h,z)
         end
         return s
