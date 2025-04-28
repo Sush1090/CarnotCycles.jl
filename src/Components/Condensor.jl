@@ -129,7 +129,7 @@ function SimpleCondensorClapeyron(;name,fluid)
         T_crit ~ CriticalTemperature(fluid,z_in)
         T_bubble ~ Bubble_temperature(fluid,p_in,z_in)
         T_dew ~ Dew_temperature(fluid,p_in,z_in)
-        T_sat ~ Base.ifelse(inport.p>=p_crit,T_crit,T_dew)
+        T_sat ~ Base.ifelse(inport.p>=p_crit,T_crit,T_bubble)
 
         T_out ~ T_sat - ΔT_sc
         p_out ~ p_in
