@@ -333,3 +333,5 @@ function show_all_states(sol::SteadyStateSolution,system::Vector{ODESystem},name
     end
     
 end
+
+export show_all_states
