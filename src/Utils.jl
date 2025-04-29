@@ -197,9 +197,7 @@ function MassSinkCoolProp(;name,fluid = set_fluid)
     port.h ~ h
     mdot ~ port.mdot
     s ~ PropsSI("S","H",port.h,"P",port.p,fluid)
-    p ~ port.p
     T ~ PropsSI("T","H",port.h,"P",port.p,fluid)
-    h ~ port.h
     ρ ~ PropsSI("D","H",port.h,"P",port.p,fluid)
    ]
    compose(ODESystem(eqs, t, vars, para;name),port)
