@@ -40,22 +40,21 @@ end
         πc(t), [description = "Pressure Ratio"]
     end
     eqs = [
-        h_in ~ inport.h
-        p_in ~ inport.p
-        mdot_in ~ inport.mdot
-        s_in ~ PropsSI("S","H",h_in,"P",p_in,fluid)
-        T_in ~ PropsSI("T","H",h_in,"P",p_in,fluid)
-        ρ_in ~ PropsSI("D","H",h_in,"P",p_in,fluid)
-        LiquidPhase ~ CoolPropLiquidPhaseCheck(fluid,inport.h,inport.p)
-
-        mdot_out ~ mdot_in
-        p_out ~ p_in*πc
-        h_out ~ IsentropicCompression(πc, h_in, p_in,fluid,η)
-        s_out ~ PropsSI("S","H",h_out,"P",p_out,fluid)
-        T_out ~ PropsSI("T","H",h_out,"P",p_out,fluid)
-        ρ_out ~ PropsSI("D","H",h_out,"P",p_out,fluid)
-        
-        P ~ mdot_in*(h_out - h_in)
+        outport.mdot ~ abs(inport.mdot) 
+            outport.p ~ πc * inport.p
+            outport.h ~ IsentropicCompression(πc, inport.h, inport.p,fluid,η)
+            P ~ abs(inport.mdot)*(outport.h - inport.h)
+            s_in ~ PropsSI("S","H",inport.h,"P",inport.p,fluid)
+            p_in ~ inport.p
+            T_in ~ PropsSI("T","H",inport.h,"P",inport.p,fluid)
+            h_in ~ inport.h
+            ρ_in ~ PropsSI("D","H",inport.h,"P",inport.p,fluid)
+            s_out ~ PropsSI("S","H",outport.h,"P",outport.p,fluid)
+            p_out ~ outport.p
+            T_out ~ PropsSI("T","H",outport.h,"P",outport.p,fluid)
+            h_out ~ outport.h
+            ρ_out ~ PropsSI("D","H",outport.h,"P",outport.p,fluid)
+            LiquidPhase ~ CoolPropLiquidPhaseCheck(fluid,inport.h,inport.p)
     ]
     compose(ODESystem(eqs, t, vars, para;name), inport, outport)
 end
