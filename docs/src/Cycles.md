@@ -34,7 +34,7 @@ eqs = [
     connect(isentropic_comp.outport,sink.port)
 ]
 
-systems = [source,isothermal_comp,isothermal_exp,isentropic_comp,isentropic_exp,sink]
+systems = [source,isothermal_exp,isentropic_exp,isothermal_comp,isentropic_comp,sink]
 
 @named CarnotCycle = ODESystem(eqs, t, systems=systems)
 @time sys = structural_simplify(CarnotCycle)
@@ -58,6 +58,14 @@ u0 = []
 prob = SteadyStateProblem(sys,u0,para)
 sol = solve(prob)
 ```
+
+To plot the diagram just pass the `systems` and `sol` with the adjecent names of the components as a string. Pass the `systems` and the name string in the same order. The name string should be without `source` and `sink`. 
+```julia
+system_string = ["isothermal_exp","isentropic_exp","isothermal_comp","isentropic_comp"]
+plot(sol,systems,system_string,type = :PH,phase = false)
+```
+![CarnotCycle_PH](Images/PhaseDiagrams/CarnotCycle_PH.png)
+
 ## Vapour Compression Cycle
 Now we move to modeling a simple Vapour Compression Cycle.  
 
@@ -130,24 +138,28 @@ julia> COP = sol[condensor.Qdot]/sol[compressor.P]
 -5.096928812859646
 ```
 
+For plotting the phase diagram
+```julia
+system_string = ["compressor","condensor","valve","evaporator"]
+CarnotCycles.plot(sol,systems,system_string,type = :PH,phase = true)
+```
+
+
 ---
 **NOTE**
 
 Energy given to the fluid is +ve while given by the fluid is -ve. Hence the COP is negative
 
 ---
+![VCC_PH_phase](Images/PhaseDiagrams/VCC_PH.png)
+
+### Solution Viewing
+There are generally two ways: 
+    1. Printing the output on the terminal using `show_all_states(sol,systems,system_string)`
+    2. Plotting the necessary diagram
 
 
-### Plotting the Cycle
 
 
-## Clapeyron Fluids
-To model a cycle with Claperyon.jl only change the fluid
-Example: 
-```julia
-using CarnotCycles, ModelingToolkit, SteadyStateDiffEq, Clapeyron
-@independent_variables t
-model = cPR(["Pentane","toluene"],idealmodel = ReidIdeal)
-load_fluid(model)
-```
+
 
