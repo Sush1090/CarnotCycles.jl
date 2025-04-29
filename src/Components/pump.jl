@@ -46,7 +46,7 @@ end
         s_in ~ PropsSI("S","H",h_in,"P",p_in,fluid)
         T_in ~ PropsSI("T","H",h_in,"P",p_in,fluid)
         ρ_in ~ PropsSI("D","H",h_in,"P",p_in,fluid)
-        LiquidPhase ~ CoolPropLiquidPhaseCheck(fluid,h,p)
+        LiquidPhase ~ CoolPropLiquidPhaseCheck(fluid,inport.h,inport.p)
 
         mdot_out ~ mdot_in
         p_out ~ p_in*πc
