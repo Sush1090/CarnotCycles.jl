@@ -85,7 +85,7 @@ function plot_PH(sol::SteadyStateSolution,system::Vector{ODESystem},names::Vecto
         for i = 1: length(names)
             h_ = collect(range(h[i],h[i+1],100))
             p_ = collect(range(p[i],p[i+1],100))
-            fig = plot!(fig,h_,p_,label = names[i],xlabel = "Enthalpy (J/K)", ylabel = "Pressure (Pa)", title = "Pressure-Enthalpy Diagram")
+            fig = plot!(fig,h_,p_,label = names[i],xlabel = "Enthalpy (J)", ylabel = "Pressure (Pa)", title = "Pressure-Enthalpy Diagram")
         end
         return fig
     end
@@ -109,7 +109,7 @@ function plot_PH(sol::SteadyStateSolution,system::Vector{ODESystem},names::Vecto
         for i = 1: length(names)
             h_ = collect(range(h[i],h[i+1],100))
             p_ = collect(range(p[i],p[i+1],100))
-            fig = plot!(fig,h_,p_,label = names[i],xlabel = "Enthalpy (J/K/kg)", ylabel = "Pressure (Pa)", title = "Pressure-Enthalpy Diagram")
+            fig = plot!(fig,h_,p_,label = names[i],xlabel = "Enthalpy (J/kg)", ylabel = "Pressure (Pa)", title = "Pressure-Enthalpy Diagram")
         end
         return fig
     end
