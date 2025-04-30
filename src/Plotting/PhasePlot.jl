@@ -59,8 +59,8 @@ function PhasePlot_PH(fig,fluid::AbstractString,p,N=100)
         h_bubble[i] = CarnotCycles.PropsSI("H","P",p_[i],"Q",0.0,fluid)
         h_dew[i] = CarnotCycles.PropsSI("H","P",p_[i],"Q",1.0,fluid)
     end
-    plot!(fig,h_bubble,p_,label = "Bubble Point",xlabel = "Enthalpy (J/K/kg)", ylabel = "Pressure (Pa)",linewidth=5,alpha = 0.3)
-    plot!(fig,h_dew,p_,label = "Dew Point",xlabel = "Enthalpy (J/K/kg)", ylabel = "Pressure (Pa)",linewidth=5,alpha = 0.3)
+    plot!(fig,h_bubble,p_,label = "Bubble Point",xlabel = "Enthalpy (J/kg)", ylabel = "Pressure (Pa)",linewidth=5,alpha = 0.3)
+    plot!(fig,h_dew,p_,label = "Dew Point",xlabel = "Enthalpy (J/kg)", ylabel = "Pressure (Pa)",linewidth=5,alpha = 0.3)
     
 end
 
