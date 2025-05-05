@@ -1,6 +1,7 @@
 # Guide
 
 ## Loading Fluids
+Two type of fluid model backends are supported - Clapeyron.jl and CoolProp.jl.
 
 To load a [Clapyeron.jl](https://github.com/ClapeyronThermo/Clapeyron.jl) backend fluid model do the following: 
 ```julia

@@ -1,5 +1,28 @@
 # Cycle Modeling
 
+## Loading Fluids
+Two type of fluid model backends are supported - Clapeyron.jl and CoolProp.jl.
+
+To load a [Clapyeron.jl](https://github.com/ClapeyronThermo/Clapeyron.jl) backend fluid model do the following: 
+```julia
+using CarnotCycles, Clapeyron
+fluid = cPR(["isopentane","isobutane"],idealmodel = ReidIdeal)
+load_fluid(fluid)
+```
+As of now we support Clapeyon mixtures of up to 2 components.
+
+For [CoolProp.jl](https://github.com/CoolProp/CoolProp.jl) backend fluid properties simply pass the fluid name as a string as follows:
+```julia
+using CarnotCycles, CoolProp
+load_fluid("R601")
+```
+---
+**NOTE**
+
+Once the fluid model is chosen through the simulation the underlying components are chosen based on the fluid model.
+
+---
+
 ## Carnot Cycle
 As the name of this package is CarnotCycles.jl, we would first like to model a simple Carnot Cycle using CoolProp.jl even though it is not really physically possible to have one. 
 

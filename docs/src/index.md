@@ -11,5 +11,9 @@ The themodynamic components are modelled as steady state components.
 As of now the components are modelled using the first and second law of thermodynamics.
 
 
+
+
 ![VCC_intro_TS](Images/PhaseDiagrams/VCC_TS_intro.png)
+
+
 ![VCC_intro_PH](Images/PhaseDiagrams/VCC_PH_intro.png)
