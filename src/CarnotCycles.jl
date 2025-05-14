@@ -50,6 +50,11 @@ include("Components/ThermalStorages/packedbed.jl")
 
 
 # """
+# Pipes
+# """
+include("Components/pipes.jl")
+
+# """
 # Plotting
 # """
 
