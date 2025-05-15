@@ -95,9 +95,9 @@ end
 @component function MassSourceCoolProp(;name, fluid = set_fluid)
     @named port = CoolantPort()
     para = @parameters begin
-        source_pressure(t) = 101305
-        source_enthalpy(t) = 1e6
-        source_mdot(t) = 5
+        source_pressure(t)
+        source_enthalpy(t)
+        source_mdot(t)
     end
     vars = @variables begin
         mdot(t)
@@ -125,10 +125,10 @@ end
 @component function MassSourceClapeyron(;name, fluid = set_fluid,Nc = Nc) 
     @named port = CoolantPort()
     para = @parameters begin
-        source_pressure(t) = 101305.0, [description = "Pressure at source (Pa)"]
-        source_enthalpy(t) = 100, [description = "Enthalpy at source (J)"]
-        source_mdot(t)  = 1000 , [description = "Moles at source (-)"]
-        source_x(t) = 1, [description = "mass % of 1st component", bounds = (0,1)]
+        source_pressure(t), [description = "Pressure at source (Pa)"]
+        source_enthalpy(t), [description = "Enthalpy at source (J)"]
+        source_mdot(t), [description = "Moles at source (-)"]
+        source_x(t), [description = "mass % of 1st component", bounds = (0,1)]
     end
     vars = @variables begin
         mdot(t), [description = "Mass flow rate (g/s)"]
