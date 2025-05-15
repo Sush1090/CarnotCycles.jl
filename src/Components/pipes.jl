@@ -109,7 +109,7 @@ end
         p_out ~ p_in - Δp
         T_out ~ T_in
 
-        h_out ~ pt_enthalpy(fluid,p_out,T_out,z_out)
+        T_out ~ Tproperty_H(fluid,p_out,h_out,z_out)
         s_out ~ ph_entropy(fluid,p_out,h_out,z_out)
         ρ_out ~ ph_mass_density(fluid,p_out,h_out,z_out)
         z_out ~ z_in
