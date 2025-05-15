@@ -227,7 +227,6 @@ end
         z ~ mass_to_moles(fluid,x,mdot)
         s ~ ph_entropy(fluid,p,h,z)
         T ~ ph_temperature(fluid,p,h,z)
-        h ~ port.h
         ρ ~ ph_mass_density(fluid,p,h,z)
        ]
        compose(ODESystem(eqs, t, vars, para;name),port)
