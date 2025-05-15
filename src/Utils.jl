@@ -226,7 +226,6 @@ end
         mdot ~ port.mdot
         z ~ mass_to_moles(fluid,x,mdot)
         s ~ ph_entropy(fluid,p,h,z)
-        p ~ port.p
         T ~ ph_temperature(fluid,p,h,z)
         h ~ port.h
         ρ ~ ph_mass_density(fluid,p,h,z)
