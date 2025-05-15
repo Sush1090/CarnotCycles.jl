@@ -112,34 +112,32 @@ end
         h_out ~ pt_enthalpy(fluid,p_out,T_out,z_in)
         s_out ~ ph_entropy(fluid,p_out,h_out,z_in)
         ρ_out ~ ph_mass_density(fluid,p_out,h_out,z_in)
-        outport.mdot ~ mdot
-        outport.p ~ p_out
-        outport.h ~ h_out
-        outport.x ~ x_out
+        outport.mdot ~ inport.mdot
+        outport.p ~ inport.p
+        outport.h ~ inport.h
+        outport.x ~ inport.x
     ]
 
     compose(ODESystem(eqs, t, vars, para;name), inport, outport)
 end
 
 
-# """
-# `Pipe(fluid::AbstractString = set_fluid;name)`
+"""
+`Pipe(fluid::AbstractString = set_fluid;name)`
 
-# pressure drop across pipe using Darcy-Weisbach equation
-# """
-# function Pipe(;name,fluid = set_fluid)
-#     if fluid isa EoSModel
-#         return PipeClapyeron(fluid;name = name)
-#     end
-#     if fluid isa AbstractString
-#         return PipeCoolProp(fluid;name = name)
-#     end
-#     if isnothing(fluid)
-#         throw(error("Fluid not selected"))
-#     end
-# end
+pressure drop across pipe using Darcy-Weisbach equation
+"""
+function Pipe(;name,fluid = set_fluid)
+    if fluid isa EoSModel
+        return PipeClapyeron(fluid;name = name)
+    end
+    if fluid isa AbstractString
+        return PipeCoolProp(fluid;name = name)
+    end
+    if isnothing(fluid)
+        throw(error("Fluid not selected"))
+    end
+end
 
 
-# export Pipe
-
-export PipeCoolProp
+export Pipe
