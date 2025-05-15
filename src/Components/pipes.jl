@@ -48,7 +48,7 @@ pressure drop across pipe using Darcy-Weisbach equation
         p_out ~ p_in - Δp
         T_out ~ T_in
 
-        T_out ~ PropsSI("T","H",h_out,"P",p_out,fluid)
+        h_out ~ PropsSI("H","T",T_out,"P",p_out,fluid)
         s_out ~ PropsSI("S","H",h_out,"P",p_out,fluid)
         ρ_out ~ PropsSI("D","H",h_out,"P",p_out,fluid)
         outport.mdot ~ mdot
@@ -109,7 +109,7 @@ end
         p_out ~ p_in - Δp
         T_out ~ T_in
 
-        T_out ~ ph_temperature(fluid,p_out,h_out,z_out)
+        h_out ~ pt_enthalpy(fluid,p_out,T_out,z_out)
         s_out ~ ph_entropy(fluid,p_out,h_out,z_out)
         ρ_out ~ ph_mass_density(fluid,p_out,h_out,z_out)
         z_out ~ z_in
