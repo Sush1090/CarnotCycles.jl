@@ -4,7 +4,7 @@
 
 pressure drop across pipe using Darcy-Weisbach equation
 """
-@component function Pipe(fluid::AbstractString = set_fluid;name)
+@component function PipeCoolProp(fluid::AbstractString = set_fluid;name)
 
     @named inport = CoolantPort()
     @named outport = CoolantPort()
@@ -46,7 +46,7 @@ pressure drop across pipe using Darcy-Weisbach equation
         Δp ~ (L*f*mdot^2)/(2*D*ρ_in*A^2)
 
         p_out ~ p_in - Δp
-        h_out ~ h_in
+        T_out ~ T_in
 
         T_out ~ PropsSI("T","H",h_out,"P",p_out,fluid)
         s_out ~ PropsSI("S","H",h_out,"P",p_out,fluid)
@@ -107,7 +107,7 @@ end
         Δp ~ (L*f*(mdot/1000)^2)/(2*D*ρ_in*A^2)
 
         p_out ~ p_in - Δp
-        h_out ~ h_in
+        T_out ~ T_in
 
         T_out ~ ph_temperature(fluid,p_out,h_out,z_out)
         s_out ~ ph_entropy(fluid,p_out,h_out,z_out)
@@ -123,4 +123,23 @@ end
     compose(ODESystem(eqs, t, vars, para;name), inport, outport)
 end
 
-# export Pipe
+
+"""
+`Pipe(fluid::AbstractString = set_fluid;name)`
+
+pressure drop across pipe using Darcy-Weisbach equation
+"""
+function Pipe(;name,fluid = set_fluid)
+    if fluid isa EoSModel
+        return PipeClapyeron(fluid;name = name)
+    end
+    if fluid isa AbstractString
+        return PipeCoolProp(fluid;name = name)
+    end
+    if isnothing(fluid)
+        throw(error("Fluid not selected"))
+    end
+end
+
+
+export Pipe
