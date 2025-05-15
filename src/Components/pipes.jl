@@ -60,68 +60,66 @@ pressure drop across pipe using Darcy-Weisbach equation
 end
 
 
-# @component function PipeClapyeron(fluid::EoSModel = set_fluid;name)
+@component function PipeClapyeron(fluid::EoSModel = set_fluid;name)
 
-#     @named inport = CoolantPort()
-#     @named outport = CoolantPort()
+    @named inport = CoolantPort()
+    @named outport = CoolantPort()
 
-#     para = @parameters begin
-#         f = 0.03, [description = "Friction factor for laminar flow : f = 64/Re (Re < 2100)"]
-#         L , [description = "Length of the pipe"]
-#         D , [description = "Diameter of the pipe"]
-#     end
+    para = @parameters begin
+        f = 0.03, [description = "Friction factor for laminar flow : f = 64/Re (Re < 2100)"]
+        L , [description = "Length of the pipe"]
+        D , [description = "Diameter of the pipe"]
+    end
 
-#     vars = @variables begin
-#         s_in(t), [description = "Entropy of the fluid (J/K)"]
-#         p_in(t), [description = "Pressure of the fluid (Pa)"]
-#         T_in(t), [description = "Temperature of the fluid (K)"]
-#         h_in(t), [description = "Enthalpy of the fluid (J)"]
-#         ρ_in(t), [description = "Density of the fluid (kg/m^3)"]
-#         x_in(t), [description = "Mass fraction of first component in the mixture"]
-#         z_in(t), [description = "Mole fraction of the mixture"]
+    vars = @variables begin
+        s_in(t), [description = "Entropy of the fluid (J/K)"]
+        p_in(t), [description = "Pressure of the fluid (Pa)"]
+        T_in(t), [description = "Temperature of the fluid (K)"]
+        h_in(t), [description = "Enthalpy of the fluid (J)"]
+        ρ_in(t), [description = "Density of the fluid (kg/m^3)"]
+        x_in(t), [description = "Mass fraction of first component in the mixture"]
+        z_in(t), [description = "Mole fraction of the mixture"]
 
-#         s_out(t), [description = "Entropy of the fluid (J/K)"]
-#         p_out(t), [description = "Pressure of the fluid (Pa)"]
-#         T_out(t), [description = "Temperature of the fluid (K)"]
-#         h_out(t), [description = "Enthalpy of the fluid (J)"]
-#         ρ_out(t), [description = "Density of the fluid (kg/m^3)"]
-#         x_out(t), [description = "Mass fraction of first component in the mixture"]
-#         z_out(t), [description = "Mole fraction of the mixture"]
+        s_out(t), [description = "Entropy of the fluid (J/K)"]
+        p_out(t), [description = "Pressure of the fluid (Pa)"]
+        T_out(t), [description = "Temperature of the fluid (K)"]
+        h_out(t), [description = "Enthalpy of the fluid (J)"]
+        ρ_out(t), [description = "Density of the fluid (kg/m^3)"]
+        x_out(t), [description = "Mass fraction of first component in the mixture"]
+        z_out(t), [description = "Mole fraction of the mixture"]
 
-#         Δp(t), [description = "Pressure drop across the pipe (Pa)"]
-#         mdot(t), [description = "Mass flow rate (g/s)"]
-#         A(t), [description = "Cross-sectional area of the pipe (m^2)"]
-#     end
+        Δp(t), [description = "Pressure drop across the pipe (Pa)"]
+        mdot(t), [description = "Mass flow rate (g/s)"]
+        A(t), [description = "Cross-sectional area of the pipe (m^2)"]
+    end
 
-#     eqs = [
-#         # mdot ~ abs(inport.mdot)
-#         # p_in ~ inport.p
-#         # x_in ~ inport.x
-#         z_in ~ mass_to_moles(fluid,inport.x,inport.mdot)
-#         # T_in ~ ph_temperature(fluid,inport.p,inport.h,z_in)
-#         # h_in ~ inport.h
-#         # s_in ~ ph_entropy(fluid,p_in,h_in,z_in)
-#         ρ_in ~ ph_mass_density(fluid,inport.p,inport.h,z_in)
+    eqs = [
+        x_in ~ inport.x
+        z_in ~ mass_to_moles(fluid,x_in,mdot)
+        mdot ~ abs(inport.mdot)
+        p_in ~ inport.p
+        T_in ~ ph_temperature(fluid,inport.p,inport.h,z_in)
+        h_in ~ inport.h
+        s_in ~ ph_entropy(fluid,inport.p,inport.h,z_in)
+        ρ_in ~ ph_mass_density(fluid,inport.p,inport.h,z_in)
 
-#         A ~ π*D^2/4
-#         Δp ~ (L*f*(mdot/1000)^2)/(2*D*ρ_in*A^2)
+        A ~ π*D^2/4
+        Δp ~ (L*f*(mdot/1000)^2)/(2*D*ρ_in*A^2)
 
-#         p_out ~ inport.p - Δp
-#         # T_out ~ T_in
+        p_out ~ p_in - Δp
+        T_out ~ T_in
 
-#         # h_out ~ pt_enthalpy(fluid,p_out,T_out,z_in)
-#         # s_out ~ ph_entropy(fluid,p_out,h_out,z_out)
-#         # ρ_out ~ ph_mass_density(fluid,p_out,h_out,z_out)
-#         # z_out ~ z_in
-#         # x_out ~ x_in
-#         outport.mdot ~ abs(inport.mdot)
-#         outport.p ~ p_out
-#         outport.h ~ inport.h
-#         outport.x ~ inport.x
-#     ]
+        h_out ~ pt_enthalpy(fluid,p_out,T_out,z_in)
+        s_out ~ ph_entropy(fluid,p_out,h_out,z_in)
+        ρ_out ~ ph_mass_density(fluid,p_out,h_out,z_in)
+        outport.mdot ~ mdot
+        outport.p ~ p_out
+        outport.h ~ h_out
+        outport.x ~ x_out
+    ]
 
-#     compose(ODESystem(eqs, t, vars, para;name), inport, outport)
-# end
+    compose(ODESystem(eqs, t, vars, para;name), inport, outport)
+end
 
 
 # """
