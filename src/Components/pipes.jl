@@ -94,30 +94,30 @@ end
     end
 
     eqs = [
-        mdot ~ abs(inport.mdot)
-        p_in ~ inport.p
-        x_in ~ inport.x
-        z_in ~ mass_to_moles(fluid,x_in,inport.mdot)
-        T_in ~ ph_temperature(fluid,p_in,h_in,z_in)
-        h_in ~ inport.h
-        s_in ~ ph_entropy(fluid,p_in,h_in,z_in)
-        ρ_in ~ ph_mass_density(fluid,p_in,h_in,z_in)
+        # mdot ~ abs(inport.mdot)
+        # p_in ~ inport.p
+        # x_in ~ inport.x
+        # z_in ~ mass_to_moles(fluid,x_in,inport.mdot)
+        T_in ~ ph_temperature(fluid,inport.p,inport.h,inport.z)
+        # h_in ~ inport.h
+        # s_in ~ ph_entropy(fluid,p_in,h_in,z_in)
+        ρ_in ~ ph_mass_density(fluid,inport.p,inport.h,inport.z)
 
         A ~ π*D^2/4
         Δp ~ (L*f*(mdot/1000)^2)/(2*D*ρ_in*A^2)
 
-        p_out ~ p_in - Δp
+        p_out ~ inport.p - Δp
         T_out ~ T_in
 
-        T_out ~ Tproperty_H(fluid,p_out,h_out,z_out)
-        s_out ~ ph_entropy(fluid,p_out,h_out,z_out)
-        ρ_out ~ ph_mass_density(fluid,p_out,h_out,z_out)
-        z_out ~ z_in
-        x_out ~ x_in
-        outport.mdot ~ mdot
+        h_out ~ pt_enthalpy(fluid,p_out,T_out,inport.z)
+        # s_out ~ ph_entropy(fluid,p_out,h_out,z_out)
+        # ρ_out ~ ph_mass_density(fluid,p_out,h_out,z_out)
+        # z_out ~ z_in
+        # x_out ~ x_in
+        outport.mdot ~ abs(inport.mdot)
         outport.p ~ p_out
         outport.h ~ h_out
-        outport.x ~ x_out
+        outport.x ~ inport.x
     ]
 
     compose(ODESystem(eqs, t, vars, para;name), inport, outport)
