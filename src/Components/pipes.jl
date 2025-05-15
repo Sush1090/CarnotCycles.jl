@@ -98,7 +98,7 @@ end
         # p_in ~ inport.p
         # x_in ~ inport.x
         z_in ~ mass_to_moles(fluid,inport.x,inport.mdot)
-        T_in ~ ph_temperature(fluid,inport.p,inport.h,z_in)
+        # T_in ~ ph_temperature(fluid,inport.p,inport.h,z_in)
         # h_in ~ inport.h
         # s_in ~ ph_entropy(fluid,p_in,h_in,z_in)
         ρ_in ~ ph_mass_density(fluid,inport.p,inport.h,z_in)
@@ -107,16 +107,16 @@ end
         Δp ~ (L*f*(mdot/1000)^2)/(2*D*ρ_in*A^2)
 
         p_out ~ inport.p - Δp
-        T_out ~ T_in
+        # T_out ~ T_in
 
-        h_out ~ pt_enthalpy(fluid,p_out,T_out,z_in)
+        # h_out ~ pt_enthalpy(fluid,p_out,T_out,z_in)
         # s_out ~ ph_entropy(fluid,p_out,h_out,z_out)
         # ρ_out ~ ph_mass_density(fluid,p_out,h_out,z_out)
         # z_out ~ z_in
         # x_out ~ x_in
         outport.mdot ~ abs(inport.mdot)
         outport.p ~ p_out
-        outport.h ~ h_out
+        outport.h ~ inport.h
         outport.x ~ inport.x
     ]
 
