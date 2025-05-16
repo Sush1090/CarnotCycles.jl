@@ -96,7 +96,7 @@ end
     @named port = CoolantPort()
     para = @parameters begin
         source_pressure(t)
-        source_enthalpy(t)
+        source_temperature(t)
         source_mdot(t)
     end
     vars = @variables begin
@@ -111,11 +111,11 @@ end
     eqs = [
         port.mdot ~ source_mdot # Outflow is negative
         port.p ~ source_pressure
-        port.h ~ source_enthalpy
+        port.h ~ PropsSI("H","P",port.p,"T",T,fluid)
         mdot ~ port.mdot
         s ~ PropsSI("S","H",port.h,"P",port.p,fluid)
         p ~ port.p
-        T ~ PropsSI("T","H",port.h,"P",port.p,fluid)
+        T ~ source_temperature
         h ~ port.h
         ρ ~ PropsSI("D","H",port.h,"P",port.p,fluid)
     ]
@@ -126,7 +126,7 @@ end
     @named port = CoolantPort()
     para = @parameters begin
         source_pressure(t), [description = "Pressure at source (Pa)"]
-        source_enthalpy(t), [description = "Enthalpy at source (J)"]
+        source_temperature(t), [description = "Temperature at source (J)"]
         source_mdot(t), [description = "Moles at source (-)"]
         source_x(t), [description = "mass % of 1st component", bounds = (0,1)]
     end
@@ -144,14 +144,14 @@ end
     eqs = [
         port.mdot ~ source_mdot
         port.p ~ source_pressure
-        port.h ~ source_enthalpy
+        port.h ~ pt_enthalpy(fluid,source_pressure,source_temperature,z)
         port.x ~ source_x
         mdot ~ source_mdot
         x ~ source_x
         z ~ mass_to_moles(fluid,x,mdot)
         s ~ ph_entropy(fluid,p,h,z)
         p ~ port.p
-        T ~ ph_temperature(fluid,p,h,z)
+        T ~ source_temperature
         h ~ port.h
         ρ ~ ph_mass_density(fluid,p,h,z)
     ]

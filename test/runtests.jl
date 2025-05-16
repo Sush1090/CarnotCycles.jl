@@ -72,7 +72,8 @@ end
     start_p = PropsSI("P","Q",0,"T",start_T,fluid) + 1e3
     ΔT_subcool = PropsSI("T","P",start_p,"Q",0,fluid) - start_T;
     @assert ΔT_subcool > 1e-3
-    start_h = PropsSI("H","T",start_T,"P",start_p,fluid); start_mdot = 0.2 #kg/s
+    # start_h = PropsSI("H","T",start_T,"P",start_p,fluid); 
+    start_mdot = 0.2 #kg/s
 
 
     @named source = MassSource()
@@ -88,7 +89,7 @@ end
     systems = [source,compressor,expander,sink]
     @named test_isentropic = ODESystem(eqs, t, systems=systems)
     u0 = []
-    para = [source.source_pressure=>start_p, source.source_enthalpy => start_h,source.source_mdot => start_mdot,compressor.πc => 5.0,compressor.η => 1.0,
+    para = [source.source_pressure=>start_p, source.source_temperature => start_T,source.source_mdot => start_mdot,compressor.πc => 5.0,compressor.η => 1.0,
             expander.η => 1.0, expander.πc => compressor.πc]
     sys = structural_simplify(test_isentropic)
     prob = SteadyStateProblem(sys,u0,para)
@@ -130,7 +131,7 @@ end
     systems = [source,compressor,expander,sink]
     @named test_isentropic = ODESystem(eqs, t, systems=systems)
     u0 = []
-    para = [source.source_pressure=>start_p, source.source_enthalpy => start_h,source.source_mdot => start_mdot, source.source_x => 1,
+    para = [source.source_pressure=>start_p, source.source_temperature => start_T,source.source_mdot => start_mdot, source.source_x => 1,
             compressor.πc => 5.0, compressor.η => 1.0,
             expander.η => 1.0, expander.πc => compressor.πc]
     sys = structural_simplify(test_isentropic)
@@ -169,7 +170,7 @@ end
     systems = [source,compressor,expander,sink]
     @named test_isentropic = ODESystem(eqs, t, systems=systems)
     u0 = []
-    para = [source.source_pressure=>start_p, source.source_enthalpy => start_h,source.source_mdot => start_mdot,compressor.πc => 5.0,
+    para = [source.source_pressure=>start_p, source.source_temperature => start_T,source.source_mdot => start_mdot,compressor.πc => 5.0,
         compressor.η => 1.0,source.source_x => 0.6,
         expander.η => 1.0, expander.πc => compressor.πc]
     sys = structural_simplify(test_isentropic)
@@ -201,7 +202,7 @@ end
         connect(evap.outport,sink.port)
     ]
     systems = [source,evap,sink]
-    para = [source.source_pressure => p, source.source_enthalpy => h_start,source.source_mdot => start_mdot,
+    para = [source.source_pressure => p, source.source_temperature => T_start,source.source_mdot => start_mdot,
     evap.ΔT_sh => 2, evap.T_htf_in => 400, evap.T_htf_out => 380]
     u0 = []
     @named model = ODESystem(eqs, t, systems=systems)
@@ -231,7 +232,7 @@ end
         connect(evap.outport,sink.port)
     ]
     systems = [source,evap,sink]
-    para = [source.source_pressure => p, source.source_enthalpy => start_h,source.source_mdot => start_mdot, source.source_x => 1,
+    para = [source.source_pressure => p, source.source_temperature => T,source.source_mdot => start_mdot, source.source_x => 1,
     evap.ΔT_sh => 2, evap.T_htf_in => 400, evap.T_htf_out => 380]
     u0 = []
     @named model = ODESystem(eqs, t, systems=systems)
@@ -261,7 +262,7 @@ end
         connect(evap.outport,sink.port)
     ]
     systems = [source,evap,sink]
-    para = [source.source_pressure => p, source.source_enthalpy => start_h,source.source_mdot => start_mdot, source.source_x => x_,
+    para = [source.source_pressure => p, source.source_temperature => T,source.source_mdot => start_mdot, source.source_x => x_,
     evap.ΔT_sh => 2, evap.T_htf_in => 340, evap.T_htf_out => 330]
     u0 = []
     @named model = ODESystem(eqs, t, systems=systems)
@@ -289,7 +290,7 @@ end
         connect(cond.outport,sink.port)
     ]
     systems = [source,cond,sink]
-    para = [source.source_pressure => p, source.source_enthalpy => h_start,source.source_mdot => start_mdot,
+    para = [source.source_pressure => p, source.source_temperature => T_start,source.source_mdot => start_mdot,
     cond.ΔT_sc => 2, cond.T_htf_in => 370, cond.T_htf_out => 372]
     u0 = []
     @named model = ODESystem(eqs, t, systems=systems)
@@ -319,7 +320,7 @@ end
         connect(cond.outport,sink.port)
     ]
     systems = [source,cond,sink]
-    para = [source.source_pressure => p, source.source_enthalpy => start_h,source.source_mdot => start_mdot, source.source_x => 1,
+    para = [source.source_pressure => p, source.source_temperature => T,source.source_mdot => start_mdot, source.source_x => 1,
     cond.ΔT_sc => 2, cond.T_htf_in => 370, cond.T_htf_out => 372]
     u0 = []
     @named model = ODESystem(eqs, t, systems=systems)
@@ -349,7 +350,7 @@ end
         connect(cond.outport,sink.port)
     ]
     systems = [source,cond,sink]
-    para = [source.source_pressure => p, source.source_enthalpy => start_h,source.source_mdot => start_mdot, source.source_x => x_,
+    para = [source.source_pressure => p, source.source_temperature => T,source.source_mdot => start_mdot, source.source_x => x_,
     cond.ΔT_sc => 2, cond.T_htf_in => 315, cond.T_htf_out => 330]
     u0 = []
     @named model = ODESystem(eqs, t, systems=systems)
@@ -358,4 +359,9 @@ end
     sol = solve(prob)
 
     @test sol[cond.is_feas] == true
+end
+
+@testset "Pipes" begin
+
+
 end
