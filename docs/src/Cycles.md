@@ -68,10 +68,10 @@ Now we state the point at `source`
 πc_1 = 5; πc_2 = 6
 source_mdot = 30 #g/s
 z_source = CarnotCycles.mass_to_moles(fluid,1,source_mdot)
-source_temp = 600; source_pressure = 101325*30; source_h = CarnotCycles.pt_enthalpy(fluid,source_pressure,source_temp,z_source)
+source_temp = 600; source_pressure = 101325*30; 
 
 para = [
-    source.source_enthalpy => source_h, source.source_mdot => source_mdot, source.source_x => 1, source.source_pressure => source_pressure,
+    source.source_temperature => source_temp, source.source_mdot => source_mdot, source.source_x => 1, source.source_pressure => source_pressure,
     isothermal_exp.πc => πc_1,
     isentropic_exp.πc => πc_2, isentropic_exp.η => 1,
     isothermal_comp.πc => πc_1,
@@ -106,7 +106,6 @@ Then we define the source thermodynamic state -  the starting point of the cycle
 ```julia
 ΔT_sh = 5
 p_ = 101325*5; T_ = PropsSI("T","Q",1,"P",p_,"R134A") + ΔT_sh
-h_ = PropsSI("H","T",T_,"P",p_,"R134A")
 ```
 
 The we choose the adequate components for the vapour compression cycle:
@@ -139,7 +138,7 @@ Then we choose the parameters of the system:
 
 ```julia
 para = [
-    source.source_pressure => p_, source.source_enthalpy => h_, source.source_mdot => 0.02, 
+    source.source_pressure => p_, source.source_temperature => T_, source.source_mdot => 0.02, 
     compressor.πc => 3, compressor.η => 0.7,
     condensor.ΔT_sc => 3,
     valve.πc => compressor.πc,

@@ -73,9 +73,9 @@ try
     @assert T_htf_cond[1] < T_htf_cond[2]
     z_source = CarnotCycles.mass_to_moles(fluid,x[2],p[5])
     T_source = CarnotCycles.Bubble_temperature(fluid,x[1],z_source) - x[5]
-    h_source = CarnotCycles.pt_enthalpy(fluid,x[1],T_source,z_source)
+    # h_source = CarnotCycles.pt_enthalpy(fluid,x[1],T_source,z_source)
     u0 = []
-    para = [source.source_pressure => x[1], source.source_enthalpy => h_source, source.source_mdot => p[5], source.source_x => x[2],
+    para = [source.source_pressure => x[1], source.source_temperature => T_source, source.source_mdot => p[5], source.source_x => x[2],
         pump.πc => x[3], pump.η => p[2],
         evaporator.ΔT_sh => x[4], evaporator.T_htf_in => T_htf_evap[1], evaporator.T_htf_out => T_htf_evap[2],
         turbine.η => p[1], turbine.πc => pump.πc,
