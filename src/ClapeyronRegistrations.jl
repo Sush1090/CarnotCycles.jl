@@ -225,3 +225,17 @@ function ph_entropy_qp(model::EoSModel,p,h,z)
     return PH.entropy(model,p,h,z)
 end
 @register_symbolic ph_entropy_qp(model::EoSModel,p,h,z)
+
+
+
+"""
+Computes the specific isobaric heat capacity of the fluid at the given pressure, temperature and composition J/kg-K.
+"""
+function specific_isobaric_heat_capacity(model::EoSModel,p,T,z,phase = "unknown")
+    cp = Clapeyron.isobaric_heat_capacity(model,p,T,z,phase=phase)
+    mass = moles_to_mass(model,z)
+    return cp/mass
+end
+
+pt_specific_isobaric_heat_capacity(model::EoSModel,p,T,z) = specific_isobaric_heat_capacity(model::EoSModel,p,T,z,phase = "unknown")
+@register_symbolic pt_specific_isobaric_heat_capacity(model::EoSModel,p,T,z)

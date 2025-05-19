@@ -74,6 +74,13 @@ function mass_to_moles(model::EoSModel,x,mass)
 end
 @register_symbolic mass_to_moles(model::EoSModel,x,mass)
 
+"""
+`moles_to_mass(model::EoSModel,z)` : convert number of moles to mass of fluid.`
+"""
+function moles_to_mass(model::EoSModel,z)
+    mw_ = Clapeyron.mw(model)
+    return z' * mw_ * 1e-3 # kg
+end
 
 
 """
