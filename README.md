@@ -7,7 +7,7 @@
 
 
 
-This package combines [ModelingToolkit.jl](https://github.com/SciML/ModelingToolkit.jl) "Acausal Modeling" with [CoolProp.jl](https://github.com/CoolProp/CoolProp.jl) and [Clapyeron.jl](https://github.com/ClapeyronThermo/Clapeyron.jl) to model thermodynamic cycles.
+This package combines [ModelingToolkit.jl](https://github.com/SciML/ModelingToolkit.jl) "Acausal Modeling" with [CoolProp.jl](https://github.com/CoolProp/CoolProp.jl) and [Clapeyron.jl](https://github.com/ClapeyronThermo/Clapeyron.jl) to model thermodynamic cycles.
 
 
 
