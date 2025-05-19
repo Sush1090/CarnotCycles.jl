@@ -41,6 +41,9 @@ include("Components/pump.jl")
 # """
 
 include("Components/HeatExchangers/SimpleGlide.jl")
+incluede("Components/HeatExchangers/HeatExchangerBase.jl")
+include("Components/HeatExchangers/eNTU.jl")
+
 
 # """
 # Storages
