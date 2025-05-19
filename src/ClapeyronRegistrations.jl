@@ -231,7 +231,7 @@ end
 """
 Computes the specific isobaric heat capacity of the fluid at the given pressure, temperature and composition J/kg-K.
 """
-function specific_isobaric_heat_capacity(model::EoSModel,p,T,z,phase = "unknown")
+function specific_isobaric_heat_capacity(model::EoSModel,p,T,z;phase = "unknown")
     cp = Clapeyron.isobaric_heat_capacity(model,p,T,z,phase=phase)
     mass = moles_to_mass(model,z)
     return cp/mass
