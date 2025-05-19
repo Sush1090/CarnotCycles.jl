@@ -27,7 +27,7 @@ function C_min(mdot_wf::Float64,cp_wf::Float64,mdot_sf::Float64,cp_sf::Float64)
 end
 
 
-function C_r(mdot_wf::Float64,cp_wf::Float64,mdot_sf::Float64,cp_sf::Float64)
+function compute_Cr(mdot_wf::Float64,cp_wf::Float64,mdot_sf::Float64,cp_sf::Float64)
     C_min = min(mdot_wf*cp_wf,mdot_sf*cp_sf)
     C_max = max(mdot_wf*cp_wf,mdot_sf*cp_sf)
     C_r = C_min / C_max
@@ -39,16 +39,16 @@ function NTU(hex::ϵNTU,C_min)
 end
 
 function compute_Qdot_max(mdot_in_wf,T_in_wf,cp_in_wf,mdot_in_htf,T_in_htf,cp_in_htf)
-    Qdot_max = C_min(mdot_in_wf,cp_in_wf,mdot_in_htf,cp_in_htf) * (T_in_wf - T_in_htf)
+    Qdot_max = C_min(mdot_in_wf,cp_in_wf,mdot_in_htf,cp_in_htf) * (-T_in_wf + T_in_htf)
     return Qdot_max
 end
 
 function compute_Qdot(hex::HEXModel,mdot_in_1,T_in_1,cp_in_1,mdot_in_2,T_in_2,cp_in_2)
     Qdot_max = compute_Qdot_max(mdot_in_1,T_in_1,cp_in_1,mdot_in_2,T_in_2,cp_in_2)
-    C_r = C_r(mdot_in_1,cp_in_1,mdot_in_2,cp_in_2)
-    C_min = C_min(mdot_in_1,cp_in_1,mdot_in_2,cp_in_2)
-    NTU = NTU(hex,C_min)
-    ϵ = eNTU(NTU,C_r,hex.flow)
+    C_r = compute_Cr(mdot_in_1,cp_in_1,mdot_in_2,cp_in_2)
+    C_min_ = C_min(mdot_in_1,cp_in_1,mdot_in_2,cp_in_2)
+    NTU_ = NTU(hex,C_min_)
+    ϵ = eNTU(NTU_,C_r,hex.flow)
     Qdot = ϵ * Qdot_max
     return Qdot
 end
@@ -68,7 +68,10 @@ function HeatExchanger(model::HEXModel;name,fluid = set_fluid)
     end
 end
 
-function HeatExchangerCoolProp(hex::ϵNTU;name = name,fluid)
+"""
+Not for phase change
+"""
+function HeatExchangerCoolProp(hex::ϵNTU;name = name,fluid = CarnotCycles.set_fluid)
     @named inport = CoolantPort()
     @named outport = CoolantPort()
 
@@ -97,7 +100,7 @@ function HeatExchangerCoolProp(hex::ϵNTU;name = name,fluid)
         h_out(t)
         ρ_out(t)
         mdot_out(t)
-        cp_out(t), [description = "Specific heat of HTF (J/kg-K)"]
+        Cp_out(t), [description = "Specific heat of HTF (J/kg-K)"]
 
         Qdot(t), [description = "Heat transfer rate (W)"]
         ϵ(t), [description = "Effectiveness"]
@@ -109,25 +112,27 @@ function HeatExchangerCoolProp(hex::ϵNTU;name = name,fluid)
         h_in ~ inport.h
         p_in ~ inport.p
         mdot_in ~ inport.mdot
-        T_in ~ PropsSI("T","H",h_in,"P",p_in,fluid)
-        s_in ~ PropsSI("S","H",h_in,"P",p_in,fluid)
-        ρ_in ~ PropsSI("D","H",h_in,"P",p_in,fluid)
-        Cp_in ~ PropsSI("CPMASS","H",h_in,"P",p_in,fluid)
+        T_in ~ CarnotCycles.PropsSI("T","H",h_in,"P",p_in,fluid)
+        s_in ~ CarnotCycles.PropsSI("S","H",h_in,"P",p_in,fluid)
+        ρ_in ~ CarnotCycles.PropsSI("D","H",h_in,"P",p_in,fluid)
+        Cp_in ~ CarnotCycles.PropsSI("CPMASS","H",h_in,"P",p_in,fluid)
 
         htf_inport.mdot ~ mdot_htf
         htf_inport.T ~ T_htf_in
         
         Qdot ~ compute_Qdot(hex,mdot_in,T_in,Cp_in,mdot_htf,T_htf_in,Cp_htf)
         p_out ~ p_in
+
         mdot_out ~ mdot_in
 
-        Qdot ~ outport.mdot * (h_out - h_in)
-        T_out ~ PropsSI("T","H",h_out,"P",p_out,fluid)
-        s_out ~ PropsSI("S","H",h_out,"P",p_out,fluid)
-        ρ_out ~ PropsSI("D","H",h_out,"P",p_out,fluid)
-        Cp_out ~ PropsSI("CPMASS","H",h_out,"P",p_out,fluid)
+        h_out ~ h_in + Qdot/outport.mdot  
+        T_out ~ CarnotCycles.PropsSI("T","H",h_out,"P",p_out,fluid)
+        s_out ~ CarnotCycles.PropsSI("S","H",h_out,"P",p_out,fluid)
+        ρ_out ~ CarnotCycles.PropsSI("D","H",h_out,"P",p_out,fluid)
+        Cp_out ~ CarnotCycles.PropsSI("CPMASS","H",h_out,"P",p_out,fluid)
         p_out ~ outport.p
         outport.mdot ~ mdot_out
+        outport.h ~ h_out
 
         T_htf_out ~ T_htf_in - Qdot/(mdot_htf * Cp_htf)
         htf_outport.T ~ T_htf_out
@@ -135,4 +140,33 @@ function HeatExchangerCoolProp(hex::ϵNTU;name = name,fluid)
     ]
 
     compose(ODESystem(eqs, t, vars, para;name), inport, outport, htf_inport, htf_outport)
+end
+
+
+function HeatExchangerClapeyron(hex::ϵNTU;name = name,fluid = CarnotCycles.set_fluid)
+    @named inport = CoolantPort()
+    @named outport = CoolantPort()
+
+    @named htf_inport = StoragePort()
+    @named htf_outport = StoragePort()
+
+    # para = @parameters begin
+    #     Cp_htf(t), [description = "Specific heat of HTF (J/kg-K)"]
+    #     T_htf_in(t), [description = "Inlet Temperature of HTF"]
+    #     mdot_htf(t), [description = "Inlet mass flow rate of HTF"]
+    # end
+
+    # vars = @variables begin
+    #     s_in(t)
+    #     p_in(t)
+    #     T_in(t)
+    #     h_in(t)
+    #     ρ_in(t)
+    #     mdot_in(t)
+
+    #     Cp_in(t), [description = "Specific heat of HTF (J/kg-K)"]
+
+    #     s_out(t)
+    #     p_out(t)
+    return nothing
 end
