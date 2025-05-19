@@ -1,7 +1,7 @@
 abstract type HEXModel end
 
 struct ϵNTU <:HEXModel
-    flow::Symbol = :counterflow
+    flow::Symbol
     U::Float64
     A::Float64
     function ϵNTU(;flow = :counterflow, U = 0.0, A = 0.0)
