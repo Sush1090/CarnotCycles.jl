@@ -365,3 +365,9 @@ end
 
 
 end
+
+@testset "eNTU" begin
+
+@test CarnotCycles.eNTU(300,0.9,:counterflow) ≈ 1.0 atol = 1e-5
+@test CarnotCycles.eNTU(3000,0.99,:counterflow) ≈ 1.0 atol = 1e-5
+end

@@ -16,7 +16,6 @@ function eNTU(NTU,C_r,flow::Symbol = :counterflow)
     if flow == :crossflow
         return 1 - exp((1 / C_r)*(NTU^0.22)*(exp(-C_r*(NTU^0.78)) - 1))
     end
-
     throw(ArgumentError("flow must be :counterflow, :parallelflow, or :crossflow. Check the flow type"))
 end
 
