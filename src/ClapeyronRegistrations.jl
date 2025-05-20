@@ -5,6 +5,9 @@ pt_entropy(model::EoSModel,p,T,z) = Clapeyron.entropy(model::EoSModel,p,T,z,phas
 pt_enthalpy(model::EoSModel,p,T,z) = Clapeyron.enthalpy(model::EoSModel,p,T,z,phase = "unknown")
 @register_symbolic pt_enthalpy(model::EoSModel,p,T,z)
 
+pt_isobaric_heat_capacity(model::EoSModel,p,T,z) = Clapeyron.isobaric_heat_capacity(model::EoSModel,p,T,z,phase = "unknown")
+@register_symbolic pt_isobaric_heat_capacity(model::EoSModel,p,T,z)
+
 pt_mass_density(model::EoSModel,p,T,z) = Clapeyron.mass_density(model::EoSModel,p,T,z,phase = "unknown")
 @register_symbolic pt_mass_density(model::EoSModel,p,T,z)
 
@@ -232,7 +235,7 @@ end
 Computes the specific isobaric heat capacity of the fluid at the given pressure, temperature and composition J/kg-K.
 """
 function specific_isobaric_heat_capacity(model::EoSModel,p,T,z;phase = "unknown")
-    cp = Clapeyron.isobaric_heat_capacity(model,p,T,z,phase=phase)
+    cp = pt_isobaric_heat_capacity(model::EoSModel,p,T,z)
     mass = moles_to_mass(model,z)
     return cp/mass
 end

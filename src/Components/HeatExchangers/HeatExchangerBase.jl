@@ -11,3 +11,8 @@ struct ϵNTU <:HEXModel
         new(flow,U,A)
     end
 end
+
+
+struct LMTD <:HEXModel
+
+end

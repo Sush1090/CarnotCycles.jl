@@ -155,3 +155,59 @@ function SimpleCondensorClapeyron(;name,fluid)
 end
 
 export SimpleCondensor
+
+
+# function Condensor_Tsat_CoolProp(;name,fluid)
+#     @named heatport = HeatPort()
+#     @named inport = CoolantPort()
+#     @named outport = CoolantPort()
+
+#     vars = @variables begin
+#         s_in(t)
+#         h_in(t)
+#         T_in(t)
+#         p_in(t)
+#         ρ_in(t)
+#         mdot_in(t)
+
+#         s_out(t)
+#         h_out(t)
+#         T_out(t)
+#         p_out(t)
+#         ρ_out(t)
+#         mdot_out(t)
+
+#         Qdot(t)
+#     end
+#     para = @parameters begin
+#         T_sat(t), [description = "Saturation Temperature(K)"]
+#         ΔT_sc(t), [description = "Subcool temperature (K)",bounds = (1e-3,Inf)]
+#     end
+#     eqs = [
+#         h_in ~ inport.h
+#         p_in ~ PropsSI("P","T",T_sat,"Q",1,fluid)
+#         mdot_in ~ inport.mdot
+#         s_in ~ PropsSI("S","H",h_in,"P",p_in,fluid)
+#         T_in ~ PropsSI("T","H",h_in,"P",p_in,fluid)
+#         ρ_in ~ PropsSI("D","H",h_in,"P",p_in,fluid)
+
+
+#         T_out ~ T_sat - ΔT_sc
+#         p_out ~ p_in
+#         h_out ~ PropsSI("H","T",T_out,"P",p_out,fluid)
+#         s_out ~ PropsSI("S","H",h_out,"P",p_out,fluid)
+#         ρ_out ~ PropsSI("D","H",h_out,"P",p_out,fluid)
+#         mdot_out ~ mdot_in
+
+#         outport.h ~ h_out
+#         outport.p ~ p_out
+#         outport.mdot ~ mdot_out
+
+#         Qdot ~ mdot_out*(h_out - h_in)
+#         heatport.T_in ~ T_in
+#         heatport.T_out ~ T_out
+#         heatport.Q ~ Qdot
+#     ]
+#     compose(ODESystem(eqs, t, vars, para;name), inport, outport,heatport)
+
+# end

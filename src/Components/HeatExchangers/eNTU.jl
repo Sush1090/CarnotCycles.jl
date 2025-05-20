@@ -56,18 +56,6 @@ end
 @register_symbolic compute_Qdot(hex::HEXModel,mdot_in_1,T_in_1,cp_in_1,mdot_in_2,T_in_2,cp_in_2)
 
 
-function HeatExchanger(model::HEXModel;name,fluid = set_fluid)
-    if fluid isa EoSModel
-        return HeatExchangerClapeyron(model;name = name,fluid = fluid)
-    end
-    if fluid isa AbstractString
-        return HeatExchangerCoolProp(model;name = name,fluid = fluid)
-    end
-    if isnothing(fluid)
-        throw(error("Fluid not selected"))
-    end
-end
-
 """
 Not for phase change
 """
@@ -143,30 +131,93 @@ function HeatExchangerCoolProp(hex::ϵNTU;name = name,fluid = CarnotCycles.set_f
 end
 
 
-function HeatExchangerClapeyron(hex::ϵNTU;name = name,fluid = CarnotCycles.set_fluid)
+function HeatExchangerClapeyron(hex::ϵNTU;name,fluid = CarnotCycles.set_fluid)
     @named inport = CoolantPort()
     @named outport = CoolantPort()
 
     @named htf_inport = StoragePort()
     @named htf_outport = StoragePort()
 
-    # para = @parameters begin
-    #     Cp_htf(t), [description = "Specific heat of HTF (J/kg-K)"]
-    #     T_htf_in(t), [description = "Inlet Temperature of HTF"]
-    #     mdot_htf(t), [description = "Inlet mass flow rate of HTF"]
-    # end
+    para = @parameters begin
+        Cp_htf(t), [description = "Specific heat of HTF (J/kg-K)"]
+        T_htf_in(t), [description = "Inlet Temperature of HTF"]
+        mdot_htf(t), [description = "Inlet mass flow rate of HTF (kg/s)"]
+    end
 
-    # vars = @variables begin
-    #     s_in(t)
-    #     p_in(t)
-    #     T_in(t)
-    #     h_in(t)
-    #     ρ_in(t)
-    #     mdot_in(t)
+    vars = @variables begin
+        z_in(t)
+        x_in(t)
+        s_in(t)
+        p_in(t)
+        T_in(t)
+        h_in(t)
+        ρ_in(t)
+        mdot_in(t)
 
-    #     Cp_in(t), [description = "Specific heat of HTF (J/kg-K)"]
+        Cp_in(t), [description = "Specific heat of HTF (J/kg-K)"]
 
-    #     s_out(t)
-    #     p_out(t)
-    return nothing
+        s_out(t)
+        p_out(t)
+        T_out(t)
+        h_out(t)
+        ρ_out(t)
+        mdot_out(t)
+        Cp_out(t), [description = "Specific heat of HTF (J/kg-K)"]
+        z_out(t)
+        x_out(t)
+
+        Qdot(t), [description = "Heat transfer rate (W)"]
+        ϵ(t), [description = "Effectiveness"]
+
+        T_htf_out(t), [description = "Outlet Temperature of HTF"]
+    end
+    eqs = [
+        h_in ~ inport.h
+        p_in ~ inport.p
+        mdot_in ~ inport.mdot
+        x_in ~ inport.x
+        z_in ~ CarnotCycles.mass_to_moles(fluid,x_in,mdot_in) 
+        T_in ~ CarnotCycles.ph_temperature(fluid,p_in,h_in,z_in)
+        Cp_in ~ specific_isobaric_heat_capacity(fluid,p_in,T_in,z_in)
+        s_in ~ CarnotCycles.ph_entropy(fluid,p_in,h_in,z_in)
+        ρ_in ~ CarnotCycles.ph_mass_density(fluid,p_in,h_in,z_in)
+
+        htf_inport.mdot ~ mdot_htf
+        htf_inport.T ~ T_htf_in
+        Qdot ~ compute_Qdot(hex,mdot_in/1000,T_in,Cp_in,mdot_htf,T_htf_in,Cp_htf)
+
+        p_out ~ p_in
+        mdot_out ~ mdot_in
+        h_in ~ h_out - Qdot
+        T_out ~ CarnotCycles.ph_temperature(fluid,p_out,h_out,z_out)
+        s_out ~ CarnotCycles.ph_entropy(fluid,p_out,h_out,z_out)
+        ρ_out ~ CarnotCycles.ph_mass_density(fluid,p_out,h_out,z_out)
+        Cp_out ~ specific_isobaric_heat_capacity(fluid,p_out,T_out,z_out)
+        z_out ~ CarnotCycles.mass_to_moles(fluid,x_out,mdot_out)
+        x_out ~ x_in
+
+        p_out ~ outport.p
+        outport.mdot ~ mdot_out
+        outport.h ~ h_out
+        outport.x ~ x_out
+
+        T_htf_out ~ T_htf_in - Qdot/(mdot_htf * Cp_htf)
+        htf_outport.T ~ T_htf_out
+        htf_outport.mdot ~ mdot_htf
+    ]
+    compose(ODESystem(eqs, t, vars, para;name), inport, outport, htf_inport, htf_outport)
 end
+
+function HeatExchanger(hex::ϵNTU;name,fluid = CarnotCycles.set_fluid)
+    if fluid isa EoSModel
+        return HeatExchangerClapeyron(hex;name = name,fluid = fluid)
+    end
+    if fluid isa AbstractString
+        return HeatExchangerCoolProp(hex;name = name,fluid = fluid)
+    end
+    if isnothing(fluid)
+        throw(error("Fluid not selected"))
+    end
+end
+
+export HeatExchanger
