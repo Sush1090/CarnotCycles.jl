@@ -166,7 +166,6 @@ system_string = ["compressor","condensor","valve","evaporator"]
 CarnotCycles.plot(sol,systems,system_string,type = :PH,phase = true)
 ```
 
-
 ---
 **NOTE**
 
@@ -175,10 +174,113 @@ Energy given to the fluid is +ve while given by the fluid is -ve. Hence the COP 
 ---
 ![VCC_PH_phase](Images/PhaseDiagrams/VCC_PH.png)
 
-### Solution Viewing
+
+
+## Otto Cycle
+
+Otto's Cycle is described by parallel isentropic processes which are interlinked by isochoric processes. See [Otto Cycle](https://en.wikipedia.org/wiki/Otto_cycle).
+
+To simulate this with the CarnotCycles.jl we can do as follows:
+
+```julia
+using Clapeyron, CarnotCycles, ModelingToolkit, SteadyStateDiffEq
+
+import CarnotCycles: t
+
+fluid = cPR(["Argon"],idealmodel = ReidIdeal)
+
+load_fluid(fluid)
+
+
+@named source = MassSource()
+@named compressor = IsentropicCompressor()
+@named isochoric_compressor = IsochoricCompressor()
+@named expander = IsentropicExpander()
+@named isochoric_expander = IsochoricExpander()
+@named sink = MassSink()
+
+eqs = [
+    connect(source.port,compressor.inport)
+    connect(compressor.outport,isochoric_compressor.inport)
+    connect(isochoric_compressor.outport,expander.inport)
+    connect(expander.outport,isochoric_expander.inport)
+    connect(isochoric_expander.outport,sink.port)
+]
+
+systems = [source,compressor,isochoric_compressor,expander,isochoric_expander,sink]
+@named system = ODESystem(eqs,t,systems = systems)
+@time sys = structural_simplify(system)
+```
+
+Choosing the parameters:
+
+```julia
+para = [
+    source.source_pressure => 1e5, source.source_temperature => 300.0, source.source_mdot => 20.0, source.source_x => 1.0, 
+    compressor.η => 1.0, compressor.πc => 5.0,
+    isochoric_compressor.πc => 3.0,
+    expander.η => 1.0, expander.πc => compressor.πc,
+    isochoric_expander.πc => isochoric_compressor.πc,
+]
+u0 = []
+prob = SteadyStateProblem(sys,u0,para)
+sol = solve(prob)
+```
+
+To see all states in the cycle
+
+```julia
+system_string = ["compressor","isochoric_compressor","expander","isochoric_expander"]
+show_all_states(sol,systems,system_string)
+```
+
+Results in printing the output in the terminal
+
+```julia
+--------------------------------------
+Component: compressor
+Temperature in : 300.0 K  , Temperature out : 571.1362731703207 K
+Pressure in : 100000.0 Pa  , Pressure out : 500000.0 Pa
+Enthalpy : 16.266350232763216 J  , Enthalpy out : 2836.6280843423797 J
+Entropy : -19.49595286245431 J/K  , Entropy out : -19.495952862454324 J/K
+Mass Flow Rate : 20.0 g/s  , Mass Flow Rate out : 20.0 g/s
+Mass fraction : 1.0 , Mass fraction out : 1.0
+--------------------------------------
+--------------------------------------
+Component: isochoric_compressor
+Temperature in : 571.1362731703207 K  , Temperature out : 1710.8971638025928 K
+Pressure in : 500000.0 Pa  , Pressure out : 1.5e6 Pa
+Enthalpy : 2836.6280843423797 J  , Enthalpy out : 14713.554713239335 J
+Entropy : -19.495952862454324 J/K  , Entropy out : -12.641777207302466 J/K
+Mass Flow Rate : 20.0 g/s  , Mass Flow Rate out : 20.0 g/s
+Mass fraction : 1.0 , Mass fraction out : 1.0
+--------------------------------------
+--------------------------------------
+Component: expander
+Temperature in : 1710.8971638025928 K  , Temperature out : 898.7834079229091 K
+Pressure in : 1.5e6 Pa  , Pressure out : 300000.0 Pa
+Enthalpy : 14713.554713239335 J  , Enthalpy out : 6251.801609047419 J
+Entropy : -12.641777207302466 J/K  , Entropy out : -12.641777206993057 J/K
+Mass Flow Rate : 20.0 g/s  , Mass Flow Rate out : 20.0 g/s
+Mass fraction : 1.0 , Mass fraction out : 1.0
+--------------------------------------
+--------------------------------------
+Component: isochoric_expander
+Temperature in : 898.783407922909 K  , Temperature out : 300.0443884959337 K
+Pressure in : 300000.0 Pa  , Pressure out : 100000.0 Pa
+Enthalpy : 6251.801609047419 J  , Enthalpy out : 16.729409232186228 J
+Entropy : -12.641777206993057 J/K  , Entropy out : -19.494409446636574 J/K
+Mass Flow Rate : 20.0 g/s  , Mass Flow Rate out : 20.0 g/s
+Mass fraction : 1.0 , Mass fraction out : 1.0
+--------------------------------------
+```
+
+## Solution Viewing
 There are generally two ways: 
-    1. Printing the output on the terminal using `show_all_states(sol,systems,system_string)`
-    2. Plotting the necessary diagram
+
+1. Printing the output on the terminal using `show_all_states(sol,systems,system_string)`
+    
+2. Plotting the necessary diagram
 
 
 
