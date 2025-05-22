@@ -1,7 +1,7 @@
 name = "CarnotCycles"
 uuid = "b01af851-7cff-425c-b4a4-ed45d3481e5c"
 authors = ["Sushrut"]
-version = "0.2.6"
+version = "0.2.7"
 
 [deps]
 Clapeyron = "7c7805af-46cc-48c9-995b-ed0ed2dc909a"
