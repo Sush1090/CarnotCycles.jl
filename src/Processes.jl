@@ -152,7 +152,7 @@ export IsochoricCompression
 
 * Output -> Outlet enthalpy after isochoric compression
 """
-function IsochoricCompressionClapeyron(πc, h_in, p_in,z::Array,fluid::EoSModel)
+function IsochoricCompressionClapeyron(πc, h_in, p_in,z,fluid::EoSModel)
     v_in =  ph_volume(fluid,p_in,h_in,z)
     p_out = p_in*πc
     f(h) = ph_volume(fluid,p_out,h,z) - v_in
@@ -160,7 +160,7 @@ function IsochoricCompressionClapeyron(πc, h_in, p_in,z::Array,fluid::EoSModel)
     sol = Roots.solve(prob)
     return sol
 end
-@register_symbolic IsochoricCompressionClapeyron(πc, h_in, p_in,z::Array,fluid::EoSModel)
+@register_symbolic IsochoricCompressionClapeyron(πc, h_in, p_in,z,fluid::EoSModel)
 export IsochoricCompressionClapeyron
 
 """
@@ -194,7 +194,7 @@ export IsochoricExpansion
 
 * Output -> Outlet enthalpy after isochoric expansion
 """
-function IsochoricExpansionClapeyron(πc, h_in, p_in,z::Array,fluid::EoSModel)
+function IsochoricExpansionClapeyron(πc, h_in, p_in,z,fluid::EoSModel)
     v_in =  ph_volume(fluid,p_in,h_in,z)
     p_out = p_in/πc
     f(h) = ph_volume(fluid,p_out,h,z) - v_in
@@ -202,7 +202,7 @@ function IsochoricExpansionClapeyron(πc, h_in, p_in,z::Array,fluid::EoSModel)
     sol = Roots.solve(prob)
     return sol
 end
-@register_symbolic IsochoricExpansionClapeyron(πc, h_in, p_in,z::Array,fluid::EoSModel)
+@register_symbolic IsochoricExpansionClapeyron(πc, h_in, p_in,z,fluid::EoSModel)
 export IsochoricExpansionClapeyron
 
 """
