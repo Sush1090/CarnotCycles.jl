@@ -323,23 +323,23 @@ function IsochoricCompressorClapeyron(;name,fluid = set_fluid)
             ρ_in ~ ph_mass_density(fluid,p_in,h_in,z_in)
             T_in ~ ph_temperature(fluid,p_in,h_in,z_in)
 
-            h_out ~ IsothermalCompressionClapeyron(πc,h_in,p_in,z_in,fluid)
-   p_out ~ p_in*πc
-   s_out ~ ph_entropy(fluid,p_out,h_out,z_out)
-   T_out ~ ph_temperature(fluid,p_out,h_out,z_out)
-   ρ_out ~ ph_mass_density(fluid,p_out,h_out,z_out)
-   z_out ~ z_in
-   x_out ~ x_in
-   mdot_out ~ mdot_in
+            h_out ~ IsochoricCompressionClapeyron(πc,h_in,p_in,z_in,fluid)
+            p_out ~ p_in*πc
+            s_out ~ ph_entropy(fluid,p_out,h_out,z_out)
+            T_out ~ ph_temperature(fluid,p_out,h_out,z_out)
+            ρ_out ~ ph_mass_density(fluid,p_out,h_out,z_out)
+            z_out ~ z_in
+            x_out ~ x_in
+            mdot_out ~ mdot_in
 
-   P ~ h_out - h_in
+            P ~ h_out - h_in
 
-   outport.p ~ p_out
-   outport.h ~ h_out
-   outport.x ~ x_out
-   outport.mdot ~ mdot_out
+            outport.p ~ p_out
+            outport.h ~ h_out
+            outport.x ~ x_out
+            outport.mdot ~ mdot_out
 
-   power.P ~ P
+            power.P ~ P
    ]
    compose(ODESystem(eqs, t, vars, para;name), inport, outport,power)
 end
