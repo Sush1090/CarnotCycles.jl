@@ -56,7 +56,7 @@ end
             ρ_out ~ PropsSI("D","H",outport.h,"P",outport.p,fluid)
             LiquidPhase ~ CoolPropLiquidPhaseCheck(fluid,inport.h,inport.p)
     ]
-    compose(ODESystem(eqs, t, vars, para;name), inport, outport)
+    compose(System(eqs, t, vars, para;name), inport, outport)
 end
 
 
@@ -117,7 +117,7 @@ end
 
             P ~ h_out - h_in
     ]
-    compose(ODESystem(eqs, t, vars, para;name), inport, outport)
+    compose(System(eqs, t, vars, para;name), inport, outport)
 end
 
 export Pump

@@ -126,7 +126,7 @@ function HeatExchangerCoolProp(hex::ϵNTU;name = name,fluid = CarnotCycles.set_f
         htf_outport.mdot ~ mdot_htf
     ]
 
-    compose(ODESystem(eqs, t, vars, para;name), inport, outport, htf_inport, htf_outport)
+    compose(System(eqs, t, vars, para;name), inport, outport, htf_inport, htf_outport)
 end
 
 
@@ -204,7 +204,7 @@ function HeatExchangerClapeyron(hex::ϵNTU;name,fluid = CarnotCycles.set_fluid)
         htf_outport.T ~ T_htf_out
         htf_outport.mdot ~ mdot_htf
     ]
-    compose(ODESystem(eqs, t, vars, para;name), inport, outport, htf_inport, htf_outport)
+    compose(System(eqs, t, vars, para;name), inport, outport, htf_inport, htf_outport)
 end
 
 function HeatExchanger(hex::ϵNTU;name,fluid = CarnotCycles.set_fluid)

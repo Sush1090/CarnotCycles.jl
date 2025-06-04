@@ -111,6 +111,6 @@ function Recuperator(type::RecuperatorORC;name,ΔT_sat_diff,fluid = set_fluid)
         ρ_out_liquid ~ PropsSI("D","H",h_out_liquid,"P",p_out_liquid,fluid)
         T_out_liquid ~ PropsSI("T","H",h_out_liquid,"P",p_out_liquid,fluid)
     ]
-    compose(ODESystem(eqs, t, vars, para;name), inport_gas,inport_liquid,outport_gas,outport_liquid)
+    compose(System(eqs, t, vars, para;name), inport_gas,inport_liquid,outport_gas,outport_liquid)
 end
 export Recuperator

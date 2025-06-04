@@ -55,7 +55,7 @@ end
         h_out ~ h_in
         ρ_out ~ PropsSI("D","H",outport.h,"P",outport.p,fluid)
     ]
-    compose(ODESystem(eqs, t, vars, para;name), inport, outport)
+    compose(System(eqs, t, vars, para;name), inport, outport)
 end
 
 
@@ -110,7 +110,7 @@ end
         outport.mdot ~ mdot_out
 
     ]
-    compose(ODESystem(eqs, t, vars, para;name), inport, outport)
+    compose(System(eqs, t, vars, para;name), inport, outport)
 end
 
 
@@ -190,7 +190,7 @@ end
 #         h_out2 ~ outport2.h
 #         ρ_out2 ~ PropsSI("D","H",outport2.h,"P",outport2.p,fluid)
 #     ]
-#     compose(ODESystem(eqs, t, vars, para;name), inport, outport1,outport2)
+#     compose(System(eqs, t, vars, para;name), inport, outport1,outport2)
 # end
 
 
@@ -267,7 +267,7 @@ end
 #         h_out ~ outport.h
 #         ρ_out ~ PropsSI("D","H",outport.h,"P",outport.p,fluid)
 #     ]
-#     compose(ODESystem(eqs, t, vars, para;name), inport1, inport2,outport)
+#     compose(System(eqs, t, vars, para;name), inport1, inport2,outport)
 # end
 
 
