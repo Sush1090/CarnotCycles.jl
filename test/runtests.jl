@@ -87,11 +87,11 @@ end
         connect(expander.outport,sink.port)
     ]
     systems = [source,compressor,expander,sink]
-    @named test_isentropic = ODESystem(eqs, t, systems=systems)
+    @named test_isentropic = System(eqs, t, systems=systems)
     u0 = []
     para = [source.source_pressure=>start_p, source.source_temperature => start_T,source.source_mdot => start_mdot,compressor.πc => 5.0,compressor.η => 1.0,
             expander.η => 1.0, expander.πc => compressor.πc]
-    sys = structural_simplify(test_isentropic)
+    sys = mtkcompile(test_isentropic)
     prob = SteadyStateProblem(sys,u0,para)
     sol = solve(prob)
     bool1 = isapprox(sol[compressor.s_in],sol[compressor.s_out])
@@ -102,7 +102,7 @@ end
     @test isapprox(sol[source.h],sol[sink.h])
 
     @test isapprox(sol[compressor.s_in],sol[compressor.s_out])
-     @test isapprox(sol[expander.s_in],sol[expander.s_out])
+    @test isapprox(sol[expander.s_in],sol[expander.s_out])
 
 end
 
@@ -129,12 +129,12 @@ end
         connect(expander.outport,sink.port)
     ]
     systems = [source,compressor,expander,sink]
-    @named test_isentropic = ODESystem(eqs, t, systems=systems)
+    @named test_isentropic = System(eqs, t, systems=systems)
     u0 = []
     para = [source.source_pressure=>start_p, source.source_temperature => start_T,source.source_mdot => start_mdot, source.source_x => 1,
             compressor.πc => 5.0, compressor.η => 1.0,
             expander.η => 1.0, expander.πc => compressor.πc]
-    sys = structural_simplify(test_isentropic)
+    sys = mtkcompile(test_isentropic)
     prob = SteadyStateProblem(sys,u0,para)
     sol = solve(prob)
     bool1 = isapprox(sol[compressor.s_in],sol[compressor.s_out],atol=1e-4)
@@ -168,12 +168,12 @@ end
         connect(expander.outport,sink.port)
     ]
     systems = [source,compressor,expander,sink]
-    @named test_isentropic = ODESystem(eqs, t, systems=systems)
+    @named test_isentropic = System(eqs, t, systems=systems)
     u0 = []
     para = [source.source_pressure=>start_p, source.source_temperature => start_T,source.source_mdot => start_mdot,compressor.πc => 5.0,
         compressor.η => 1.0,source.source_x => 0.6,
         expander.η => 1.0, expander.πc => compressor.πc]
-    sys = structural_simplify(test_isentropic)
+    sys = mtkcompile(test_isentropic)
     prob = SteadyStateProblem(sys,u0,para)
     sol = solve(prob)
     bool1 = isapprox(sol[compressor.s_in],sol[compressor.s_out],atol = 1e-4)
@@ -205,8 +205,8 @@ end
     para = [source.source_pressure => p, source.source_temperature => T_start,source.source_mdot => start_mdot,
     evap.ΔT_sh => 2, evap.T_htf_in => 400, evap.T_htf_out => 380]
     u0 = []
-    @named model = ODESystem(eqs, t, systems=systems)
-    sys = structural_simplify(model)
+    @named model = System(eqs, t, systems=systems)
+    sys = mtkcompile(model)
     prob = SteadyStateProblem(sys,u0,para)
     sol = solve(prob)
 
@@ -235,8 +235,8 @@ end
     para = [source.source_pressure => p, source.source_temperature => T,source.source_mdot => start_mdot, source.source_x => 1,
     evap.ΔT_sh => 2, evap.T_htf_in => 400, evap.T_htf_out => 380]
     u0 = []
-    @named model = ODESystem(eqs, t, systems=systems)
-    sys = structural_simplify(model)
+    @named model = System(eqs, t, systems=systems)
+    sys = mtkcompile(model)
     prob = SteadyStateProblem(sys,u0,para)
     sol = solve(prob)
 
@@ -265,8 +265,8 @@ end
     para = [source.source_pressure => p, source.source_temperature => T,source.source_mdot => start_mdot, source.source_x => x_,
     evap.ΔT_sh => 2, evap.T_htf_in => 340, evap.T_htf_out => 330]
     u0 = []
-    @named model = ODESystem(eqs, t, systems=systems)
-    sys = structural_simplify(model)
+    @named model = System(eqs, t, systems=systems)
+    sys = mtkcompile(model)
     prob = SteadyStateProblem(sys,u0,para)
     sol = solve(prob)
 
@@ -293,8 +293,8 @@ end
     para = [source.source_pressure => p, source.source_temperature => T_start,source.source_mdot => start_mdot,
     cond.ΔT_sc => 2, cond.T_htf_in => 370, cond.T_htf_out => 372]
     u0 = []
-    @named model = ODESystem(eqs, t, systems=systems)
-    sys = structural_simplify(model)
+    @named model = System(eqs, t, systems=systems)
+    sys = mtkcompile(model)
     prob = SteadyStateProblem(sys,u0,para)
     sol = solve(prob)
 
@@ -323,8 +323,8 @@ end
     para = [source.source_pressure => p, source.source_temperature => T,source.source_mdot => start_mdot, source.source_x => 1,
     cond.ΔT_sc => 2, cond.T_htf_in => 370, cond.T_htf_out => 372]
     u0 = []
-    @named model = ODESystem(eqs, t, systems=systems)
-    sys = structural_simplify(model)
+    @named model = System(eqs, t, systems=systems)
+    sys = mtkcompile(model)
     prob = SteadyStateProblem(sys,u0,para)
     sol = solve(prob)
 
@@ -353,8 +353,8 @@ end
     para = [source.source_pressure => p, source.source_temperature => T,source.source_mdot => start_mdot, source.source_x => x_,
     cond.ΔT_sc => 2, cond.T_htf_in => 315, cond.T_htf_out => 330]
     u0 = []
-    @named model = ODESystem(eqs, t, systems=systems)
-    sys = structural_simplify(model)
+    @named model = System(eqs, t, systems=systems)
+    sys = mtkcompile(model)
     prob = SteadyStateProblem(sys,u0,para)
     sol = solve(prob)
 
@@ -362,8 +362,7 @@ end
 end
 
 @testset "Pipes" begin
-
-
+    
 end
 
 @testset "eNTU functions" begin

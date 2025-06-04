@@ -54,8 +54,8 @@ eqs = [
     connect(condensor.outport,sink.port)
 ]
 
-@named system = ODESystem(eqs,t,systems = systems)
-@time sys = structural_simplify(system)
+@named system = System(eqs,t,systems = systems)
+@time sys = mtkcompile(system)
 ```
 
 Now we have define our cycle we can make a function to pass to the optimizer.

@@ -74,7 +74,7 @@ function SimpleEvaporatorCoolProp(;name,fluid)
         heatport.T_out ~ T_out
         heatport.Q ~ Qdot
     ]
-    compose(ODESystem(eqs, t, vars, para;name), inport, outport,heatport)
+    compose(System(eqs, t, vars, para;name), inport, outport,heatport)
     
 end
 
@@ -150,7 +150,7 @@ function SimpleEvaporatorClapeyron(;name,fluid)
         heatport.T_out ~ T_out
         heatport.Q ~ Qdot
     ]
-    compose(ODESystem(eqs, t, vars, para;name), inport, outport,heatport)
+    compose(System(eqs, t, vars, para;name), inport, outport,heatport)
     
 end
 

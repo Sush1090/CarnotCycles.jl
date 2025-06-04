@@ -35,7 +35,7 @@ A simple Schuman Packed Bed model.
         [ρs*Cs*(1-ϵ)*D(Ts[i]) ~ h*(Tg[i] - Ts[i]) for i = 1:N+1]
 
     ]
-    return compose(ODESystem(eqs, t, vars, para;name=name),storeport)
+    return compose(System(eqs, t, vars, para;name=name),storeport)
 end
 
 export PackedBed

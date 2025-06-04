@@ -126,7 +126,7 @@ end
         h ~ port.h
         ρ ~ PropsSI("D","H",port.h,"P",port.p,fluid)
     ]
-    compose(ODESystem(eqs, t, vars, para;name),port)
+    compose(System(eqs, t, vars, para;name),port)
 end
 
 @component function MassSourceClapeyron(;name, fluid = set_fluid,Nc = Nc) 
@@ -162,7 +162,7 @@ end
         h ~ port.h
         ρ ~ ph_mass_density(fluid,p,h,z)
     ]
-    compose(ODESystem(eqs, t, vars, para;name),port)
+    compose(System(eqs, t, vars, para;name),port)
 end
 
 
@@ -207,7 +207,7 @@ function MassSinkCoolProp(;name,fluid = set_fluid)
     T ~ PropsSI("T","H",port.h,"P",port.p,fluid)
     ρ ~ PropsSI("D","H",port.h,"P",port.p,fluid)
    ]
-   compose(ODESystem(eqs, t, vars, para;name),port)
+   compose(System(eqs, t, vars, para;name),port)
 end
 
 @component function MassSinkClapeyron(;name,fluid = set_fluid)
@@ -236,7 +236,7 @@ end
         T ~ ph_temperature(fluid,p,h,z)
         ρ ~ ph_mass_density(fluid,p,h,z)
        ]
-       compose(ODESystem(eqs, t, vars, para;name),port)
+       compose(System(eqs, t, vars, para;name),port)
 end
 
 
@@ -286,14 +286,14 @@ end
         mdot ~ -heatport.Q/(Cp*(T_out - T_in))
         storeport.T ~ T_out
     ]
-    return compose(ODESystem(eqs, t, vars, para;name=name),heatport,storeport)
+    return compose(System(eqs, t, vars, para;name=name),heatport,storeport)
 end
 
 export Heat2Storage
 
 
 """
-`show_all_states(sol::SteadyStateSolution,system::Vector{ODESystem},names::Vector{String})`
+`show_all_states(sol::SteadyStateSolution,system::Vector{System},names::Vector{String})`
 
 * Arguments:
     1. `sol`    : The solution from the  SteadtStateSystem. 
@@ -302,7 +302,7 @@ export Heat2Storage
 
 * Returns: Prints the state points of the system in a readable format in the terminal.
 """
-function show_all_states(sol::SteadyStateSolution,system::Vector{ODESystem},names::Vector{String})
+function show_all_states(sol::SteadyStateSolution,system::Vector{System},names::Vector{String})
 
     @assert length(system)-2 == length(names) "Length of system and names must be equal, excluding source and sink"
     system = system[2:end-1] # Exclude source and sink

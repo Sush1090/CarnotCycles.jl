@@ -74,7 +74,7 @@ function SimpleCondensorCoolProp(;name,fluid)
         heatport.T_out ~ T_out
         heatport.Q ~ Qdot
     ]
-    compose(ODESystem(eqs, t, vars, para;name), inport, outport,heatport)
+    compose(System(eqs, t, vars, para;name), inport, outport,heatport)
     
 end
 
@@ -150,7 +150,7 @@ function SimpleCondensorClapeyron(;name,fluid)
         heatport.T_out ~ T_out
         heatport.Q ~ Qdot
     ]
-    compose(ODESystem(eqs, t, vars, para;name), inport, outport,heatport)
+    compose(System(eqs, t, vars, para;name), inport, outport,heatport)
     
 end
 
@@ -208,6 +208,6 @@ export SimpleCondensor
 #         heatport.T_out ~ T_out
 #         heatport.Q ~ Qdot
 #     ]
-#     compose(ODESystem(eqs, t, vars, para;name), inport, outport,heatport)
+#     compose(System(eqs, t, vars, para;name), inport, outport,heatport)
 
 # end

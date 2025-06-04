@@ -63,7 +63,7 @@ function IsobaricHeatSource(;name,fluid = set_fluid)
             h_out ~ outport.h
             ρ_out ~ PropsSI("D","H",outport.h,"P",outport.p,fluid)
    ]
-   compose(ODESystem(eqs, t, vars, para;name), inport, outport)
+   compose(System(eqs, t, vars, para;name), inport, outport)
 end
 
 export IsobaricHeatSource
@@ -131,7 +131,7 @@ function IsobaricHeatSink(;name,fluid = set_fluid)
             h_out ~ outport.h
             ρ_out ~ PropsSI("D","H",outport.h,"P",outport.p,fluid)
    ]
-   compose(ODESystem(eqs, t, vars, para;name), inport, outport)
+   compose(System(eqs, t, vars, para;name), inport, outport)
 end
 
 export IsobaricHeatSink

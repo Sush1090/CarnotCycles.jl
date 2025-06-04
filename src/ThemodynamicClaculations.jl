@@ -23,9 +23,9 @@ function Compute_cycle_error(p_source,h_source,p_sink,h_sink;reltol = 1e-8)
 end
 
 """
-`Compute_cycle_error(sol::ODESolution,system::Vector{ODESystem};reltol = 1e-8)`
+`Compute_cycle_error(sol::ODESolution,system::Vector{System};reltol = 1e-8)`
 """
-function Compute_cycle_error(sol::ODESolution,system::Vector{ODESystem};reltol = 1e-8)
+function Compute_cycle_error(sol::ODESolution,system::Vector{System};reltol = 1e-8)
     source = system[1]; sink = system[end]
     h_source = sol[source.h][1]; p_source = sol[sink.p][1];
     h_sink = sol[sink.h][1]; p_sink = sol[sink.p][1];

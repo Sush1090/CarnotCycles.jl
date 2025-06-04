@@ -19,7 +19,7 @@ end
         h(t), [description = "Enthalpy (J/kg)",input = true]
         mdot(t), [description = "Mass Flow Rate (kg/s)",input = true] 
     end
-    return ODESystem(Equation[], t, vars, [];name=name)
+    return System(Equation[], t, vars, [];name=name)
 end
 
 @connector function CoolantPortClapeyron(;name,Nc=Nc)
@@ -29,7 +29,7 @@ end
         mdot(t), [description = "Mass Flow Rate (g/s)",input = true] 
         x(t), [description = "mass % of 1st component", input = true]
     end
-    return ODESystem(Equation[], t, vars, [];name=name)
+    return System(Equation[], t, vars, [];name=name)
 end
 
 @connector  function RefPortCoolProp(;name) 
@@ -38,7 +38,7 @@ end
         T(t), [description = "Temperature",input = true]
         mdot(t), [description = "Mass Flow Rate (kg/s)",input = true] 
     end
-    ODESystem(Equation[], t, vars, [];name=name)
+    System(Equation[], t, vars, [];name=name)
 end
 
 @connector  function RefPortClapeyron(;name) 
@@ -48,7 +48,7 @@ end
         mdot(t), [description = "Mass Flow Rate (g/s)",input = true] 
         x(t), [description = "mass % of 1st component", input = true]
     end
-    ODESystem(Equation[], t, vars, [];name=name)
+    System(Equation[], t, vars, [];name=name)
 end
 
 """
@@ -73,7 +73,7 @@ end
     vars = @variables begin 
         P(t),  [description = "Power (W)",input = true]
     end
-    ODESystem(Equation[], t, vars, [];name=name)
+    System(Equation[], t, vars, [];name=name)
 end
 
 """
@@ -85,7 +85,7 @@ end
         T_in(t), [description = "Inlet Temperature of working fluid",input = true]
         T_out(t), [description = "Outlet Temperature of working fluid",input = true]
     end
-    ODESystem(Equation[], t, vars, [];name=name)
+    System(Equation[], t, vars, [];name=name)
 end
 
 """
@@ -96,7 +96,7 @@ end
         T(t), [input = true,description ="Temperature of Storage HTF"]
         mdot(t), [input = true,description ="Mass Flow Rate of Storage HTF"]
     end
-    ODESystem(Equation[],t,vars,[],name=name)
+    System(Equation[],t,vars,[],name=name)
 end
 
 export StoragePort
@@ -109,7 +109,24 @@ Ambient temperature node.
     vars = @variables begin
         T(t), [input = true,description ="Ambient Temperature"]
     end
-    ODESystem(Equation[],t,vars,[],name=name)
+    System(Equation[],t,vars,[],name=name)
 end
 
 export PowerPort, AmbientNode, HeatPort, CoolantPort, RefPort
+
+
+@component function CoolantPort2RefPort(;name,fluid=set_fluid)
+    if fluid isa EoSModel
+        return CoolantPort2RefPortClapeyron(;name = name,fluid = fluid)
+    end
+    if fluid isa AbstractString
+        return CoolantPort2RefPortCoolProp(name = name,fluid = fluid)
+    end
+    if isnothing(fluid)
+        throw(error("Fluid not selected"))
+    end
+end
+
+function CoolantPort2RefPortCoolProp(;name,fluid=set_fluid)
+    
+end
