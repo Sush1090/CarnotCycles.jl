@@ -58,7 +58,7 @@ end
             ρ_out ~ PropsSI("D","H",outport.h,"P",outport.p,fluid)
             power.P ~ P
    ]
-   compose(ODESystem(eqs, t, vars, para;name), inport, outport,power)
+   compose(System(eqs, t, vars, para;name), inport, outport,power)
 end
 
 
@@ -118,7 +118,7 @@ function IsentropicCompressorClapeyron(;name,fluid = set_fluid)
 
             power.P ~ P
    ]
-   compose(ODESystem(eqs, t, vars, para;name), inport, outport,power)
+   compose(System(eqs, t, vars, para;name), inport, outport,power)
 end
 
 export IsentropicCompressor
@@ -166,7 +166,7 @@ function IsothermalCompressorCoolProp(;name,fluid = set_fluid)
             ρ_out ~ PropsSI("D","H",outport.h,"P",outport.p,fluid)
             power.P ~ P
    ]
-   compose(ODESystem(eqs, t, vars, para;name), inport, outport,power)
+   compose(System(eqs, t, vars, para;name), inport, outport,power)
 end
 
 function IsothermalCompressorClapeyron(;name,fluid = set_fluid) 
@@ -222,7 +222,7 @@ function IsothermalCompressorClapeyron(;name,fluid = set_fluid)
             outport.mdot ~ mdot_out
             power.P ~ P
    ]
-   compose(ODESystem(eqs, t, vars, para;name), inport, outport,power)
+   compose(System(eqs, t, vars, para;name), inport, outport,power)
 end
 
 """
@@ -283,7 +283,7 @@ function IsochoricCompressorCoolProp(;name,fluid = set_fluid)
             ρ_out ~ PropsSI("D","H",outport.h,"P",outport.p,fluid)
             power.P ~ P 
    ]
-   compose(ODESystem(eqs, t, vars, para;name), inport, outport,power)
+   compose(System(eqs, t, vars, para;name), inport, outport,power)
 end
 
 
@@ -341,7 +341,7 @@ function IsochoricCompressorClapeyron(;name,fluid = set_fluid)
 
             power.P ~ P
    ]
-   compose(ODESystem(eqs, t, vars, para;name), inport, outport,power)
+   compose(System(eqs, t, vars, para;name), inport, outport,power)
 end
 
 """

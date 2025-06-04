@@ -56,7 +56,7 @@ pressure drop across pipe using Darcy-Weisbach equation
         outport.h ~ h_out
     ]
 
-    compose(ODESystem(eqs, t, vars, para;name), inport, outport)
+    compose(System(eqs, t, vars, para;name), inport, outport)
 end
 
 
@@ -118,7 +118,7 @@ end
         outport.x ~ inport.x
     ]
 
-    compose(ODESystem(eqs, t, vars, para;name), inport, outport)
+    compose(System(eqs, t, vars, para;name), inport, outport)
 end
 
 

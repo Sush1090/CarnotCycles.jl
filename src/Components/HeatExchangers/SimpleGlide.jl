@@ -128,7 +128,7 @@ export SimpleEvaporatorGlide
         [T_internal[i] ~ ph_temperature_qp(fluid,p_in,h_internal[i],z_in) for i = 1:N]
         is_feas ~ is_feasible_evaporator(T_internal,T_internal_htf)
     ]
-    compose(ODESystem(eqs, t, vars, para;name), inport, outport,heatport)
+    compose(System(eqs, t, vars, para;name), inport, outport,heatport)
 end
 
 
@@ -200,7 +200,7 @@ end
         [T_internal[i] ~ PropsSI("T","H",h_internal[i],"P",p_in,fluid) for i = 1:N]
         is_feas ~ is_feasible_evaporator(T_internal,T_internal_htf)
     ]
-    compose(ODESystem(eqs, t, vars, para;name), inport, outport,heatport)
+    compose(System(eqs, t, vars, para;name), inport, outport,heatport)
 end
 
 
@@ -305,7 +305,7 @@ end
         [T_internal[i] ~ ph_temperature_qp(fluid,p_in,h_internal[i],z_in) for i = 1:N]
         is_feas ~ is_feasible_condensor(T_internal,T_internal_htf)
     ]
-    compose(ODESystem(eqs, t, vars, para;name), inport, outport,heatport)
+    compose(System(eqs, t, vars, para;name), inport, outport,heatport)
 end
 
 
@@ -377,7 +377,7 @@ end
         [T_internal[i] ~ PropsSI("T","H",h_internal[i],"P",p_in,fluid) for i = 1:N]
         is_feas ~ is_feasible_condensor(T_internal,T_internal_htf)
     ]
-    compose(ODESystem(eqs, t, vars, para;name), inport, outport,heatport)
+    compose(System(eqs, t, vars, para;name), inport, outport,heatport)
 end
 
 export SimpleCondensorGlide

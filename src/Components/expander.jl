@@ -52,7 +52,7 @@ function IsentropicExpanderCoolProp(;name,fluid=set_fluid)
             h_out ~ outport.h
             ρ_out ~ PropsSI("D","H",outport.h,"P",outport.p,fluid)
    ]
-   compose(ODESystem(eqs, t, vars, para;name), inport, outport)
+   compose(System(eqs, t, vars, para;name), inport, outport)
 end
 
 function IsentropicExpanderClapeyron(;name,fluid = set_fluid) 
@@ -112,7 +112,7 @@ function IsentropicExpanderClapeyron(;name,fluid = set_fluid)
 
             power.P ~ P
    ]
-   compose(ODESystem(eqs, t, vars, para;name), inport, outport,power)
+   compose(System(eqs, t, vars, para;name), inport, outport,power)
 end
 
 
@@ -163,7 +163,7 @@ function IsothermalExpanderCoolProp(;name,fluid=set_fluid)
             h_out ~ outport.h
             ρ_out ~ PropsSI("D","H",outport.h,"P",outport.p,fluid)
    ]
-   compose(ODESystem(eqs, t, vars, para;name), inport, outport)
+   compose(System(eqs, t, vars, para;name), inport, outport)
 end
 
 function IsothermalExpanderClapeyron(;name,fluid = set_fluid) 
@@ -222,7 +222,7 @@ function IsothermalExpanderClapeyron(;name,fluid = set_fluid)
 
             power.P ~ P
    ]
-   compose(ODESystem(eqs, t, vars, para;name), inport, outport,power)
+   compose(System(eqs, t, vars, para;name), inport, outport,power)
 end
 
 export IsothermalExpander
@@ -266,7 +266,7 @@ function IsochoricExpanderCoolProp(;name,fluid = set_fluid)
             ρ_out ~ PropsSI("D","H",outport.h,"P",outport.p,fluid)
             power.P ~ P 
    ]
-   compose(ODESystem(eqs, t, vars, para;name), inport, outport,power)
+   compose(System(eqs, t, vars, para;name), inport, outport,power)
 end
 
 
@@ -324,7 +324,7 @@ function IsochoricExpanderClapeyron(;name,fluid = set_fluid)
 
             power.P ~ P
    ]
-   compose(ODESystem(eqs, t, vars, para;name), inport, outport,power)
+   compose(System(eqs, t, vars, para;name), inport, outport,power)
 end
 
 """

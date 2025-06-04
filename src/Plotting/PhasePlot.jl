@@ -64,7 +64,7 @@ function PhasePlot_PH(fig,fluid::AbstractString,p,N=100)
     
 end
 
-function plot_PH(sol::SteadyStateSolution,system::Vector{ODESystem},names::Vector{String};phase = true,fluid = CarnotCycles.set_fluid)
+function plot_PH(sol::SteadyStateSolution,system::Vector{System},names::Vector{String};phase = true,fluid = CarnotCycles.set_fluid)
     if fluid isa EoSModel
         @assert length(system)-2 == length(names) "Length of system and names must be equal, excluding source and sink"
         system_ = system[2:end-1] # Exclude source and sink
@@ -115,7 +115,7 @@ function plot_PH(sol::SteadyStateSolution,system::Vector{ODESystem},names::Vecto
     end
 end
 
-function plot_TS(sol::SteadyStateSolution,system::Vector{ODESystem},names::Vector{String};phase = true,fluid = CarnotCycles.set_fluid)
+function plot_TS(sol::SteadyStateSolution,system::Vector{System},names::Vector{String};phase = true,fluid = CarnotCycles.set_fluid)
     if fluid isa EoSModel
         @assert length(system)-2 == length(names) "Length of system and names must be equal, excluding source and sink"
         system_ = system[2:end-1] # Exclude source and sink
@@ -179,10 +179,10 @@ function plot_TS(sol::SteadyStateSolution,system::Vector{ODESystem},names::Vecto
 end
 
 """
-`plot(sol::SteadyStateSolution,system::Vector{ODESystem},names::Vector{String};phase = true,fluid = CarnotCycles.set_fluid,type = :TS)`
+`plot(sol::SteadyStateSolution,system::Vector{System},names::Vector{String};phase = true,fluid = CarnotCycles.set_fluid,type = :TS)`
     * Plots the phase diagram of the system using the given solution and system.
     * `sol`: The solution object containing the results of the simulation. Do not include source and sink in the system.
-    * `system`: The vector of ODESystem objects representing the system.
+    * `system`: The vector of System objects representing the system.
     * `names`: The vector of names for each component in the system.
     * `phase`: A boolean indicating whether to plot the phase boundaries or not. Default is true.
     * `fluid`: The fluid model to be used for plotting. Default is `CarnotCycles.set_fluid`.
@@ -190,7 +190,7 @@ end
 
     Returns a `Plots.plot` object.
 """
-function plot(sol::SteadyStateSolution,system::Vector{ODESystem},names::Vector{String};phase = true,fluid = CarnotCycles.set_fluid,type = :TS)
+function plot(sol::SteadyStateSolution,system::Vector{System},names::Vector{String};phase = true,fluid = CarnotCycles.set_fluid,type = :TS)
     if type == :TS
         return plot_TS(sol,system,names;phase = phase,fluid = fluid)
     elseif type == :PH

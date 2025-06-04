@@ -59,8 +59,8 @@ eqs = [
 
 systems = [source,isothermal_exp,isentropic_exp,isothermal_comp,isentropic_comp,sink]
 
-@named CarnotCycle = ODESystem(eqs, t, systems=systems)
-@time sys = structural_simplify(CarnotCycle)
+@named CarnotCycle = System(eqs, t, systems=systems)
+@time sys = mtkcompile(CarnotCycle)
 ```
 
 Now we state the point at `source`
@@ -130,8 +130,8 @@ eqs = [
         connect(evaporator.outport,sink.port)
 ]
 
-@named VCC = ODESystem(eqs,t,systems = systems)
-sys = structural_simplify(VCC)
+@named VCC = System(eqs,t,systems = systems)
+sys = mtkcompile(VCC)
 ```
 
 Then we choose the parameters of the system:
@@ -208,8 +208,8 @@ eqs = [
 ]
 
 systems = [source,compressor,isochoric_compressor,expander,isochoric_expander,sink]
-@named system = ODESystem(eqs,t,systems = systems)
-@time sys = structural_simplify(system)
+@named system = System(eqs,t,systems = systems)
+@time sys = mtkcompile(system)
 ```
 
 Choosing the parameters:
