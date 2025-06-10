@@ -12,7 +12,7 @@ function Valve(;name,fluid = set_fluid)
         return ValveCoolProp(name=name,fluid=fluid)
     end
     if fluid isa EoSModel
-        return ValveClpeyron(name=name,fluid=fluid)
+        return ValveClapeyron(name=name,fluid=fluid)
     end
 end
 
