@@ -2,12 +2,13 @@ module CarnotCycles
 
 # Write your package code here.
 
-using ModelingToolkit, CoolProp, SteadyStateDiffEq, Plots, Roots
+using ModelingToolkit, CoolProp, Roots
 using Clapeyron
 import Clapeyron.PH
 import Clapeyron.PS
 import ModelingToolkit:scalarize
-
+import Plots: plot
+import SteadyStateDiffEq:SteadyStateSolution
 # """
 # Symbolic Registrations
 # """
