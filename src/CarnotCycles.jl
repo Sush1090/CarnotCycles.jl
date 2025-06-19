@@ -7,7 +7,7 @@ using Clapeyron
 import Clapeyron.PH
 import Clapeyron.PS
 import ModelingToolkit:scalarize
-import Plots: plot
+using Plots
 import SteadyStateDiffEq:SteadyStateSolution
 # """
 # Symbolic Registrations
