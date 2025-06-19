@@ -35,16 +35,16 @@ Tproperty_S(model::EoSModel,p,s,z) = Clapeyron.Tproperty(model::EoSModel,p,s,z,e
 Tproperty_H(model::EoSModel,p,h,z) = Clapeyron.Tproperty(model::EoSModel,p,h,z,enthalpy,phase = "unkown",verbose = false)
 @register_symbolic Tproperty_H(model::EoSModel,p,h,z)
 
-Bubble_temperature(model::EoSModel,p,z) = Clapeyron.bubble_temperature(model,p,z,FugBubbleTemperature())[1]
+Bubble_temperature(model::EoSModel,p,z) = Clapeyron.bubble_temperature(model,p,z)[1]
 @register_symbolic Bubble_temperature(model::EoSModel,p,z)
 
-Dew_temperature(model::EoSModel,p,z) = Clapeyron.dew_temperature(model,p,z,FugDewTemperature())[1]
+Dew_temperature(model::EoSModel,p,z) = Clapeyron.dew_temperature(model,p,z)[1]
 @register_symbolic Dew_temperature(model::EoSModel,p,z)
 
-Bubble_pressure(model::EoSModel,T,z) = Clapeyron.bubble_pressure(model,T,z,FugBubblePressure())[1]
+Bubble_pressure(model::EoSModel,T,z) = Clapeyron.bubble_pressure(model,T,z)[1]
 @register_symbolic Bubble_pressure(model::EoSModel,T,z)
 
-Dew_pressure(model::EoSModel,T,z) = Clapeyron.dew_pressure(model,T,z,FugDewPressure())[1]
+Dew_pressure(model::EoSModel,T,z) = Clapeyron.dew_pressure(model,T,z)[1]
 @register_symbolic Dew_pressure(model::EoSModel,T,z)
 
 
