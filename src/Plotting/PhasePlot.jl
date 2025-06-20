@@ -8,9 +8,9 @@ function PhasePlot_TS(fig,fluid::EoSModel,p,z;N=100)
     s_dew = zeros(N)
     for i in 1:N
         T_bubble[i] = CarnotCycles.Bubble_temperature(fluid,p_[i],z)
-        s_bubble[i] = CarnotCycles.pt_entropy(fluid,p_[i],T_bubble[i],z)
+        s_bubble[i] = Clapeyron.entropy(fluid,p_[i],T_bubble[i],z,phase = :liquid)
         T_dew[i] = CarnotCycles.Dew_temperature(fluid,p_[i],z)
-        s_dew[i] = CarnotCycles.pt_entropy(fluid,p_[i],T_dew[i],z)
+        s_dew[i] = Clapeyron.entropy(fluid,p_[i],T_dew[i],z,phase = :vapour)
     end
     plot!(fig,s_bubble,T_bubble,label = "Bubble Point",xlabel = "Entropy (J/K)", ylabel = "Temperature (K)",alpha = 0.3,linewidth=5)
     plot!(fig,s_dew,T_dew,label = "Dew Point",xlabel = "Entropy (J/K)", ylabel = "Temperature (K)",alpha = 0.3,linewidth=5)
