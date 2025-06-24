@@ -46,8 +46,8 @@ export SimpleEvaporatorGlide
 
 @component function SimpleEvaporatorGlideClapeyron(;name,fluid,N)
     @named heatport = HeatPort()
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
 
     vars = @variables begin
         is_feas(t)
@@ -134,8 +134,8 @@ end
 
 @component function SimpleEvaporatorGlideCoolProp(;name,fluid,N)
     @named heatport = HeatPort()
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
 
     vars = @variables begin
         is_feas(t)
@@ -223,8 +223,8 @@ end
 
 @component function SimpleCondensorGlideClapeyron(;name,fluid,N)
     @named heatport = HeatPort()
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
 
     vars = @variables begin
         is_feas(t)
@@ -311,8 +311,8 @@ end
 
 @component function SimpleCondensorGlideCoolProp(;name,fluid,N)
     @named heatport = HeatPort()
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
 
     vars = @variables begin
         is_feas(t)

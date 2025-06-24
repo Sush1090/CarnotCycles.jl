@@ -20,8 +20,8 @@ end
 
 function SimpleCondensorCoolProp(;name,fluid)
     @named heatport = HeatPort()
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
 
     vars = @variables begin
         s_in(t)
@@ -81,8 +81,8 @@ end
 
 function SimpleCondensorClapeyron(;name,fluid)
     @named heatport = HeatPort()
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
 
     vars = @variables begin
         s_in(t)
@@ -159,8 +159,8 @@ export SimpleCondensor
 
 # function Condensor_Tsat_CoolProp(;name,fluid)
 #     @named heatport = HeatPort()
-#     @named inport = CoolantPort()
-#     @named outport = CoolantPort()
+#     @named inport = CoolantPort(fluid=fluid)
+#     @named outport = CoolantPort(fluid=fluid)
 
 #     vars = @variables begin
 #         s_in(t)

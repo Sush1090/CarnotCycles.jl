@@ -20,8 +20,8 @@ end
     if isnothing(fluid)
         throw(error("Fluid not selected"))
     end
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
     @named power =  PowerPort()
     para = @parameters begin
         η=0.8, [description = "Isentropic Effeciency",bounds = (0.0,1.0)]
@@ -63,8 +63,8 @@ end
 
 
 function IsentropicCompressorClapeyron(;name,fluid = set_fluid) 
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
     @named power =  PowerPort()
     para = @parameters begin
         η=0.8, [description = "Isentropic Effeciency",bounds = (0.0,1.0)]
@@ -130,8 +130,8 @@ function IsothermalCompressorCoolProp(;name,fluid = set_fluid)
         throw(error("Fluid not selected"))
     end
     # @unpack πc = type
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
     @named power =  PowerPort()
     para = @parameters begin
         πc, [description = "Pressure Ratio"]
@@ -170,8 +170,8 @@ function IsothermalCompressorCoolProp(;name,fluid = set_fluid)
 end
 
 function IsothermalCompressorClapeyron(;name,fluid = set_fluid) 
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
     @named power =  PowerPort()
     para = @parameters begin
         πc, [description = "Pressure Ratio"]
@@ -247,8 +247,8 @@ export IsothermalCompressor
 
 
 function IsochoricCompressorCoolProp(;name,fluid = set_fluid) 
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
     @named power =  PowerPort()
     para = @parameters begin
         πc, [description = "Pressure ratio"]
@@ -288,8 +288,8 @@ end
 
 
 function IsochoricCompressorClapeyron(;name,fluid = set_fluid) 
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
     @named power =  PowerPort()
     para = @parameters begin
         πc, [description = "Pressure ratio"]

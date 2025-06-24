@@ -20,8 +20,8 @@ end
 
 function SimpleEvaporatorCoolProp(;name,fluid)
     @named heatport = HeatPort()
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
 
     vars = @variables begin
         s_in(t)
@@ -81,8 +81,8 @@ end
 
 function SimpleEvaporatorClapeyron(;name,fluid)
     @named heatport = HeatPort()
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
 
     vars = @variables begin
         s_in(t)
@@ -156,3 +156,111 @@ end
 
 
 export SimpleEvaporator
+
+
+
+
+function Evaporator_Tsat(;name,fluid = set_fluid)
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
+    @named heatport = HeatPort()
+
+    if fluid isa AbstractString
+vars = @variables begin
+        s_in(t)
+        h_in(t)
+        T_in(t)
+        p_in(t)
+        ρ_in(t)
+        mdot_in(t)
+
+        s_out(t)
+        h_out(t)
+        T_out(t)
+        p_out(t)
+        ρ_out(t)
+        mdot_out(t)
+
+        p_crit(t)
+        
+        T_out(t)
+
+        Qdot(t)
+    end
+    para = @parameters begin
+        ΔT_sh(t), [description = "Superheat temperature (K)",bounds = (1e-3,Inf)]
+        T_sat(t), [description = "Saturation temperature (K)"]
+    end
+    eqs = [
+        h_in ~ inport.h
+        p_in ~ inport.p
+        mdot_in ~ inport.mdot
+        s_in ~ PropsSI("S","H",h_in,"P",p_in,fluid)
+        T_in ~ PropsSI("T","H",h_in,"P",p_in,fluid)
+        ρ_in ~ PropsSI("D","H",h_in,"P",p_in,fluid)
+
+        p_crit ~ CritPropSI("PCRIT",fluid)
+        T_sat ~ Base.ifelse(inport.p>=p_crit,CritPropSI("TCRIT",fluid),PropsSI("T","Q",1,"P",inport.p,fluid))
+
+        T_out ~ ΔT_sh+T_sat
+        p_out ~ p_in
+        h_out ~ PropsSI("H","T",T_out,"P",p_out,fluid)
+        s_out ~ PropsSI("S","H",h_out,"P",p_out,fluid)
+        ρ_out ~ PropsSI("D","H",h_out,"P",p_out,fluid)
+        mdot_out ~ mdot_in
+
+        outport.h ~ h_out
+        outport.p ~ p_out
+        outport.mdot ~ mdot_out
+
+        Qdot ~ mdot_out*(h_out - h_in)
+        heatport.T_in ~ T_in
+        heatport.T_out ~ T_out
+        heatport.Q ~ Qdot
+    ]
+    compose(System(eqs, t, vars, para;name), inport, outport,heatport)
+    end
+
+
+    if fluid isa EoSModel
+        vars = @variables begin
+            s_in(t)
+            h_in(t)
+            T_in(t)
+            p_in(t)
+            ρ_in(t)
+             mdot_in(t)
+            x_in(t)
+            z_in(t)
+
+            s_out(t)
+            h_out(t)
+            T_out(t)
+            p_out(t)
+            ρ_out(t)
+            mdot_out(t)
+            x_out(t)
+            z_out(t)
+
+            p_crit(t)
+            T_sat(t)
+            T_out(t)
+            T_crit(t)
+            T_bubble(t)
+            T_dew(t)
+
+            Qdot(t)
+        end
+
+        para = @parameters begin
+            ΔT_sh(t), [description = "Superheat temperature (K)",bounds = (1e-3,Inf)]
+            T_sat(t), [description = "Saturation temperature (K)"]
+        end
+        eqs = [
+
+        ]
+
+
+    end
+
+end

@@ -17,8 +17,8 @@ end
 export IsentropicExpander
 
 function IsentropicExpanderCoolProp(;name,fluid=set_fluid)
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
     para = @parameters begin
         η, [description = "Isentropic Effeciency"]
         πc, [description = "Pressure ratio"]
@@ -56,8 +56,8 @@ function IsentropicExpanderCoolProp(;name,fluid=set_fluid)
 end
 
 function IsentropicExpanderClapeyron(;name,fluid = set_fluid) 
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
     @named power =  PowerPort()
     para = @parameters begin
         η=0.8, [description = "Isentropic Effeciency",bounds = (0.0,1.0)]
@@ -129,8 +129,8 @@ end
 end
 
 function IsothermalExpanderCoolProp(;name,fluid=set_fluid)
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
     para = @parameters begin
         πc, [description = "Pressure ratio"]
     end
@@ -167,8 +167,8 @@ function IsothermalExpanderCoolProp(;name,fluid=set_fluid)
 end
 
 function IsothermalExpanderClapeyron(;name,fluid = set_fluid) 
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
     @named power =  PowerPort()
     para = @parameters begin
         πc, [description = "Pressure ratio"]
@@ -230,8 +230,8 @@ export IsothermalExpander
 
 
 function IsochoricExpanderCoolProp(;name,fluid = set_fluid) 
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
     @named power =  PowerPort()
     para = @parameters begin
         πc, [description = "Pressure ratio"]
@@ -271,8 +271,8 @@ end
 
 
 function IsochoricExpanderClapeyron(;name,fluid = set_fluid) 
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
     @named power =  PowerPort()
     para = @parameters begin
         πc, [description = "Pressure ratio"]

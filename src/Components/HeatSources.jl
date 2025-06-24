@@ -29,8 +29,8 @@ function IsobaricHeatSource(;name,fluid = set_fluid)
     if isnothing(fluid)
         throw(error("Fluid not selected"))
     end
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
     para = @parameters begin
         Qdot(t), [description = "Heat transfer rate (W)"]
     end
@@ -97,8 +97,8 @@ function IsobaricHeatSink(;name,fluid = set_fluid)
     if isnothing(fluid)
         throw(error("Fluid not selected"))
     end
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
     para = @parameters begin
         Q_dot(t), [description = "Heat transfer rate (W)"]
     end

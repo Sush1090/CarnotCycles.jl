@@ -100,7 +100,7 @@ end
 end
 
 @component function MassSourceCoolProp(;name, fluid = set_fluid)
-    @named port = CoolantPort()
+    @named port = CoolantPort(fluid=fluid)
     para = @parameters begin
         source_pressure(t)
         source_temperature(t)
@@ -130,7 +130,7 @@ end
 end
 
 @component function MassSourceClapeyron(;name, fluid = set_fluid,Nc = Nc) 
-    @named port = CoolantPort()
+    @named port = CoolantPort(fluid=fluid)
     para = @parameters begin
         source_pressure(t), [description = "Pressure at source (Pa)"]
         source_temperature(t), [description = "Temperature at source (J)"]
@@ -186,7 +186,7 @@ function MassSinkCoolProp(;name,fluid = set_fluid)
     if isnothing(fluid)
         throw(error("Fluid not selected"))
     end
-    @named    port = CoolantPort()
+    @named    port = CoolantPort(fluid=fluid)
     para = @parameters begin
         
     end
@@ -211,7 +211,7 @@ function MassSinkCoolProp(;name,fluid = set_fluid)
 end
 
 @component function MassSinkClapeyron(;name,fluid = set_fluid)
-        @named    port = CoolantPort()
+        @named    port = CoolantPort(fluid=fluid)
         para = @parameters begin
             
         end
