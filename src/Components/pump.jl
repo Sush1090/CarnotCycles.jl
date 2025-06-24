@@ -16,8 +16,8 @@ A pump with isentropic Efficiency and pressure ratio as parameter is chosen. Ens
 end
 
 @component function PumpCoolProp(;name,fluid=set_fluid)
-    @named inport =CoolantPort()
-    @named outport = CoolantPort()
+    @named inport =CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
     vars = @variables begin
         LiquidPhase(t)
         s_in(t)
@@ -61,8 +61,8 @@ end
 
 
 @component function PumpClapeyron(;name,fluid=set_fluid)
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
     vars = @variables begin
         LiquidPhase(t)
         s_in(t)

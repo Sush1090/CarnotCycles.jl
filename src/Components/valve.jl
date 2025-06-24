@@ -18,8 +18,8 @@ end
 
 
 @component function ValveCoolProp(;name,fluid=set_fluid)
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
     vars = @variables begin
         P(t)
         s_in(t)
@@ -60,8 +60,8 @@ end
 
 
 @component function ValveClapeyron(;name,fluid=set_fluid)
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
     vars = @variables begin
         P(t)
         s_in(t)
@@ -133,9 +133,9 @@ end
 #         throw(error("Fluid not selected"))
 #     end
 #     @unpack ratio= type
-#     @named inport = CoolantPort()
-#     @named outport1 = CoolantPort()
-#     @named outport2 = CoolantPort()
+#     @named inport = CoolantPort(fluid=fluid)
+#     @named outport1 = CoolantPort(fluid=fluid)
+#     @named outport2 = CoolantPort(fluid=fluid)
 #     vars = @variables begin
 #         P1(t)
 #         P2(t)
@@ -208,9 +208,9 @@ end
 #     if isnothing(fluid)
 #         throw(error("Fluid not selected"))
 #     end
-#     @named inport1 = CoolantPort()
-#     @named inport2 = CoolantPort()
-#     @named outport = CoolantPort()
+#     @named inport1 = CoolantPort(fluid=fluid)
+#     @named inport2 = CoolantPort(fluid=fluid)
+#     @named outport = CoolantPort(fluid=fluid)
 #     vars = @variables begin
 #         r(t)
 

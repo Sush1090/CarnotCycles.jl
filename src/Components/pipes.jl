@@ -6,8 +6,8 @@ pressure drop across pipe using Darcy-Weisbach equation
 """
 @component function PipeCoolProp(fluid::AbstractString = set_fluid;name)
 
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
 
     para = @parameters begin
         f = 0.03, [description = "Friction factor for laminar flow : f = 64/Re (Re < 2100)"]
@@ -62,8 +62,8 @@ end
 
 @component function PipeClapyeron(fluid::EoSModel = set_fluid;name)
 
-    @named inport = CoolantPort()
-    @named outport = CoolantPort()
+    @named inport = CoolantPort(fluid=fluid)
+    @named outport = CoolantPort(fluid=fluid)
 
     para = @parameters begin
         f = 0.03, [description = "Friction factor for laminar flow : f = 64/Re (Re < 2100)"]

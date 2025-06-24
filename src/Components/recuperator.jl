@@ -33,10 +33,10 @@ function Recuperator(type::RecuperatorORC;name,ΔT_sat_diff,fluid = set_fluid)
         throw(error("Fluid not selected"))
     end
     @assert ΔT_sat_diff > 1e-3 "Keep ΔT_sat_diff > 1e-3, for safety from saturation curve of CoolProp"
-    @named inport_gas = CoolantPort()
-    @named outport_gas = CoolantPort()
-    @named inport_liquid = CoolantPort()
-    @named outport_liquid = CoolantPort()
+    @named inport_gas = CoolantPort(fluid=fluid)
+    @named outport_gas = CoolantPort(fluid=fluid)
+    @named inport_liquid = CoolantPort(fluid=fluid)
+    @named outport_liquid = CoolantPort(fluid=fluid)
 
     vars = @variables begin
         Q_dot_transfer(t)

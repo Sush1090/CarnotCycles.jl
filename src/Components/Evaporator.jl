@@ -166,7 +166,7 @@ function Evaporator_Tsat(;name,fluid = set_fluid)
     @named heatport = HeatPort()
 
     if fluid isa AbstractString
-vars = @variables begin
+    vars = @variables begin
         s_in(t)
         h_in(t)
         T_in(t)
