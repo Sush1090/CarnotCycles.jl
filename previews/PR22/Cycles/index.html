@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Cycles Modeling · CarnotCycles.jl</title><meta name="title" content="Cycles Modeling · CarnotCycles.jl"/><meta property="og:title" content="Cycles Modeling · CarnotCycles.jl"/><meta property="twitter:title" content="Cycles Modeling · CarnotCycles.jl"/><meta name="description" content="Documentation for CarnotCycles.jl."/><meta property="og:description" content="Documentation for CarnotCycles.jl."/><meta property="twitter:description" content="Documentation for CarnotCycles.jl."/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../"><img src="../assets/logo.png" alt="CarnotCycles.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../">CarnotCycles.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li class="is-active"><a class="tocitem" href>Cycles Modeling</a><ul class="internal"><li><a class="tocitem" href="#Loading-Fluids"><span>Loading Fluids</span></a></li><li><a class="tocitem" href="#Carnot-Cycle"><span>Carnot Cycle</span></a></li><li><a class="tocitem" href="#Vapour-Compression-Cycle"><span>Vapour Compression Cycle</span></a></li><li><a class="tocitem" href="#Otto-Cycle"><span>Otto Cycle</span></a></li><li><a class="tocitem" href="#Solution-Viewing"><span>Solution Viewing</span></a></li></ul></li><li><a class="tocitem" href="../Optimization/">Cycle Optimization</a></li><li><a class="tocitem" href="../reference/">References</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Cycles Modeling</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Cycles Modeling</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/Sush1090/CarnotCycles.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/Sush1090/CarnotCycles.jl/blob/main/docs/src/Cycles.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Cycle-Modeling"><a class="docs-heading-anchor" href="#Cycle-Modeling">Cycle Modeling</a><a id="Cycle-Modeling-1"></a><a class="docs-heading-anchor-permalink" href="#Cycle-Modeling" title="Permalink"></a></h1><h2 id="Loading-Fluids"><a class="docs-heading-anchor" href="#Loading-Fluids">Loading Fluids</a><a id="Loading-Fluids-1"></a><a class="docs-heading-anchor-permalink" href="#Loading-Fluids" title="Permalink"></a></h2><p>Two type of fluid model backends are supported - Clapeyron.jl and CoolProp.jl.</p><p>To load a <a href="https://github.com/ClapeyronThermo/Clapeyron.jl">Clapyeron.jl</a> backend fluid model do the following: </p><pre><code class="language-julia hljs">using CarnotCycles, Clapeyron
+fluid = cPR([&quot;isopentane&quot;,&quot;isobutane&quot;],idealmodel = ReidIdeal)
+load_fluid(fluid)</code></pre><p>As of now we support Clapeyon mixtures of up to 2 components.</p><p>For <a href="https://github.com/CoolProp/CoolProp.jl">CoolProp.jl</a> backend fluid properties simply pass the fluid name as a string as follows:</p><pre><code class="language-julia hljs">using CarnotCycles, CoolProp
+load_fluid(&quot;R601&quot;)</code></pre><hr/><p><strong>NOTE</strong></p><p>Once the fluid model is chosen through the simulation the underlying components are chosen based on the fluid model.</p><hr/><h2 id="Carnot-Cycle"><a class="docs-heading-anchor" href="#Carnot-Cycle">Carnot Cycle</a><a id="Carnot-Cycle-1"></a><a class="docs-heading-anchor-permalink" href="#Carnot-Cycle" title="Permalink"></a></h2><p>As the name of this package is CarnotCycles.jl, we would first like to model a simple Carnot Cycle using CoolProp.jl even though it is not really physically possible to have one. </p><p>His cycle follows a isothermal exapansion of the gas, isentropic expansion, isothermal compression , and finally isentropic compression.</p><p>So we will use Clapeyron.jl for our gas model. Here we choose the gas to be Argon.</p><pre><code class="language-julia hljs">using CarnotCycles, ModelingToolkit, Clapeyron, SteadyStateDiffEq
+
+fluid = cPR([&quot;Argon&quot;],idealmodel = ReidIdeal)
+load_fluid(fluid)
+@independent_variables t</code></pre><p>The we choose our processes as components and connect them. A <code>source</code> and <code>sink</code> is recommended to initiate and close the cycle.</p><pre><code class="language-julia hljs">@named source = MassSource()
+@named isothermal_comp =  IsothermalCompressor()
+@named isentropic_comp = IsentropicCompressor()
+@named isothermal_exp = IsothermalExpander()
+@named isentropic_exp = IsentropicExpander()
+@named sink = MassSink()
+
+eqs = [
+    connect(source.port,isothermal_exp.inport)
+    connect(isothermal_exp.outport,isentropic_exp.inport)
+    connect(isentropic_exp.outport,isothermal_comp.inport)
+    connect(isothermal_comp.outport,isentropic_comp.inport)
+    connect(isentropic_comp.outport,sink.port)
+]
+
+systems = [source,isothermal_exp,isentropic_exp,isothermal_comp,isentropic_comp,sink]
+
+@named CarnotCycle = System(eqs, t, systems=systems)
+@time sys = mtkcompile(CarnotCycle)</code></pre><p>Now we state the point at <code>source</code></p><pre><code class="language-julia hljs">πc_1 = 5; πc_2 = 6
+source_mdot = 30 #g/s
+z_source = CarnotCycles.mass_to_moles(fluid,1,source_mdot)
+source_temp = 600; source_pressure = 101325*30; 
+
+para = [
+    source.source_temperature =&gt; source_temp, source.source_mdot =&gt; source_mdot, source.source_x =&gt; 1, source.source_pressure =&gt; source_pressure,
+    isothermal_exp.πc =&gt; πc_1,
+    isentropic_exp.πc =&gt; πc_2, isentropic_exp.η =&gt; 1,
+    isothermal_comp.πc =&gt; πc_1,
+    isentropic_comp.πc =&gt; πc_2, isentropic_comp.η=&gt;1
+]
+u0 = []
+prob = SteadyStateProblem(sys,u0,para)
+sol = solve(prob)</code></pre><p>To plot the diagram just pass the <code>systems</code> and <code>sol</code> with the adjecent names of the components as a string. Pass the <code>systems</code> and the name string in the same order. The name string should be without <code>source</code> and <code>sink</code>. </p><pre><code class="language-julia hljs">system_string = [&quot;isothermal_exp&quot;,&quot;isentropic_exp&quot;,&quot;isothermal_comp&quot;,&quot;isentropic_comp&quot;]
+plot(sol,systems,system_string,type = :PH,phase = false)</code></pre><p><img src="../Images/PhaseDiagrams/CarnotCycle_PH.png" alt="CarnotCycle_PH"/></p><h2 id="Vapour-Compression-Cycle"><a class="docs-heading-anchor" href="#Vapour-Compression-Cycle">Vapour Compression Cycle</a><a id="Vapour-Compression-Cycle-1"></a><a class="docs-heading-anchor-permalink" href="#Vapour-Compression-Cycle" title="Permalink"></a></h2><p>Now we move to modeling a simple Vapour Compression Cycle.  </p><p><img src="../Images/SimpleHP.jpg" alt="Simple_VCC"/> </p><p>We first start by loading the adequate packages and the fluid:</p><pre><code class="language-julia hljs">using CarnotCycles, CoolProp, ModelingToolkit, SteadyStateDiffEq
+@independent_variables t
+load_fluid(&quot;R134A&quot;)</code></pre><p>Then we define the source thermodynamic state -  the starting point of the cycle.</p><pre><code class="language-julia hljs">ΔT_sh = 5
+p_ = 101325*5; T_ = PropsSI(&quot;T&quot;,&quot;Q&quot;,1,&quot;P&quot;,p_,&quot;R134A&quot;) + ΔT_sh</code></pre><p>The we choose the adequate components for the vapour compression cycle:</p><pre><code class="language-julia hljs">@named source = MassSource()
+@named compressor = CarnotCycles.IsentropicCompressor()
+@named condensor = CarnotCycles.SimpleCondensor()
+@named valve = Valve()
+@named evaporator = SimpleEvaporator()
+@named sink = MassSink()</code></pre><p>Then we connect them in necessary order:</p><pre><code class="language-julia hljs">systems = [source, compressor,condensor,valve,evaporator,sink]
+eqs = [
+        connect(source.port,compressor.inport)
+        connect(compressor.outport,condensor.inport)
+        connect(condensor.outport,valve.inport)
+        connect(valve.outport,evaporator.inport)
+        connect(evaporator.outport,sink.port)
+]
+
+@named VCC = System(eqs,t,systems = systems)
+sys = mtkcompile(VCC)</code></pre><p>Then we choose the parameters of the system:</p><pre><code class="language-julia hljs">para = [
+    source.source_pressure =&gt; p_, source.source_temperature =&gt; T_, source.source_mdot =&gt; 0.02, 
+    compressor.πc =&gt; 3, compressor.η =&gt; 0.7,
+    condensor.ΔT_sc =&gt; 3,
+    valve.πc =&gt; compressor.πc,
+    evaporator.ΔT_sh =&gt; ΔT_sh, 
+]</code></pre><p>Then we proceed to solve the problem:</p><pre><code class="language-julia hljs">u0 = []
+prob = SteadyStateProblem(sys,u0,para)
+sol = solve(prob)</code></pre><p>To get the Coeffecient of Performace of the cycle: </p><pre><code class="language-julia hljs">julia&gt; COP = sol[condensor.Qdot]/sol[compressor.P]
+-5.096928812859646</code></pre><p>For plotting the phase diagram</p><pre><code class="language-julia hljs">system_string = [&quot;compressor&quot;,&quot;condensor&quot;,&quot;valve&quot;,&quot;evaporator&quot;]
+CarnotCycles.plot(sol,systems,system_string,type = :PH,phase = true)</code></pre><hr/><p><strong>NOTE</strong></p><p>Energy given to the fluid is +ve while given by the fluid is -ve. Hence the COP is negative</p><hr/><p><img src="../Images/PhaseDiagrams/VCC_PH.png" alt="VCC_PH_phase"/></p><h2 id="Otto-Cycle"><a class="docs-heading-anchor" href="#Otto-Cycle">Otto Cycle</a><a id="Otto-Cycle-1"></a><a class="docs-heading-anchor-permalink" href="#Otto-Cycle" title="Permalink"></a></h2><p>Otto&#39;s Cycle is described by parallel isentropic processes which are interlinked by isochoric processes. See <a href="https://en.wikipedia.org/wiki/Otto_cycle">Otto Cycle</a>.</p><p>To simulate this with the CarnotCycles.jl we can do as follows:</p><pre><code class="language-julia hljs">using Clapeyron, CarnotCycles, ModelingToolkit, SteadyStateDiffEq
+
+import CarnotCycles: t
+
+fluid = cPR([&quot;Argon&quot;],idealmodel = ReidIdeal)
+
+load_fluid(fluid)
+
+
+@named source = MassSource()
+@named compressor = IsentropicCompressor()
+@named isochoric_compressor = IsochoricCompressor()
+@named expander = IsentropicExpander()
+@named isochoric_expander = IsochoricExpander()
+@named sink = MassSink()
+
+eqs = [
+    connect(source.port,compressor.inport)
+    connect(compressor.outport,isochoric_compressor.inport)
+    connect(isochoric_compressor.outport,expander.inport)
+    connect(expander.outport,isochoric_expander.inport)
+    connect(isochoric_expander.outport,sink.port)
+]
+
+systems = [source,compressor,isochoric_compressor,expander,isochoric_expander,sink]
+@named system = System(eqs,t,systems = systems)
+@time sys = mtkcompile(system)</code></pre><p>Choosing the parameters:</p><pre><code class="language-julia hljs">para = [
+    source.source_pressure =&gt; 1e5, source.source_temperature =&gt; 300.0, source.source_mdot =&gt; 20.0, source.source_x =&gt; 1.0, 
+    compressor.η =&gt; 1.0, compressor.πc =&gt; 5.0,
+    isochoric_compressor.πc =&gt; 3.0,
+    expander.η =&gt; 1.0, expander.πc =&gt; compressor.πc,
+    isochoric_expander.πc =&gt; isochoric_compressor.πc,
+]
+u0 = []
+prob = SteadyStateProblem(sys,u0,para)
+sol = solve(prob)</code></pre><p>To see all states in the cycle</p><pre><code class="language-julia hljs">system_string = [&quot;compressor&quot;,&quot;isochoric_compressor&quot;,&quot;expander&quot;,&quot;isochoric_expander&quot;]
+show_all_states(sol,systems,system_string)</code></pre><p>Results in printing the output in the terminal</p><pre><code class="language-julia hljs">--------------------------------------
+Component: compressor
+Temperature in : 300.0 K  , Temperature out : 571.1362731703207 K
+Pressure in : 100000.0 Pa  , Pressure out : 500000.0 Pa
+Enthalpy : 16.266350232763216 J  , Enthalpy out : 2836.6280843423797 J
+Entropy : -19.49595286245431 J/K  , Entropy out : -19.495952862454324 J/K
+Mass Flow Rate : 20.0 g/s  , Mass Flow Rate out : 20.0 g/s
+Mass fraction : 1.0 , Mass fraction out : 1.0
+--------------------------------------
+--------------------------------------
+Component: isochoric_compressor
+Temperature in : 571.1362731703207 K  , Temperature out : 1710.8971638025928 K
+Pressure in : 500000.0 Pa  , Pressure out : 1.5e6 Pa
+Enthalpy : 2836.6280843423797 J  , Enthalpy out : 14713.554713239335 J
+Entropy : -19.495952862454324 J/K  , Entropy out : -12.641777207302466 J/K
+Mass Flow Rate : 20.0 g/s  , Mass Flow Rate out : 20.0 g/s
+Mass fraction : 1.0 , Mass fraction out : 1.0
+--------------------------------------
+--------------------------------------
+Component: expander
+Temperature in : 1710.8971638025928 K  , Temperature out : 898.7834079229091 K
+Pressure in : 1.5e6 Pa  , Pressure out : 300000.0 Pa
+Enthalpy : 14713.554713239335 J  , Enthalpy out : 6251.801609047419 J
+Entropy : -12.641777207302466 J/K  , Entropy out : -12.641777206993057 J/K
+Mass Flow Rate : 20.0 g/s  , Mass Flow Rate out : 20.0 g/s
+Mass fraction : 1.0 , Mass fraction out : 1.0
+--------------------------------------
+--------------------------------------
+Component: isochoric_expander
+Temperature in : 898.783407922909 K  , Temperature out : 300.0443884959337 K
+Pressure in : 300000.0 Pa  , Pressure out : 100000.0 Pa
+Enthalpy : 6251.801609047419 J  , Enthalpy out : 16.729409232186228 J
+Entropy : -12.641777206993057 J/K  , Entropy out : -19.494409446636574 J/K
+Mass Flow Rate : 20.0 g/s  , Mass Flow Rate out : 20.0 g/s
+Mass fraction : 1.0 , Mass fraction out : 1.0
+--------------------------------------</code></pre><h2 id="Solution-Viewing"><a class="docs-heading-anchor" href="#Solution-Viewing">Solution Viewing</a><a id="Solution-Viewing-1"></a><a class="docs-heading-anchor-permalink" href="#Solution-Viewing" title="Permalink"></a></h2><p>There are generally two ways: </p><ol><li>Printing the output on the terminal using <code>show_all_states(sol,systems,system_string)</code></li><li>Plotting the necessary diagram</li></ol></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../Optimization/">Cycle Optimization »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.10.1 on <span class="colophon-date" title="Tuesday 12 August 2025 01:29">Tuesday 12 August 2025</span>. Using Julia version 1.11.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
