@@ -1,6 +1,7 @@
+function Pipe end
 
 """
-`PipeCoolProp(fluid::AbstractString = set_fluid;name)`
+    `PipeCoolProp(fluid::AbstractString = set_fluid;name)`
 
 pressure drop across pipe using Darcy-Weisbach equation
 """
@@ -60,7 +61,7 @@ pressure drop across pipe using Darcy-Weisbach equation
 end
 
 
-@component function PipeClapyeron(fluid::EoSModel = set_fluid;name)
+@component function PipeClapeyron(fluid::EoSModel = set_fluid;name)
 
     @named inport = CoolantPort(fluid=fluid)
     @named outport = CoolantPort(fluid=fluid)
@@ -129,13 +130,13 @@ pressure drop across pipe using Darcy-Weisbach equation
 """
 function Pipe(;name,fluid = set_fluid)
     if fluid isa EoSModel
-        return PipeClapyeron(fluid;name = name)
-    end
-    if fluid isa AbstractString
+        return PipeClapeyron(fluid;name = name)
+    elseif fluid isa AbstractString
         return PipeCoolProp(fluid;name = name)
-    end
-    if isnothing(fluid)
-        throw(error("Fluid not selected"))
+    elseif isnothing(fluid)
+        throw(ArgumentError("Fluid not selected"))
+    else
+        throw(ArgumentError("Unsupported fluid type: $(typeof(fluid))"))
     end
 end
 
