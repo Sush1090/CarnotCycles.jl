@@ -1,5 +1,8 @@
 # CarnotCycles.jl
 
+
+> **Maintenance status:** This package is currently unmaintained. Many functionalities are not upto date. 
+
 <img src="docs/src/Images/CarnotCycles_logo.png" alt="CarnotCycles Logo" width="100">
 
 [![Build Status](https://github.com/Sush1090/CoolPropCycles.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/Sush1090/CoolPropCycles.jl/actions/workflows/CI.yml?query=branch%3Amain)
