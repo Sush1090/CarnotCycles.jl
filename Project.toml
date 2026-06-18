@@ -1,7 +1,7 @@
 name = "CarnotCycles"
 uuid = "b01af851-7cff-425c-b4a4-ed45d3481e5c"
-authors = ["Sushrut"]
 version = "0.2.9"
+authors = ["Sushrut"]
 
 [deps]
 Clapeyron = "7c7805af-46cc-48c9-995b-ed0ed2dc909a"
@@ -14,7 +14,7 @@ SteadyStateDiffEq = "9672c7b4-1e72-59bd-8a11-6ac3964bc41f"
 [compat]
 Clapeyron = "0.6.11"
 CoolProp = "0.2.1"
-ModelingToolkit = "9.75.0, 10"
+ModelingToolkit = "9.75.0, 10, 11"
 Plots = "1.40.13"
 Roots = "2.2.7"
 SteadyStateDiffEq = "2.5.0"
